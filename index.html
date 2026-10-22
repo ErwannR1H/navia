@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navia - Sistema Inteligente de Orientación Académica USIL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;display=swap" rel="stylesheet">
+  <link href="[https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap)" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            blue:{50:'#E5ECF4',100:'#CCDAE9',200:'#B2C6DD',300:'#80A0C1',400:'#336699',500:'#004080',600:'#003366',700:'#002B57',800:'#00264D',900:'#001F40',950:'#001429'},indigo:{100:'#E5ECF4',700:'#003366'},amber:{50:'#FFF7E0',100:'#FFECB3',500:'#D4AF37',600:'#8A6400',700:'#6E4F00'},yellow:{100:'#FFF0BE',200:'#FFE082',300:'#FFC72C'},slate:{50:'#FAFAFA',100:'#F5F5F5',200:'#E0E0E0',300:'#D1D1D1',400:'#9E9E9E',500:'#616161',600:'#424242',700:'#323232',800:'#242424',900:'#242424'},emerald:{50:'#DFF6DD',100:'#DFF6DD',200:'#9FD89F',400:'#107C10',500:'#107C10',600:'#0E700E',700:'#0B5A0B',800:'#094C09'},red:{50:'#FDF3F4',100:'#F7D7DB',200:'#EEACB2',500:'#C50F1F',600:'#C50F1F',700:'#A90C19',800:'#820914'},rose:{50:'#FDF3F4',100:'#F7D7DB',200:'#EEACB2',500:'#C50F1F',600:'#C50F1F',700:'#A90C19',950:'#50060E'},
+            brand: {
+              50: '#E5ECF4',
+              100: '#E5ECF4',
+              200: '#CCDAE9',
+              500: '#00478A',
+              600: '#003D7A',
+              700: '#002B57',
+              800: '#00244A',
+              900: '#001F40'
+            }
+          },
+          fontFamily: {
+            sans: ['Segoe UI Variable','Segoe UI','system-ui','sans-serif'],
+            handwritten: ['Caveat', 'cursive']
+          }
+        }
+      }
+    }
+  </script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-white min-h-screen text-slate-800 antialiased font-sans overflow-x-hidden">
+<div id="toast-container" role="alert" aria-live="assertive" aria-atomic="true"></div>
+<a href="#mainContent" class="skip-link">Saltar al contenido principal</a>
+<div id="nvAnnouncer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+<div id="naviaApp" class="w-full bg-white">
+    <!-- App Inner Canvas -->
+    <div class="w-full min-h-[760px] md:min-h-[820px] bg-white flex flex-col relative overflow-hidden text-slate-800">
+      <!-- Inside App Header Navbar (Active for in-app views 4 to 14) -->
+      <header id="innerAppNav" role="banner" class="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 sm:px-10 py-3.5 flex items-center justify-between z-30 transition-all">
+        <button type="button" aria-label="Navia, ir al inicio" class="flex items-center gap-2.5 cursor-pointer rounded-xl" onclick="goToScreen(4)">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-700 to-blue-500 text-white flex items-center justify-center shadow-md">
+            <svg aria-hidden="true" focusable="false" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+          </div>
+          <span class="text-2xl font-black text-[#003366] tracking-tight">Navia</span>
+        </button>
+        <nav class="hidden md:flex items-center gap-2" aria-label="Navegación principal">
+          <button onclick="goToScreen(4)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-blue-700 font-bold bg-blue-50" data-view="4">Inicio</button>
+          <button onclick="goToScreen(14)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="14">Comunidad</button>
+          <button onclick="goToScreen(2)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="2">Perfil</button>
+        </nav>
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex flex-col text-right">
+            <span id="headerStudentName" class="text-xs font-bold text-slate-800">Tu perfil</span>
+            <span id="headerStudentMeta" class="text-[11px] text-slate-500">Completa tu registro</span>
+          </div>
+          <button type="button" id="headerInitials" aria-label="Ir a mi perfil" class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs border border-blue-200 cursor-pointer shadow-xs hover:ring-2 hover:ring-blue-300" onclick="goToScreen(2)">NA</button>
+        </div>
+      </header>
+      <!-- Main Workspace Views Container -->
+      <main id="mainContent" tabindex="-1" class="flex-1 flex flex-col relative overflow-y-auto bg-slate-50/50 outline-none">
+        <!-- ========================================================================= -->
+        <!-- SCREEN 1: PANTALLA DE ACCESO A NAVIA (LOGIN)                              -->
+        <!-- ========================================================================= -->
+        <section id="screen-1" class="screen-panel w-full flex-1 flex flex-col justify-between bg-gradient-to-br from-[#002B57] via-[#003D7A] to-[#001F40] text-white p-6 sm:p-10 relative overflow-hidden hidden">
+          <div class="absolute inset-0 nv-grid-bg pointer-events-none"></div>
+          <div class="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full bg-indigo-400/30 blur-3xl nv-float pointer-events-none"></div>
+          <div class="absolute -bottom-32 -left-20 w-[380px] h-[380px] rounded-full bg-yellow-300/20 blur-3xl nv-floatb pointer-events-none"></div>
+          <!-- Top mini-bar -->
+          <div class="w-full flex items-center justify-between z-10">
+            <span class="flex items-center gap-2.5 text-3xl font-black tracking-tight text-white"><span class="w-10 h-10 rounded-2xl bg-white text-[#003D7A] flex items-center justify-center shadow-lg"><svg class="nv-home-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><use href="#i-cap"></use></svg></span>Navia</span>
+            <span class="text-xs font-semibold tracking-[0.16em] uppercase text-blue-200">Estudia · Decide · Avanza</span>
+          </div>
+          <!-- Hero Login Split -->
+          <div class="w-full max-w-6xl mx-auto my-auto py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center z-10">
+            <!-- Left Info: interfaz ligera -->
+            <div class="lg:col-span-7 flex flex-col justify-center text-left">
+              <div class="max-w-xl">
+                <div class="nv-fade inline-flex items-center gap-2 px-4 py-2 rounded-full nv-glass text-[11px] font-bold uppercase tracking-[0.18em] text-blue-100">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Orientación académica inteligente · USIL
+                </div>
+                <h1 tabindex="-1" class="nv-fade nv-d1 mt-6 text-5xl sm:text-6xl lg:text-[4.4rem] font-black leading-[1.02] tracking-tight">
+                  Tu ruta.<br><span class="nv-grad-text">Más clara.</span>
+                </h1>
+                <p class="nv-fade nv-d2 text-blue-100 text-sm sm:text-base max-w-md mt-5 leading-relaxed">
+                  Organiza tu avance, elige tu carga ideal y descubre una ruta académica hecha a tu medida, ciclo a ciclo.
+                </p>
+                <div class="nv-fade nv-d3 grid grid-cols-3 gap-3 mt-8 max-w-lg">
+                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg></div><div class="text-sm font-extrabold">Malla</div><div class="text-[11px] text-blue-100 mt-0.5">Todo tu plan en un vistazo</div></div>
+                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg></div><div class="text-sm font-extrabold">Progreso</div><div class="text-[11px] text-blue-100 mt-0.5">Avance siempre al día</div></div>
+                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><use href="#i-route"></use></svg></div><div class="text-sm font-extrabold">Ruta</div><div class="text-[11px] text-blue-100 mt-0.5">Cursos sugeridos para ti</div></div>
+                </div>
+              </div>
+            </div>
+            <!-- Right Login Form -->
+            <div class="lg:col-span-5 flex justify-center">
+              <div class="nv-fade nv-d2 w-full max-w-md bg-white rounded-[28px] p-8 sm:p-9 text-slate-800 shadow-2xl relative border border-white/40" style="box-shadow:0 40px 80px -20px rgba(8,12,80,.7)"><div class="absolute -top-px left-8 right-8 h-1 rounded-b-full bg-gradient-to-r from-[#003366] via-indigo-400 to-yellow-300"></div>
+                <div class="text-center mb-6">
+                  <h2 class="text-3xl font-extrabold text-[#003366] tracking-tight">Navia</h2>
+                  <p class="text-xs text-slate-500 mt-1 font-medium">Sistema inteligente de orientación académica</p>
+                </div>
+                <div class="space-y-4">
+                  <div class="text-center">
+                    <p class="text-sm font-bold text-slate-800">Accede con tu cuenta institucional</p>
+                    <p class="text-[11px] text-slate-500 mt-1">Usa Microsoft para iniciar sesión y luego completa tus datos académicos.</p>
+                  </div>
+                  <button type="button" onclick="openMicrosoftLogin()" class="w-full py-3.5 px-4 bg-white hover:bg-slate-50 text-slate-800 font-semibold rounded-2xl text-sm border border-slate-300 shadow-sm flex items-center justify-center gap-3 transition active:scale-98">
+                    <span class="grid grid-cols-2 gap-0.5 w-5 h-5 shrink-0">
+                      <span class="bg-[#f35325]"></span><span class="bg-[#81bc06]"></span>
+                      <span class="bg-[#05a6f0]"></span><span class="bg-[#ffba08]"></span>
+                    </span>
+                    <span>Iniciar sesión con Microsoft</span>
+                    <svg aria-hidden="true" focusable="false" class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                  </button>
+                  <div class="flex items-center gap-3 py-1">
+                    <div class="h-px bg-slate-200 flex-1"></div>
+                    <span class="text-[10px] text-slate-600 font-semibold uppercase">o</span>
+                    <div class="h-px bg-slate-200 flex-1"></div>
+                  </div>
+                  <button type="button" onclick="goToScreen(2); showToast('Modo invitado: completa tu registro académico')" class="w-full py-3 px-4 bg-[#002A52] hover:bg-[#00244A] text-white font-semibold rounded-2xl text-sm shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 transition active:scale-98">
+                    <span>Continuar como invitado</span>
+                    <svg aria-hidden="true" focusable="false" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                  </button>
+                  <div class="bg-blue-50 border border-blue-100 rounded-2xl p-3 text-[10px] text-blue-900 leading-relaxed">
+                    <strong>Nota:</strong> este prototipo simula el acceso con Microsoft. No realiza una autenticación real contra Microsoft.
+                  </div>
+                </div>
+                <p class="text-center text-[11px] text-slate-600 mt-5">
+                  Universidad San Ignacio de Loyola • Lima, Perú
+                </p>
+              </div>
+            </div>
+          </div>
+      <!-- ===== Proceso 1: panel expandible "Conoce Navia" (guía visual para nuevos usuarios) ===== -->
+      <div class="nv-guide w-full max-w-6xl mx-auto relative z-10" style="margin-top:24px">
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<symbol id="i-cap" viewBox="0 0 48 48"><path d="M24 9 3 20l21 11 21-11z" fill="currentColor"/><path d="M11 26v8c0 3 6 6 13 6s13-3 13-6v-8l-13 7z" fill="currentColor" opacity=".65"/><path d="M43 21v12" stroke="#FFC72C" stroke-width="3" stroke-linecap="round"/><circle cx="43" cy="35" r="3" fill="#FFC72C"/></symbol>
+<symbol id="i-users" viewBox="0 0 48 48"><circle cx="17" cy="16" r="7" fill="currentColor"/><path d="M3 40c0-9 6-14 14-14s14 5 14 14z" fill="currentColor"/><circle cx="35" cy="19" r="5.5" fill="#FFC72C"/><path d="M28 40c0-6 3-10 8-10s9 4 9 10z" fill="#FFC72C"/></symbol>
+<symbol id="i-chart" viewBox="0 0 48 48"><rect x="5" y="28" width="9" height="15" rx="2" fill="currentColor" opacity=".6"/><rect x="19" y="19" width="9" height="24" rx="2" fill="currentColor" opacity=".8"/><rect x="33" y="10" width="9" height="33" rx="2" fill="currentColor"/><path d="M6 20 20 11l9 5 13-10" fill="none" stroke="#FFC72C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-user" viewBox="0 0 48 48"><circle cx="24" cy="16" r="9" fill="currentColor"/><path d="M6 43c0-11 8-17 18-17s18 6 18 17z" fill="currentColor" opacity=".7"/><circle cx="37" cy="12" r="4" fill="#FFC72C"/></symbol>
+<symbol id="i-list" viewBox="0 0 48 48"><rect x="8" y="5" width="32" height="38" rx="4" fill="currentColor" opacity=".25"/><path d="m13 15 3 3 6-7M13 27l3 3 6-7" fill="none" stroke="#FFC72C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 16h9M27 28h9M13 38h23" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
+<symbol id="i-route" viewBox="0 0 48 48"><circle cx="11" cy="38" r="5" fill="currentColor"/><path d="M14 33c4-10 14-2 18-12" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="1 6" stroke-linecap="round"/><path d="M35 4a9 9 0 0 1 9 9c0 8-9 16-9 16s-9-8-9-16a9 9 0 0 1 9-9z" fill="#FFC72C"/><circle cx="35" cy="13" r="3.5" fill="currentColor"/></symbol>
+<symbol id="i-quiz" viewBox="0 0 48 48"><rect x="9" y="7" width="30" height="37" rx="4" fill="currentColor" opacity=".25"/><rect x="17" y="3" width="14" height="8" rx="3" fill="currentColor"/><circle cx="24" cy="29" r="9" fill="#FFC72C"/><path d="m19.5 29 3.5 3.5 6-7" fill="none" stroke="#1A1A1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-cycle" viewBox="0 0 48 48"><path d="M40 22a16 16 0 0 0-29-7M8 26a16 16 0 0 0 29 7" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><path d="m8 5 1 12 12-2zM40 43l-1-12-12 2z" fill="#FFC72C"/></symbol>
+<symbol id="i-chat" viewBox="0 0 48 48"><path d="M5 8h28a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H17l-8 7v-7H5a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z" fill="currentColor"/><path d="M41 16a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4v7l-8-7H21a4 4 0 0 1-4-4v-1h16a8 8 0 0 0 8-8z" fill="#FFC72C"/></symbol>
+<symbol id="i-grid" viewBox="0 0 48 48"><g fill="currentColor"><rect x="4" y="4" width="12" height="12" rx="2"/><rect x="18" y="4" width="12" height="12" rx="2" opacity=".6"/><rect x="32" y="4" width="12" height="12" rx="2" opacity=".6"/><rect x="4" y="18" width="12" height="12" rx="2" opacity=".6"/><rect x="32" y="18" width="12" height="12" rx="2" opacity=".6"/><rect x="18" y="32" width="12" height="12" rx="2" opacity=".6"/></g><rect x="18" y="18" width="12" height="12" rx="2" fill="#FFC72C"/><rect x="4" y="32" width="12" height="12" rx="2" fill="#FFC72C" opacity=".7"/><rect x="32" y="32" width="12" height="12" rx="2" fill="currentColor"/></symbol>
+<symbol id="i-chain" viewBox="0 0 48 48"><path d="M10 34h14V14h14" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="34" r="6" fill="currentColor"/><circle cx="24" cy="24" r="6" fill="#FFC72C"/><circle cx="39" cy="14" r="6" fill="currentColor"/></symbol>
+<symbol id="i-books" viewBox="0 0 48 48"><rect x="5" y="31" width="38" height="11" rx="3" fill="currentColor"/><rect x="9" y="18" width="32" height="11" rx="3" fill="currentColor" opacity=".7"/><rect x="13" y="5" width="26" height="11" rx="3" fill="#FFC72C"/></symbol>
+<symbol id="i-test" viewBox="0 0 48 48"><circle cx="21" cy="21" r="14" fill="currentColor" opacity=".25" stroke="currentColor" stroke-width="4"/><path d="m31 31 12 12" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m14.5 21 5 5 8-9" fill="none" stroke="#FFC72C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-access" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/><circle cx="24" cy="12.5" r="3.5" fill="#FFC72C"/><path d="M12 19c8 2.5 16 2.5 24 0M24 21v9m0 0-6 9m6-9 6 9" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></symbol></defs></svg>
+        <button type="button" id="guideToggle" class="nv-guide-btn" aria-expanded="false" aria-controls="guidePanel">
+          <span class="nv-guide-ico" aria-hidden="true">i</span>
+          <span><strong>Conoce Navia</strong><small>Guía rápida para nuevos usuarios</small></span>
+          <svg class="nv-chev" aria-hidden="true" viewBox="0 0 20 20" width="20" height="20"><path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div id="guidePanel" class="nv-guide-panel" role="region" aria-label="Guía para nuevos usuarios">
+          <div class="nv-guide-inner">
+<header class="nv-gh"><span class="nv-gh-eyebrow">Orientación académica · USIL</span>
+  <h2 class="nv-gh-title">Navia: tu ruta académica, ciclo a ciclo</h2>
+  <p class="nv-gh-lead">Una plataforma para planificar tu siguiente ciclo, medir tu preparación y mantener tu malla curricular al día, en un solo recorrido guiado.</p>
+  <ul class="nv-gh-stats"><li><b>5–6</b><span>cursos por ciclo</span></li><li><b>2</b><span>evaluaciones</span></li><li><b>14</b><span>pasos guiados</span></li></ul></header><section class="nv-sec"><span class="nv-eyebrow">Contenido en tres capas</span><h3 class="nv-g-sub2">Toda tu información, organizada</h3><div class="nv-g-grid"><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-grid"/></svg></div><h3>Avance</h3><p>Tu malla y tu historial de cursos aprobados, siempre a la vista.</p></article><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-route"/></svg></div><h3>Ruta</h3><p>Carga elegida, cursos sugeridos y los conceptos clave de cada uno.</p></article><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-quiz"/></svg></div><h3>Evaluación</h3><p>Un diagnóstico antes del ciclo y una evaluación de cierre al terminar.</p></article></div></section><section class="nv-sec"><span class="nv-eyebrow">Navia en gráficos</span><h3 class="nv-g-sub2">Así se ve tu progreso</h3>
+<div class="nv-gr-grid">
+<figure class="nv-gr"><figcaption>Avance de tu malla</figcaption>
+<svg viewBox="0 0 120 120" role="img" aria-label="Ejemplo: 70 por ciento de avance en la malla"><circle cx="60" cy="60" r="42" fill="none" stroke="#E5ECF4" stroke-width="12"/><circle cx="60" cy="60" r="42" fill="none" stroke="#002447" stroke-width="12" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="79" transform="rotate(-90 60 60)"/><circle cx="60" cy="18" r="3.5" fill="#FFC72C"/><text x="60" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#002447">70%</text></svg>
+<p>Ves cuántos cursos aprobaste y cuántos te faltan.</p><small>Ejemplo ilustrativo</small></figure>
+<figure class="nv-gr"><figcaption>Diagnóstico por curso</figcaption><div class="nv-bars" role="img" aria-label="Ejemplo de resultados por curso"><div class="nv-bar"><div class="nv-bar-top"><span>Bases de Datos</span><b>85%</b></div><div class="nv-bar-track"><i class="ok" style="width:85%"></i></div></div><div class="nv-bar"><div class="nv-bar-top"><span>Seguridad de la Información</span><b>60%</b></div><div class="nv-bar-track"><i class="low" style="width:60%"></i></div></div><div class="nv-bar"><div class="nv-bar-top"><span>Gobierno de Datos</span><b>40%</b></div><div class="nv-bar-track"><i class="low" style="width:40%"></i></div></div></div>
+<p>Los cursos en dorado son los que conviene reforzar.</p><small>Ejemplo ilustrativo</small></figure>
+<figure class="nv-gr"><figcaption>Ciclo a ciclo</figcaption>
+<svg viewBox="0 0 360 270" role="img" aria-label="Ciclo de Navia: planifica, diagnostica, cierra y actualiza"><circle cx="180" cy="135" r="78" fill="none" stroke="#E5ECF4" stroke-width="12"/><polygon points="0,-8 7,6 -7,6" fill="#FFC72C" transform="translate(235.2 79.8) rotate(135)"/><polygon points="0,-8 7,6 -7,6" fill="#FFC72C" transform="translate(235.2 190.2) rotate(225)"/><polygon points="0,-8 7,6 -7,6" fill="#FFC72C" transform="translate(124.8 190.2) rotate(315)"/><polygon points="0,-8 7,6 -7,6" fill="#FFC72C" transform="translate(124.8 79.8) rotate(405)"/><circle cx="180" cy="57" r="22" fill="#002447"/><text x="180" y="63" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">1</text><text x="180" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#1A1A1A">Planifica</text><circle cx="258" cy="135" r="22" fill="#002447"/><text x="258" y="141" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">2</text><text x="290" y="140" text-anchor="start" font-size="15" font-weight="700" fill="#1A1A1A">Diagnostica</text><circle cx="180" cy="213" r="22" fill="#002447"/><text x="180" y="219" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">3</text><text x="180" y="256" text-anchor="middle" font-size="15" font-weight="700" fill="#1A1A1A">Cierra</text><circle cx="102" cy="135" r="22" fill="#002447"/><text x="102" y="141" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">4</text><text x="70" y="140" text-anchor="end" font-size="15" font-weight="700" fill="#1A1A1A">Actualiza</text><text x="180" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#002447">Tu ruta</text><text x="180" y="150" text-anchor="middle" font-size="12" fill="#333">se repite</text></svg>
+<p>Cada ciclo comienza con tu malla ya actualizada.</p><small>Esquema del recorrido</small></figure>
+</div></section><section class="nv-sec"><span class="nv-eyebrow">Cómo funciona</span><h3 class="nv-g-sub2">Tu recorrido paso a paso</h3><ol class="nv-tl"><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-user"/></svg><b>1</b></span><div><h4>Perfil</h4><p>Registras tu carrera y tu ciclo actual. Navia carga la malla que te corresponde.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-list"/></svg><b>2</b></span><div><h4>Historial</h4><p>Marcas los cursos que ya aprobaste y ves tu porcentaje de avance en tu panel de inicio.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-route"/></svg><b>3</b></span><div><h4>Próximo ciclo</h4><p>Eliges 5 o 6 cursos. Navia sugiere una ruta según tu avance y te explica qué se estudia en cada curso.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-quiz"/></svg><b>4</b></span><div><h4>Diagnóstico</h4><p>Respondes preguntas por curso y recibes una lista de temas para reforzar. No es un examen.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-cycle"/></svg><b>5</b></span><div><h4>Cierre de ciclo</h4><p>Registras tus resultados, rindes una evaluación breve y tu malla se actualiza.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-chat"/></svg><b>6</b></span><div><h4>Comunidad</h4><p>Consultas cursos y compartes tu experiencia con otros estudiantes.</p></div></li></ol></section><section class="nv-sec"><span class="nv-eyebrow">Glosario rápido</span><h3 class="nv-g-sub2">Antes de empezar</h3><ul class="nv-g-tiles"><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-grid"/></svg><strong>Malla</strong><small>Cursos de tu carrera ordenados por ciclo.</small></li><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-chain"/></svg><strong>Prerrequisito</strong><small>Curso que debes aprobar antes de llevar otro.</small></li><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-books"/></svg><strong>Carga</strong><small>Cantidad de cursos que llevas en un ciclo.</small></li><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-test"/></svg><strong>Diagnóstico</strong><small>Mide tu punto de partida para reforzar a tiempo.</small></li><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-cycle"/></svg><strong>Cierre de ciclo</strong><small>Actualiza tus notas y tu malla al terminar.</small></li></ul></section><section class="nv-sec"><span class="nv-eyebrow">Accesible para todos</span><h3 class="nv-g-sub2">Pensado para que cualquiera pueda usarlo</h3><div class="nv-acc"><div class="nv-acc-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-access"/></svg></div><ul><li><strong>Teclado</strong><span>Navega con Tab y Enter en todo el prototipo.</span></li><li><strong>Lectores de pantalla</strong><span>Etiquetas ARIA y avisos de estado.</span></li><li><strong>Menos movimiento</strong><span>Respeta la preferencia de reducir animaciones.</span></li><li><strong>Contraste AA</strong><span>Colores USIL con contraste accesible.</span></li></ul></div></section><section class="nv-sec"><span class="nv-eyebrow">Preguntas frecuentes</span><h3 class="nv-g-sub2">Resuelve tus dudas</h3><details class="nv-g-det"><summary>¿Necesito una cuenta real?</summary><p>No. El acceso con Microsoft es una simulación y también puedes continuar como invitado.</p></details><details class="nv-g-det"><summary>¿Para qué carreras es Navia?</summary><p>Para todas las carreras. Eliges la tuya al registrar tu perfil y Navia carga su malla.</p></details><details class="nv-g-det"><summary>¿El diagnóstico es un examen?</summary><p>No. Es una guía para identificar qué temas reforzar antes del ciclo.</p></details><details class="nv-g-det"><summary>¿Mis datos se guardan?</summary><p>El prototipo no los guarda en tu navegador: solo simula la experiencia mientras está abierto.</p></details></section><div class="nv-cta"><div><strong>¿Listo para empezar?</strong><span>Inicia sesión con tu cuenta institucional o continúa como invitado.</span></div><button type="button" id="guideCta">Ir al acceso ↑</button></div>
+<p class="nv-g-note">Prototipo académico · Universidad San Ignacio de Loyola · 2026</p>
+          </div>
+        </div>
+      </div>
+          <div class="nv-screen-footer w-full flex items-center justify-between text-xs text-blue-100 pt-3 border-t border-white/10 z-10"><span>© 2026 Navia Académico USIL</span><span>Sistema académico</span></div>
+      </section>
+        <!-- Microsoft sign-in modal -->
+        <div id="microsoftLoginModal" role="dialog" aria-modal="true" aria-label="Iniciar sesión con Microsoft" class="hidden fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-sm items-center justify-center p-4">
+          <div class="w-full max-w-[440px] bg-white shadow-2xl border border-slate-200 p-9 rounded-sm">
+            <div class="flex items-center gap-2 mb-5">
+              <div class="grid grid-cols-2 gap-0.5 w-5 h-5 shrink-0"><span class="bg-[#f35325]"></span><span class="bg-[#81bc06]"></span><span class="bg-[#05a6f0]"></span><span class="bg-[#ffba08]"></span></div>
+              <span class="text-[15px] font-semibold text-slate-600">Microsoft</span>
+            </div>
+            <!-- Paso 1: correo -->
+            <div id="msStep1">
+              <h2 class="text-2xl font-semibold text-slate-900">Iniciar sesión</h2>
+              <p class="text-xs text-slate-500 mt-1">Usa tu cuenta institucional USIL para entrar a Navia.</p>
+              <div class="mt-5">
+                <label for="microsoftEmail" class="block text-sm font-semibold text-slate-800 mb-2">Correo institucional de USIL</label>
+                <input id="microsoftEmail" aria-label="Correo institucional" aria-describedby="msEmailHint" type="email" autocomplete="off" spellcheck="false" placeholder="nombre.apellido@usil.pe" onkeydown="if(event.key==='Enter')msNext()" class="w-full py-2 px-1 border-0 border-b border-slate-400 focus:border-blue-600 text-sm text-slate-900 outline-none bg-transparent">
+                <span id="microsoftEmail-error" class="texte-erreur hidden"></span>
+                <p id="msEmailHint" class="text-[11px] text-slate-600 mt-2">Formato: <strong>nombre.apellido@usil.pe</strong></p>
+              </div>
+              <p class="text-xs text-slate-500 mt-5">¿No tienes acceso a tu cuenta? Comunícate con la mesa de ayuda de USIL.</p>
+              <div class="flex items-center justify-end gap-2 mt-7">
+                <button type="button" onclick="closeMicrosoftLogin()" class="px-5 py-1.5 border border-slate-300 text-slate-700 text-sm hover:bg-slate-50">Cancelar</button>
+                <button type="button" onclick="msNext()" class="px-7 py-1.5 bg-[#0067b8] hover:bg-[#005a9e] text-white text-sm">Siguiente</button>
+              </div>
+            </div>
+            <!-- Paso 2: contraseña -->
+            <div id="msStep2" class="hidden">
+              <button type="button" onclick="msBack()" class="flex items-center gap-2 text-sm text-slate-700 hover:text-slate-900 mb-3"><span>←</span><span id="msEmailShown" class="truncate">correo@usil.pe</span></button>
+              <h2 class="text-2xl font-semibold text-slate-900">Escribir contraseña</h2>
+              <div class="mt-5 relative">
+                <label for="microsoftPassword" class="block text-sm font-semibold text-slate-800 mb-2">Contraseña</label>
+                <input id="microsoftPassword" aria-label="Contraseña" type="password" autocomplete="new-password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')continueMicrosoftLogin()" class="w-full py-2 pl-1 pr-14 border-0 border-b border-slate-400 focus:border-blue-600 text-sm text-slate-900 outline-none bg-transparent">
+                <span id="microsoftPassword-error" class="texte-erreur hidden"></span>
+                <button type="button" onclick="msTogglePass()" id="msPassToggle" aria-label="Mostrar u ocultar contraseña" aria-pressed="false" class="absolute right-0 top-2 text-xs text-blue-700">Mostrar</button>
+              </div>
+              <p class="text-[10px] text-slate-600 mt-5">Prototipo: estos datos no se envían ni se almacenan en un servidor.</p>
+              <div class="flex items-center justify-end mt-6">
+                <button type="button" onclick="continueMicrosoftLogin()" class="px-7 py-1.5 bg-[#0067b8] hover:bg-[#005a9e] text-white text-sm">Iniciar sesión</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 2: CONFIGURACIÓN DEL PERFIL ACADÉMICO                               -->
+        <!-- ========================================================================= -->
+        <section id="screen-2" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-6xl bg-white rounded-3xl shadow-xl border border-slate-200/80 overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-4">
+              <div class="lg:col-span-1 bg-gradient-to-br from-[#E5ECF4] to-white p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-slate-200">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold uppercase tracking-wide">
+                  Registro del alumno
+                </div>
+                <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366] leading-tight mt-5">Construyamos tu perfil académico</h1>
+                <p class="text-xs text-slate-500 mt-2 leading-relaxed">Después de iniciar sesión, registra tu carrera y ciclo. Navia cargará la malla correspondiente y actualizará la orientación con esos datos.</p>
+                <div class="mt-6 space-y-3">
+                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">✓</div><div><h2 class="text-xs font-bold text-slate-800">Carreras disponibles</h2><p class="text-[11px] text-slate-500">Elige una de las carreras disponibles para cargar su malla curricular.</p></div></div>
+                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">✓</div><div><h3 class="text-xs font-bold text-slate-800">Malla según tu elección</h3><p class="text-[11px] text-slate-500">Se carga una malla ejemplar basada en la información publicada por USIL.</p></div></div>
+                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">✓</div><div><h4 class="text-xs font-bold text-slate-800">Datos actualizables</h4><p class="text-[11px] text-slate-500">La carrera y el ciclo elegido se reflejan en las siguientes pantallas.</p></div></div>
+                </div>
+              </div>
+              <div class="lg:col-span-3 p-6 sm:p-8 bg-slate-50/70">
+                <div class="w-full mb-7">
+                  <div id="profileProgress" class="flex items-center justify-between max-w-md mx-auto relative">
+                    <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                    <div class="profile-progress-step flex flex-col items-center relative z-10"><div class="w-7 h-7 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">1</div><span class="text-[10px] text-blue-700 mt-1 font-bold">Registro alumno</span></div>
+                    <div class="profile-progress-step flex flex-col items-center relative z-10"><div class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-semibold">2</div><span class="text-[10px] text-slate-600 mt-1">Historial</span></div>
+                    <div id="profileReadyStep" class="profile-progress-step flex flex-col items-center relative z-10"><div class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-semibold">3</div><span class="text-[10px] text-slate-600 mt-1">¡A usar Navia!</span></div>
+                  </div>
+                </div>
+                <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+                  <div><h3 class="text-xl sm:text-2xl font-black text-[#003366]">Datos del alumno</h3><p class="text-xs text-slate-500 mt-1">Selecciona tu carrera para cargar automáticamente su malla curricular.</p></div>
+                  <div id="microsoftAccountBadge" class="hidden px-3 py-2 rounded-xl bg-white border border-slate-200 text-[10px] text-slate-600">Cuenta: <strong id="studentEmailLabel">alumno@usil.pe</strong></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="md:col-span-2">
+                    <label for="studentName" class="block text-xs font-bold text-slate-700 mb-1">Nombre completo<span class="sr-only"> (obligatorio)</span></label>
+                    <input id="studentName" name="studentName" type="text" required aria-required="true" autocomplete="name" value="" class="w-full py-2.5 px-3.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none" placeholder="Escribe tu nombre completo">
+                    <span id="studentName-error" class="texte-erreur hidden"></span>
+                  </div>
+                  <div>
+                    <label for="studentCode" class="block text-xs font-bold text-slate-700 mb-1">Código de alumno <span class="font-medium text-slate-600">(opcional)</span></label>
+                    <input id="studentCode" type="text" aria-describedby="studentCode-error" inputmode="numeric" maxlength="9" value="" oninput="onStudentCodeInput(this)" onblur="validateStudentCode()" class="w-full py-2.5 px-3.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none" placeholder="01xxxxxxx">
+                    <span id="studentCode-error" class="texte-erreur hidden"></span>
+                  </div>
+                  <div>
+                    <label for="userCareer" class="block text-xs font-bold text-slate-700 mb-1">Carrera<span class="sr-only"> (obligatorio)</span></label>
+                    <select id="userCareer" name="userCareer" required aria-required="true" onchange="previewSelectedCareer()" class="w-full py-2.5 px-3.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none cursor-pointer">
+                      <option value="" selected disabled>Selecciona tu carrera</option><option value="Ingeniería de Sistemas de Información">Ingeniería de Sistemas de Información</option>
+                      <option value="Ingeniería de Software">Ingeniería de Software</option>
+                      <option value="Administración en Turismo">Administración en Turismo</option>
+                      <option value="Arquitectura, Urbanismo y Territorio">Arquitectura, Urbanismo y Territorio</option>
+                      <option value="Comunicaciones">Comunicaciones</option>
+                      <option value="Administración de Empresas">Administración de Empresas</option>
+                      <option value="Medicina Humana">Medicina Humana</option>
+                      <option value="Derecho">Derecho</option>
+                      <option value="Educación Inicial">Educación Inicial</option>
+                    </select>
+                    <span id="userCareer-error" class="texte-erreur hidden"></span>
+                  </div>
+                  <div>
+                    <label for="userCurrentCycle" class="block text-xs font-bold text-slate-700 mb-1">Ciclo actual<span class="sr-only"> (obligatorio)</span></label>
+                    <select id="userCurrentCycle" name="userCurrentCycle" required aria-required="true" class="w-full py-2.5 px-3.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none cursor-pointer">
+                      <option value="" selected disabled>Selecciona tu ciclo</option><option value="1">1.° ciclo</option><option value="2">2.° ciclo</option><option value="3">3.° ciclo</option><option value="4">4.° ciclo</option><option value="5">5.° ciclo</option><option value="6">6.° ciclo</option><option value="7">7.° ciclo</option><option value="8">8.° ciclo</option><option value="9">9.° ciclo</option><option value="10">10.° ciclo</option>
+                    </select>
+                    <span id="userCurrentCycle-error" class="texte-erreur hidden"></span>
+                  </div>
+                  <input type="radio" name="userGoal" value="Ninguno" checked class="hidden">
+                </div>
+                <div id="careerPreview" class="mt-5 bg-blue-50/70 border border-blue-100 rounded-2xl p-4 flex items-start gap-3">
+                  <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">↗</div>
+                  <div><p class="text-xs font-bold text-blue-950">Malla que se cargará</p><p id="careerPreviewText" class="text-[11px] text-blue-800 mt-1">Selecciona una carrera para cargar la malla curricular.</p></div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-end">
+                  <button id="profileBackButton" onclick="goToScreen(1)" class="mr-auto px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">← Volver a la página de inicio</button>
+                  <button onclick="saveStudentProfile()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2"><span>Cargar mi malla →</span></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 3: HISTORIAL DE CURSOS Y AVANCE ACADÉMICO                           -->
+        <!-- ========================================================================= -->
+        <section id="screen-3" class="screen-panel w-full p-4 sm:p-6 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-6xl bg-white rounded-3xl p-5 sm:p-7 shadow-xl border border-slate-200/80 relative">
+            <!-- Top Stepper 1-4 -->
+            <div class="w-full mb-6">
+              <div class="flex items-center justify-between max-w-md mx-auto relative">
+                <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
+                  <span class="text-[10px] text-slate-600 mt-1 font-medium">Cuenta</span>
+                </div>
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
+                  <span class="text-[10px] text-slate-600 mt-1 font-medium">Perfil académico</span>
+                </div>
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="w-7 h-7 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">3</div>
+                  <span class="text-[10px] text-blue-700 mt-1 font-bold">Historial de cursos</span>
+                </div>
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-semibold">4</div>
+                  <span class="text-[10px] text-slate-600 mt-1">Listo</span>
+                </div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-5">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Registra tu historial de cursos</h1>
+              <p class="text-xs text-slate-500 mt-1">Marca los cursos que ya llevaste. La malla mostrada cambia según la carrera seleccionada en tu registro.</p>
+            </div>
+            <!-- Malla curricular dinámica según el registro del alumno -->
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600">Malla cargada</span>
+                <h2 id="curriculumCareerTitle" class="text-lg font-black text-[#003366]">Ingeniería de Sistemas de Información</h2>
+              </div>
+              <div id="curriculumCycleBadge" class="px-3 py-2 rounded-xl bg-blue-50 border border-blue-100 text-[10px] font-bold text-blue-800">5.° ciclo actual</div>
+            </div>
+            <div class="w-full overflow-x-auto pb-4 border border-slate-200 rounded-2xl bg-slate-50/50 p-3">
+              <div id="dynamicCurriculumGrid" class="min-w-[1250px] grid grid-cols-10 gap-2.5 text-left"></div>
+            </div>
+            <!-- Summary dynamic stats -->
+            <div class="mt-4 p-4 rounded-2xl bg-blue-50/70 border border-blue-200 flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">
+                  <svg aria-hidden="true" focusable="false" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <div>
+                  <h3 class="text-xs font-bold text-blue-950">Resumen de tu avance</h3>
+                  <p class="text-[11px] text-slate-500">Esta información nos ayudará a orientarte mejor.</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-6">
+                <div>
+                  <span id="histCheckedCount" class="text-2xl font-black text-blue-800">0</span>
+                  <div class="text-[10px] text-slate-500 font-semibold">Cursos marcados<br>de 60 en total</div>
+                </div>
+                <div>
+                  <span id="histPendingCount" class="text-2xl font-black text-slate-700">60</span>
+                  <div class="text-[10px] text-slate-500 font-semibold">Cursos pendientes</div>
+                </div>
+              </div>
+              <div class="text-xs text-blue-800 bg-white px-3 py-2 rounded-xl border border-blue-100 max-w-xs">
+                💡 Navia continuará con la orientación según tu historial académico.
+              </div>
+            </div>
+            <!-- Navigation Actions -->
+            <div class="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between">
+              <button onclick="goToScreen(2)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver
+              </button>
+              <button onclick="goToScreen(4)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Analizar progreso →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 4: INICIO DE NAVIA (DASHBOARD)                                     -->
+        <!-- ========================================================================= -->
+        <section id="screen-4" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center">
+          <div class="w-full max-w-5xl space-y-6">
+            <!-- Hero de bienvenida -->
+            <div class="nv-fade relative overflow-hidden rounded-[28px] p-7 sm:p-9 text-white bg-gradient-to-br from-[#002B57] via-[#003D7A] to-[#00478A] shadow-2xl" style="box-shadow:0 30px 60px -28px rgba(0,51,102,.7)">
+              <div class="absolute inset-0 nv-grid-bg opacity-70 pointer-events-none"></div>
+              <div class="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-yellow-300/25 blur-3xl nv-float pointer-events-none"></div>
+              <div class="relative flex flex-wrap items-center justify-between gap-5">
+                <div>
+                  <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full nv-glass text-[10px] font-bold uppercase tracking-widest text-blue-100"><span id="dashboardGoalChip">Ruta estándar</span></span>
+                  <h1 tabindex="-1" class="text-3xl sm:text-5xl font-black mt-4 leading-tight">Hola, <span id="dashboardStudentName" class="nv-grad-text">Tu nombre</span> 👋</h1>
+                  <p class="text-sm sm:text-base text-blue-100 mt-2 font-medium">Sigamos construyendo tu camino académico.</p>
+                </div>
+                <div class="nv-glass rounded-2xl px-5 py-4 max-w-[260px]">
+                  <p class="font-handwritten text-xl leading-snug text-yellow-200">"Disciplina hoy, más oportunidades mañana ♡"</p>
+                </div>
+              </div>
+            </div>
+            <!-- Progreso -->
+            <div class="nv-fade nv-d1 w-full bg-white rounded-[28px] p-6 sm:p-8 border border-indigo-100 shadow-lg relative overflow-hidden">
+              <div class="flex items-center gap-2 text-blue-700 text-xs font-bold uppercase tracking-wider mb-6"><span class="w-6 h-1 rounded-full bg-gradient-to-r from-[#003366] to-yellow-300"></span><span>Tu progreso académico</span></div>
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                <div class="md:col-span-4 flex items-center justify-center">
+                  <div class="relative w-40 h-40 flex items-center justify-center">
+                    <svg aria-hidden="true" focusable="false" class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                      <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#003366"/><stop offset="100%" stop-color="#FFC72C"/></linearGradient></defs>
+                      <circle cx="50" cy="50" r="42" stroke="#E5ECF4" stroke-width="9" fill="transparent"></circle>
+                      <circle id="dashboardProgressRing" cx="50" cy="50" r="42" stroke="url(#ringGrad)" stroke-width="9" stroke-dasharray="264" stroke-dashoffset="264" stroke-linecap="round" fill="transparent" style="transition:stroke-dashoffset 1s ease"></circle>
+                    </svg>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <span id="dashboardProgressPercent" class="text-4xl font-black text-blue-950">0%</span>
+                      <span class="text-[10px] text-slate-600 font-semibold uppercase">completado</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="md:col-span-4 border-y md:border-y-0 md:border-x border-slate-100 py-4 md:py-0 md:px-6 text-center md:text-left">
+                  <span class="text-xs text-slate-600 font-medium">Estás en</span>
+                  <h2 id="dashboardCycle" class="text-4xl font-black text-[#003366] mt-1">5.° ciclo</h2>
+                  <p id="dashboardCareer" class="text-xs text-slate-600 font-semibold mt-1">Ingeniería de Sistemas de Información</p>
+                </div>
+                <div class="md:col-span-4 grid grid-cols-3 gap-2 text-center">
+                  <div class="rounded-2xl bg-blue-50 p-3"><span id="dashboardApprovedCount" class="text-2xl font-black text-blue-900 block">0</span><span class="text-[10px] text-slate-700 font-medium">aprobados</span></div>
+                  <div class="rounded-2xl bg-amber-50 p-3"><span id="dashboardPendingCount" class="text-2xl font-black text-amber-600 block">60</span><span class="text-[10px] text-slate-700 font-medium">pendientes</span></div>
+                  <div class="rounded-2xl bg-slate-100 p-3"><span id="dashboardTotalCount" class="text-2xl font-black text-slate-700 block">60</span><span class="text-[10px] text-slate-700 font-medium">totales</span></div>
+                </div>
+              </div>
+            </div>
+            <!-- Acciones (centradas) -->
+            <div class="nv-fade nv-d2 grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(5)" class="nv-card cursor-pointer rounded-[28px] p-7 text-center bg-gradient-to-br from-white to-indigo-50 border border-blue-200 shadow-md flex flex-col items-center">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#003366] to-indigo-500 text-white flex items-center justify-center text-3xl shadow-lg">🚀</div>
+                <h3 class="text-lg font-extrabold text-[#003366] mt-4">Prepárate para tu próximo ciclo</h3>
+                <p class="text-xs text-slate-500 mt-1.5 leading-relaxed max-w-xs">Recibe una orientación personalizada según tu avance y tus objetivos de carga.</p>
+                <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#003366] text-white text-xs font-bold shadow-md">Empezar <span>→</span></span>
+              </div>
+              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(10)" class="nv-card cursor-pointer rounded-[28px] p-7 text-center bg-gradient-to-br from-white to-rose-50 border border-rose-200 shadow-md flex flex-col items-center">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-orange-400 text-white flex items-center justify-center text-3xl shadow-lg">✅</div>
+                <h3 class="text-lg font-extrabold text-rose-950 mt-4">¿Culminaste el ciclo?</h3>
+                <p class="text-xs text-slate-500 mt-1.5 leading-relaxed max-w-xs">Actualiza tus resultados académicos y mantén tu malla curricular al día.</p>
+                <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-rose-700 text-white text-xs font-bold shadow-md">Actualizar <span>→</span></span>
+              </div>
+            </div>
+            <div class="text-center font-handwritten text-xl text-slate-600 pt-1">Mismas ganas. Más futuro. ♡</div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 5: SELECCIÓN DE CARGA ACADÉMICA                                    -->
+        <!-- ========================================================================= -->
+        <section id="screen-5" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 5-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-2xl mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">1</div>
+                  <span class="text-[11px] font-bold text-blue-700 mt-1 text-center">Cantidad de cursos</span>
+                </div>
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">2</div>
+                  <span class="text-[11px] font-medium text-slate-600 mt-1">Conceptos</span>
+                </div>
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">3</div>
+                  <span class="text-[11px] font-medium text-slate-600 mt-1">Diagnóstico</span>
+                </div>
+                <div class="flex flex-col items-center relative z-10">
+                  <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">4</div>
+                  <span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span>
+                </div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-6">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Prepárate para tu próximo ciclo</h1>
+              <p id="loadSelectorSubtitle" class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">Elige una carga y Navia ajustará tu ruta según tu avance.</p>
+            </div>
+            <div id="loadOptionsGrid" role="group" aria-label="Cantidad de cursos" class="flex flex-wrap justify-center items-stretch gap-4 w-full max-w-2xl mx-auto mb-6"></div>
+            <div id="loadDecisionSummary" class="max-w-xl mx-auto w-full bg-blue-50/80 p-4 rounded-2xl border border-blue-200 text-center text-xs text-blue-900">
+              Selecciona una cantidad para construir tu ruta.
+            </div>
+            <span id="loadOptionsGrid-error" class="texte-erreur hidden max-w-xl mx-auto"></span>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
+              <button onclick="goToScreen(4)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver al inicio
+              </button>
+              <button onclick="continueToSuggestedCourses()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Continuar →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 6: CURSOS SUGERIDOS POR NAVIA                                      -->
+        <!-- ========================================================================= -->
+        <section id="screen-6" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 5-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-2xl mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">2</div><span class="text-[11px] font-bold text-blue-700 mt-1">Cursos sugeridos</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">3</div><span class="text-[11px] font-medium text-slate-600 mt-1">Conceptos</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">4</div><span class="text-[11px] font-medium text-slate-600 mt-1">Diagnóstico</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">5</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-6">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Tus cursos sugeridos</h1>
+              <p id="suggestedCoursesSubtitle" class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">Navia combina tu avance, tu carga elegida y los cursos disponibles para construir una ruta eficiente.</p>
+              <div id="suggestedCoursesCount" class="inline-block mt-2 bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full border border-blue-100">0 cursos</div>
+            </div>
+            <div class="max-w-2xl mx-auto mb-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 justify-center"><span>🔴 Atrasados</span><span>🟠 Pendientes del ciclo actual</span><span>🟢 Próximo ciclo disponible</span><span>⚪ Bloqueado por prerrequisito</span></div>
+            <div id="dynamicSuggestedCourses" role="group" aria-label="Cursos sugeridos" class="space-y-2.5 max-w-2xl mx-auto"></div>
+            <span id="dynamicSuggestedCourses-error" class="texte-erreur hidden max-w-2xl mx-auto"></span>
+            <div id="routeWarning" class="max-w-2xl mx-auto mt-3"></div>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
+              <button onclick="goToScreen(5)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver
+              </button>
+              <button onclick="continueToConcepts()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Siguiente →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 7: CONCEPTOS DE LOS CURSOS                                         -->
+        <!-- ========================================================================= -->
+        <section id="screen-7" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 5-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-2xl mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">2</div><span class="text-[11px] font-bold text-blue-700 mt-1">Conceptos</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">3</div><span class="text-[11px] font-medium text-slate-600 mt-1">Diagnóstico</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">4</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-6">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Conceptos de tus cursos</h1>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">Conoce lo esencial de cada curso que elegiste antes del diagnóstico.</p>
+              <div id="conceptsCount" class="inline-block mt-2 bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full border border-blue-100">0 cursos</div>
+            </div>
+            <div id="dynamicCourseConcepts" class="space-y-3 max-w-2xl mx-auto"></div>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
+              <button onclick="goToScreen(5)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver
+              </button>
+              <button onclick="goToScreen(8)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Siguiente →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 8: DIAGNÓSTICO DE PREPARACIÓN (10 PREGUNTAS CONSECUTIVAS)          -->
+        <!-- ========================================================================= -->
+        <section id="screen-8" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 5-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-2xl mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">✓</div><span class="text-[11px] font-bold text-blue-700 mt-1">Conceptos</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">3</div><span class="text-[11px] font-bold text-blue-700 mt-1">Diagnóstico</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">4</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
+              </div>
+            </div>
+            <!-- Quiz Main -->
+            <div class="text-center mb-6">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Diagnóstico de preparación</h1>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">
+                Navia evaluará tus conocimientos generales para identificar si estás lista para el próximo ciclo.
+              </p>
+              <!-- Progress Pill -->
+              <div class="inline-flex items-center gap-2 mt-2 bg-blue-50 text-blue-700 text-xs font-bold px-3.5 py-1 rounded-full border border-blue-100">
+                <span id="quizBadgeCounter">Pregunta 10 de 10</span>
+                <span class="text-slate-300">•</span>
+                <span id="quizSubjectLabel" class="text-blue-900 font-semibold">Seguridad de la Información</span>
+              </div>
+            </div>
+            <!-- Question and Options Container -->
+            <div class="max-w-3xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <!-- Left Quiz Area (8 cols) -->
+              <div class="lg:col-span-8 space-y-4">
+                <h2 id="quizQuestionText" class="text-base sm:text-lg font-bold text-slate-800">¿Qué componente fundamental garantiza el principio de no repudio en criptografía?</h2>
+                <!-- Options -->
+                <div id="quizOptionsContainer" role="radiogroup" aria-labelledby="quizQuestionText" class="space-y-2.5">
+          <label class="flex items-start gap-3 p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-50/50 cursor-pointer transition hover:bg-blue-50/60">
+            <input type="radio" name="diag_q_active" checked="" onchange="highlightSelectedOption(this)" class="mt-1 text-blue-600 focus:ring-blue-500 w-4 h-4">
+            <span class="text-xs sm:text-sm text-slate-700 font-medium">El uso de firmas digitales respaldadas por criptografía asimétrica.</span>
+          </label>
+          <label class="flex items-start gap-3 p-3.5 rounded-2xl border-2 border-slate-200 bg-white cursor-pointer transition hover:bg-blue-50/60">
+            <input type="radio" name="diag_q_active" onchange="highlightSelectedOption(this)" class="mt-1 text-blue-600 focus:ring-blue-500 w-4 h-4">
+            <span class="text-xs sm:text-sm text-slate-700 font-medium">El uso de contraseñas de cuatro dígitos almacenadas en texto plano.</span>
+          </label>
+          <label class="flex items-start gap-3 p-3.5 rounded-2xl border-2 border-slate-200 bg-white cursor-pointer transition hover:bg-blue-50/60">
+            <input type="radio" name="diag_q_active" onchange="highlightSelectedOption(this)" class="mt-1 text-blue-600 focus:ring-blue-500 w-4 h-4">
+            <span class="text-xs sm:text-sm text-slate-700 font-medium">Ocultar las direcciones IP locales de los usuarios en la intranet.</span>
+          </label>
+          <label class="flex items-start gap-3 p-3.5 rounded-2xl border-2 border-slate-200 bg-white cursor-pointer transition hover:bg-blue-50/60">
+            <input type="radio" name="diag_q_active" onchange="highlightSelectedOption(this)" class="mt-1 text-blue-600 focus:ring-blue-500 w-4 h-4">
+            <span class="text-xs sm:text-sm text-slate-700 font-medium">El reinicio periódico del cortafuegos de hardware.</span>
+          </label>
+        </div>
+        <span id="quizOptionsContainer-error" class="texte-erreur hidden"></span>
+                <p class="text-[11px] text-slate-600 text-center pt-2">
+                  Tus respuestas ayudarán a personalizar mejor tu orientación.
+                </p>
+              </div>
+              <!-- Right Helper Box (4 cols) -->
+              <div class="lg:col-span-4 bg-gradient-to-br from-blue-50 to-indigo-50/50 p-5 rounded-2xl border border-blue-100 flex flex-col items-center text-center">
+                <div class="w-12 h-12 rounded-2xl bg-white text-blue-600 shadow-xs flex items-center justify-center text-xl mb-2.5">
+                  🎓
+                </div>
+                <h3 class="font-bold text-slate-800 text-xs sm:text-sm">Este diagnóstico no es un examen.</h3>
+                <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+                  Solo nos ayuda a conocer tu nivel de preparación y recomendarte temas puntuales a reforzar.
+                </p>
+                <div class="w-full mt-4 pt-3 border-t border-blue-100 flex justify-between text-[11px] font-bold text-blue-800">
+                  <span>Progreso del test:</span>
+                  <span id="quizPercentLabel">100%</span>
+                </div>
+              </div>
+            </div>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-3xl mx-auto">
+              <button onclick="quizGoBack()" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver
+              </button>
+              <button onclick="quizNextQuestion()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span id="quizNextBtnLabel">Ver resultados de diagnóstico →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 9: RESULTADO DEL DIAGNÓSTICO                                       -->
+        <!-- ========================================================================= -->
+        <section id="screen-9" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 5-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-2xl mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Conceptos</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Diagnóstico</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">4</div><span class="text-[11px] font-bold text-blue-700 mt-1">Resultado</span></div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-4">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Resultado de tu diagnóstico</h1>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">
+                Navia analizó tus respuestas para orientarte mejor antes de tu próximo ciclo.
+              </p>
+            </div>
+            <!-- Circular Gauge (8/10) -->
+            <div class="flex flex-col items-center justify-center my-3">
+              <div class="relative w-32 h-32 flex items-center justify-center">
+                <svg aria-hidden="true" focusable="false" class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="42" stroke="#E0E0E0" stroke-width="8" fill="transparent"></circle>
+                  <circle cx="50" cy="50" r="42" stroke="#002B57" stroke-width="8" id="diagScoreRing" stroke-dasharray="264" stroke-dashoffset="53" stroke-linecap="round" fill="transparent"></circle>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span id="diagScoreLabel" class="text-3xl font-extrabold text-blue-900">8<span class="text-xl text-slate-500 font-semibold">/10</span></span>
+                </div>
+              </div>
+            </div>
+            <!-- Congratulations Alert Banner -->
+            <div class="max-w-2xl mx-auto bg-blue-50/80 border border-blue-100 rounded-2xl p-4 text-center my-3">
+              <p id="dynamicResultHeadline" class="text-xs sm:text-sm font-bold text-blue-900">
+                Tu ruta está lista.
+              </p>
+              <p id="dynamicResultSubtext" class="text-xs text-blue-700 mt-0.5">
+                Navia combinará tus decisiones para mostrar el siguiente paso.
+              </p>
+            </div>
+            <!-- Courses to reinforce table -->
+            <div class="max-w-2xl mx-auto mt-5">
+              <h2 class="text-xs sm:text-sm font-bold text-slate-800 mb-2">Cómo mejorar tu ruta</h2>
+              <div id="dynamicRecommendationList" class="space-y-2"></div>
+            </div>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
+              <button onclick="goToScreen(8)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver al test
+              </button>
+              <button onclick="goToScreen(4)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Inicio →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 10: ACTUALIZACIÓN DEL CIERRE DE CICLO                              -->
+        <!-- ========================================================================= -->
+        <section id="screen-10" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 3-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-md mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">1</div><span class="text-[11px] font-bold text-blue-700 mt-1">Actualizar cierre</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">2</div><span class="text-[11px] font-medium text-slate-600 mt-1">Confirmar</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">3</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-6">
+              <h1 tabindex="-1" id="closingGreeting" class="text-2xl sm:text-3xl font-black text-[#003366]">¡Culminaste el ciclo!</h1>
+              <p id="closingStudentSummary" class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">
+                Actualiza tu cierre para que Navia ajuste tu ruta.
+              </p>
+            </div>
+            <!-- 6 Courses Status Modifiers -->
+            <div class="max-w-2xl mx-auto border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+              <div class="grid grid-cols-12 bg-slate-50 p-3.5 text-xs font-bold text-slate-600 border-b border-slate-200">
+                <div class="col-span-8">Curso</div>
+                <div class="col-span-4 text-right pr-2">Estado</div>
+              </div>
+              <div id="closureRows"></div>
+            </div>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
+              <button onclick="goToScreen(4)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver al inicio
+              </button>
+              <button onclick="goToScreen(11)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Continuar →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 11: EVALUACIÓN DE CIERRE DE CICLO                                  -->
+        <!-- ========================================================================= -->
+        <section id="screen-11" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 3-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-md mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">2</div><span class="text-[11px] font-bold text-blue-700 mt-1">Preguntas</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">3</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-6">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Comprueba lo que aprendiste este ciclo</h1>
+              <p id="closureQuizIntro" class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">
+                Responde 12 preguntas para que Navia identifique qué reforzar.
+              </p>
+              <div class="flex items-center justify-center gap-2 mt-3 flex-wrap">
+                <span id="closureQuizCounter" class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full border border-blue-100">Pregunta 1 de 12</span>
+                <span id="closureQuizCourse" class="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full border border-blue-100">Curso</span>
+              </div>
+            </div>
+            <!-- Question and choices -->
+            <div class="max-w-2xl mx-auto space-y-4">
+              <h2 id="closureQuestionText" class="text-base sm:text-lg font-bold text-slate-800">Pregunta</h2>
+              <div id="closureOptionsContainer" role="radiogroup" aria-labelledby="closureQuestionText" class="space-y-2.5">
+                <label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-50/40 cursor-pointer hover:bg-blue-50 transition">
+                  <input type="radio" name="eval_poo" checked="" class="text-blue-600 focus:ring-blue-500 w-4 h-4">
+                  <span class="text-xs sm:text-sm text-slate-800"><strong>A)</strong> Reutilizar atributos y métodos de una clase base en una clase derivada.</span>
+                </label>
+                <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition">
+                  <input type="radio" name="eval_poo" class="text-blue-600 focus:ring-blue-500 w-4 h-4">
+                  <span class="text-xs sm:text-sm text-slate-700"><strong>B)</strong> Ejecutar varias clases al mismo tiempo dentro del programa.</span>
+                </label>
+                <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition">
+                  <input type="radio" name="eval_poo" class="text-blue-600 focus:ring-blue-500 w-4 h-4">
+                  <span class="text-xs sm:text-sm text-slate-700"><strong>C)</strong> Convertir automáticamente un objeto en una base de datos.</span>
+                </label>
+                <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 transition">
+                  <input type="radio" name="eval_poo" class="text-blue-600 focus:ring-blue-500 w-4 h-4">
+                  <span class="text-xs sm:text-sm text-slate-700"><strong>D)</strong> Reemplazar todos los atributos privados por públicos.</span>
+                </label>
+              </div>
+              <span id="closureOptionsContainer-error" class="texte-erreur hidden"></span>
+              <p class="text-[11px] text-slate-600 text-center pt-2">
+                Estas preguntas permitirán a Navia detectar en qué cursos necesitas reforzar tus conocimientos.
+              </p>
+            </div>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
+              <button onclick="goToScreen(10)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver
+              </button>
+              <button onclick="closureNextQuestion()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span id="closureNextBtnLabel">Siguiente →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 12: RESULTADO DE LA EVALUACIÓN DE CIERRE                           -->
+        <!-- ========================================================================= -->
+        <section id="screen-12" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 3-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-md mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Preguntas</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">3</div><span class="text-[11px] font-bold text-blue-700 mt-1">Resultado</span></div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-4">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Resultado de tu evaluación</h1>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">
+                Navia analizó tus respuestas para orientarte mejor antes de continuar avanzando.
+              </p>
+            </div>
+            <!-- Gauge (9/12) -->
+            <div class="flex flex-col items-center justify-center my-3">
+              <div class="relative w-32 h-32 flex items-center justify-center">
+                <svg aria-hidden="true" focusable="false" class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="42" stroke="#E0E0E0" stroke-width="8" fill="transparent"></circle>
+                  <circle id="closureScoreRing" cx="50" cy="50" r="42" stroke="#002B57" stroke-width="8" stroke-dasharray="264" stroke-dashoffset="264" stroke-linecap="round" fill="transparent"></circle>
+                </svg>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span id="closureScoreLabel" class="text-3xl font-extrabold text-blue-900">0<span class="text-xl text-slate-500 font-semibold">/12</span></span>
+                </div>
+              </div>
+            </div>
+            <!-- Feedback Banner -->
+            <div class="max-w-2xl mx-auto bg-blue-50/80 border border-blue-100 rounded-2xl p-4 text-center my-3">
+              <p id="closureFeedbackHeadline" class="text-xs sm:text-sm font-bold text-blue-900">
+                Completa el diagnóstico para recibir tu orientación.
+              </p>
+              <p id="closureFeedbackText" class="text-xs text-blue-700 mt-0.5">
+                Navia ajustará tu ruta con tus respuestas y cursos pendientes.
+              </p>
+            </div>
+            <!-- Courses to reinforce table -->
+            <div class="max-w-2xl mx-auto mt-5">
+              <h2 class="text-xs sm:text-sm font-bold text-slate-800 mb-2">Cursos que debes reforzar</h2>
+              <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs">
+                <div class="grid grid-cols-12 bg-blue-50/60 p-3 text-xs font-bold text-blue-900 border-b border-slate-200">
+                  <div class="col-span-5">Curso</div>
+                  <div class="col-span-7">Recomendación</div>
+                </div>
+                <div id="closureReinforceList"></div>
+              </div>
+            </div>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
+              <button onclick="goToScreen(11)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver
+              </button>
+              <button onclick="finalizeClosure()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Finalizar y ver malla actualizada →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 13: MALLA Y PROGRESO ACTUALIZADOS                                  -->
+        <!-- ========================================================================= -->
+        <section id="screen-13" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-4xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- 4-Step Header -->
+            <div class="w-full mb-7">
+              <div class="flex items-center justify-between max-w-xl mx-auto relative">
+                <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Preguntas</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">4</div><span class="text-[11px] font-bold text-blue-700 mt-1">Malla actualizada</span></div>
+              </div>
+            </div>
+            <!-- Title -->
+            <div class="text-center mb-6">
+              <h1 tabindex="-1" id="updatedMallaTitle" class="text-2xl sm:text-3xl font-black text-[#003366]">Tu malla ha sido actualizada</h1>
+              <p id="updatedMallaSummary" class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">
+                Navia actualizó tu progreso con la información registrada en este ciclo.
+              </p>
+            </div>
+            <!-- Stats 3 Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto mb-6">
+              <div class="flex items-center gap-3 p-3 bg-emerald-50/80 border border-emerald-200 rounded-2xl">
+                <div class="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm shadow-xs">✓</div>
+                <div>
+                  <span id="closingApprovedCount" class="text-2xl font-black text-emerald-800 leading-none">0</span>
+                  <div class="text-[11px] font-semibold text-emerald-700 leading-tight">cursos<br>aprobados</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 bg-red-50/80 border border-red-200 rounded-2xl">
+                <div class="w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center font-bold text-sm shadow-xs">!</div>
+                <div>
+                  <span id="closingPendingCount" class="text-2xl font-black text-red-800 leading-none">60</span>
+                  <div class="text-[11px] font-semibold text-red-700 leading-tight">curso<br>pendiente</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 bg-slate-100 border border-slate-200 rounded-2xl">
+                <div class="w-9 h-9 rounded-full bg-slate-400 text-white flex items-center justify-center font-bold text-sm shadow-xs">−</div>
+                <div>
+                  <span id="closingWithdrawnCount" class="text-2xl font-black text-slate-700 leading-none">0</span>
+                  <div class="text-[11px] font-semibold text-slate-600 leading-tight">cursos<br>retirados</div>
+                </div>
+              </div>
+            </div>
+            <!-- Malla del estudiante -->
+            <div class="max-w-2xl mx-auto mb-5">
+              <h2 class="text-xs sm:text-sm font-bold text-slate-800 mb-2.5">Así queda tu malla</h2>
+              <div id="updatedMallaCourses" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+            </div>
+            <!-- Próximo paso -->
+            <div id="updatedMallaNextStep" class="max-w-2xl mx-auto bg-blue-50/80 border border-blue-200 rounded-2xl p-3.5 flex items-start gap-3 mb-5">
+              <span class="text-xl">💡</span>
+              <div class="text-xs text-blue-950"><strong class="font-bold text-blue-900 block">Siguiente paso</strong><span id="updatedMallaNextText">Tu ruta se actualizará según tus resultados.</span></div>
+            </div>
+            <!-- Avance -->
+            <div class="max-w-2xl mx-auto p-4 bg-slate-50 border border-slate-200 rounded-2xl flex items-center justify-between">
+              <div><span class="text-xs text-slate-500 font-medium">Tu avance académico</span><p id="updatedMallaProgressText" class="text-sm font-bold text-slate-800">avance actualizado</p></div>
+              <div class="flex items-center gap-4">
+                <div class="relative w-14 h-14 flex items-center justify-center">
+                  <svg aria-hidden="true" focusable="false" class="w-full h-full transform -rotate-90" viewBox="0 0 36 36"><path class="text-slate-200" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path><path id="updatedMallaRing" class="text-blue-600" stroke-dasharray="0, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path></svg>
+                  <span id="updatedMallaPercent" class="absolute text-xs font-black text-blue-800">0%</span>
+                </div>
+                <div class="text-xs"><span id="updatedMallaStatus" class="font-bold text-slate-800 block">Ruta actualizada</span><span id="updatedMallaStatusSub" class="text-slate-500">Tus decisiones ya fueron incorporadas.</span></div>
+              </div>
+            </div>
+            <!-- Nav Actions -->
+            <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
+              <button onclick="goToScreen(4)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
+                ← Volver al inicio
+              </button>
+              <button onclick="goToScreen(14)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Ver comunidad Navia →</span>
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- ========================================================================= -->
+        <!-- SCREEN 14: COMUNIDAD NAVIA                                                -->
+        <!-- ========================================================================= -->
+        <section id="screen-14" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-5xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <!-- Title -->
+            <div class="text-center mb-6">
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Comunidad</h1>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">
+                Explora experiencias y consejos de otros estudiantes de la carrera.
+              </p>
+            </div>
+            <!-- Search Bar -->
+            <div class="max-w-2xl mx-auto mb-7">
+              <div class="relative">
+                <input type="text" id="communitySearchInput" aria-label="Buscar curso en la comunidad" oninput="filterCommunityItems(this.value)" placeholder="Busca un curso... (ej: Programación, Datos, Marketing)" class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
+                <span class="absolute left-4 top-2.5 text-slate-600">🔍</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <!-- Feed Area (8 cols) -->
+              <div class="lg:col-span-8 space-y-6">
+                <!-- Cursos Consultados -->
+                <div>
+                  <h2 class="text-xs sm:text-sm font-bold text-slate-800 mb-3">Cursos consultados</h2>
+                  <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="commCourseGrid">
+                    <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
+                      <span class="font-mono text-xs font-bold text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5">&lt;/&gt;</span>
+                      <h3 class="text-xs font-bold text-slate-800 line-clamp-2 h-8 leading-tight">Programación Orientada a Objetos II</h3>
+                      <button onclick="filterByCourse('Programación Orientada a Objetos II')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
+                    </div>
+                    <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
+                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5">🗄️</span>
+                      <h4 class="text-xs font-bold text-slate-800 line-clamp-2 h-8 leading-tight">Gerenciamiento de Datos I</h4>
+                      <button onclick="filterByCourse('Gerenciamiento de Datos I')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
+                    </div>
+                    <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
+                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5">💻</span>
+                      <h5 class="text-xs font-bold text-slate-800 line-clamp-2 h-8 leading-tight">Interacción Humano Computador</h5>
+                      <button onclick="filterByCourse('Interacción Humano Computador')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
+                    </div>
+                    <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
+                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5">📈</span>
+                      <h5 class="text-xs font-bold text-slate-800 line-clamp-2 h-8 leading-tight">Marketing</h5>
+                      <button onclick="filterByCourse('Marketing')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
+                    </div>
+                  </div>
+                </div>
+                <!-- Comentarios con más likes -->
+                <div>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 mb-3">Comentarios con más likes</h4>
+                  <div class="space-y-3" id="commReviewsList">
+                    <div class="review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3">
+                      <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs shrink-0">CM</div>
+                        <div>
+                          <div class="flex items-baseline gap-2">
+                            <span class="font-bold text-xs text-slate-900">Camila Mendoza</span>
+                            <span class="text-[10px] text-slate-600">Programación Orientada a Objetos II</span>
+                          </div>
+                          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            La clave está en practicar mucho los ejercicios y hacer los laboratorios. Al principio es retador, pero después todo tiene sentido.
+                          </p>
+                        </div>
+                      </div>
+                      <button onclick="toggleCommentLike(this, 56)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
+                        <span>❤️</span>
+                        <span class="likes-num">56</span>
+                      </button>
+                    </div>
+                    <div class="review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3">
+                      <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs shrink-0">DR</div>
+                        <div>
+                          <div class="flex items-baseline gap-2">
+                            <span class="font-bold text-xs text-slate-900">Diego Ramos</span>
+                            <span class="text-[10px] text-slate-600">Gerenciamiento de Datos I</span>
+                          </div>
+                          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Es un curso demandante, pero muy útil. Los proyectos te ayudan a entender cómo se aplican los conceptos en la vida real. Vale la pena el esfuerzo.
+                          </p>
+                        </div>
+                      </div>
+                      <button onclick="toggleCommentLike(this, 48)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
+                        <span>❤️</span>
+                        <span class="likes-num">48</span>
+                      </button>
+                    </div>
+                    <div class="review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3">
+                      <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs shrink-0">VA</div>
+                        <div>
+                          <div class="flex items-baseline gap-2">
+                            <span class="font-bold text-xs text-slate-900">Valeria Aguilar</span>
+                            <span class="text-[10px] text-slate-600">Interacción Humano Computador</span>
+                          </div>
+                          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Me gustó mucho porque es súper práctico. Se aprende bastante sobre diseño y la experiencia del usuario. ¡Recomendado!
+                          </p>
+                        </div>
+                      </div>
+                      <button onclick="toggleCommentLike(this, 42)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
+                        <span>❤️</span>
+                        <span class="likes-num">42</span>
+                      </button>
+                    </div>
+                    <div class="review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3">
+                      <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 font-bold flex items-center justify-center text-xs shrink-0">JP</div>
+                        <div>
+                          <div class="flex items-baseline gap-2">
+                            <span class="font-bold text-xs text-slate-900">Javier Pinto</span>
+                            <span class="text-[10px] text-slate-600">Marketing</span>
+                          </div>
+                          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Un curso muy dinámico. Los trabajos en grupo son una gran oportunidad para ser creativo y aplicar lo que aprendes en casos reales.
+                          </p>
+                        </div>
+                      </div>
+                      <button onclick="toggleCommentLike(this, 37)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
+                        <span>❤️</span>
+                        <span class="likes-num">37</span>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Botón ¡Deja tu opinión! -->
+                  <div class="mt-6 text-center">
+                    <button onclick="openLeaveReviewModal()" class="px-6 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/25 transition inline-flex items-center gap-2">
+                      <span>💬 ¡Deja tu opinión!</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Right Motivation Side Cards (4 cols) -->
+              <div class="lg:col-span-4 space-y-4">
+                <div class="p-5 rounded-2xl bg-blue-50/60 border border-blue-100">
+                  <div class="font-handwritten text-xl text-blue-900 leading-snug">
+                    "Una mejor experiencia universitaria también se construye juntos ♡"
+                  </div>
+                </div>
+                <div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3 shadow-2xs">
+                  <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">👥</div>
+                  <div>
+                    <span class="text-xs font-bold text-slate-800 block">Comparte lo que aprendes</span>
+                    <span class="text-[11px] text-slate-500">Ayuda a otros estudiantes a tomar mejores decisiones sobre sus ciclos.</span>
+                  </div>
+                </div>
+                <div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3 shadow-2xs">
+                  <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">💡</div>
+                  <div>
+                    <span class="text-xs font-bold text-slate-800 block">Tus experiencias inspiran</span>
+                    <span class="text-[11px] text-slate-500">Tus vivencias también abren nuevos caminos en la comunidad USIL.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  <!-- Modal: Deja tu opinión -->
+  <div id="reviewModal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative">
+      <div class="flex items-center justify-between mb-4">
+        <h2 id="reviewModalTitle" class="text-base font-extrabold text-blue-950">Comparte tu experiencia en la comunidad</h2>
+        <button type="button" aria-label="Cerrar ventana" onclick="closeLeaveReviewModal()" class="text-slate-600 hover:text-slate-900 p-1 text-base font-bold">✕</button>
+      </div>
+      <form onsubmit="handleReviewSubmit(event)" novalidate class="space-y-3.5">
+        <div>
+          <label for="reviewCourse" class="block text-xs font-bold text-slate-700 mb-1">Curso</label>
+          <select id="reviewCourse" name="reviewCourse" aria-label="Curso de la reseña" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-600 outline-none">
+            <option value="Programación Orientada a Objetos II">Programación Orientada a Objetos II</option>
+            <option value="Gerenciamiento de Datos I">Gerenciamiento de Datos I</option>
+            <option value="Interacción Humano Computador">Interacción Humano Computador</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Matemática Discreta">Matemática Discreta</option>
+            <option value="Arquitectura Empresarial">Arquitectura Empresarial</option>
+          </select>
+          <span id="reviewCourse-error" class="texte-erreur hidden"></span>
+        </div>
+        <div>
+          <label for="reviewContent" class="block text-xs font-bold text-slate-700 mb-1">Tu reseña o consejo</label>
+          <textarea id="reviewContent" name="reviewContent" aria-required="true" required="" rows="3" placeholder="Comparte tus consejos para aprobar y aprovechar este curso..." class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-600 outline-none resize-none"></textarea>
+          <span id="reviewContent-error" class="texte-erreur hidden"></span>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeLeaveReviewModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md">Publicar opinión</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Interactive Floating Toast -->
+  <div id="appToast" role="status" aria-live="polite" aria-atomic="true" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-3 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+    <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+    <span id="toastText">Estado cambiado a: Aprobado</span>
+  </div>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body></html>
