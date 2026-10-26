@@ -651,7 +651,7 @@ function getCareerMaxCycles(career) {
       // La carga permitida en este paso es únicamente de 5 o 6 cursos.
       const options = [5, 6];
       grid.innerHTML = options.map(n => `
-        <button type="button" onclick="selectLoadCourses(${n})" class="load-card flex-1 max-w-[220px] p-6 rounded-2xl border-2 ${selectedLoadCount===n?'border-blue-600 bg-blue-50/50 shadow-sm':'border-slate-200 bg-white'} text-center cursor-pointer transition hover:border-blue-300">
+        <button type="button" role="radio" aria-checked="${selectedLoadCount===n}" tabindex="${selectedLoadCount===n || (!selectedLoadCount && n===options[0]) ? 0 : -1}" data-load-count="${n}" onkeydown="handleLoadOptionKeydown(event)" onclick="selectLoadCourses(${n})" class="load-card flex-1 max-w-[220px] p-6 rounded-2xl border-2 ${selectedLoadCount===n?'border-blue-600 bg-blue-50/50 shadow-sm':'border-slate-200 bg-white'} text-center cursor-pointer transition hover:border-blue-300">
           <span class="text-3xl font-black ${selectedLoadCount===n?'text-blue-700':'text-slate-700'} block">${n}</span>
           <span class="text-xs font-bold ${selectedLoadCount===n?'text-blue-900':'text-slate-800'}">Cursos</span>
           <span class="text-[10px] ${selectedLoadCount===n?'text-blue-600 font-bold':'text-slate-600'} block mt-1">${n===5?'Carga equilibrada':'Carga completa'}</span>
@@ -681,6 +681,23 @@ function getCareerMaxCycles(career) {
       renderCourseConcepts();
       clearFieldError('loadOptionsGrid');
       showToast(`Carga seleccionada: ${selectedLoadCount} cursos`);
+      requestAnimationFrame(() => document.querySelector(`#loadOptionsGrid [data-load-count="${selectedLoadCount}"]`)?.focus());
+    }
+
+    function handleLoadOptionKeydown(event) {
+      const options = Array.from(document.querySelectorAll('#loadOptionsGrid [role="radio"]'));
+      const currentIndex = options.indexOf(event.currentTarget);
+      if (currentIndex < 0) return;
+
+      let nextIndex = currentIndex;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextIndex = (currentIndex + 1) % options.length;
+      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') nextIndex = (currentIndex - 1 + options.length) % options.length;
+      else if (event.key === 'Home') nextIndex = 0;
+      else if (event.key === 'End') nextIndex = options.length - 1;
+      else return;
+
+      event.preventDefault();
+      selectLoadCourses(options[nextIndex].dataset.loadCount);
     }
 
     function getPriorityCourses() {
@@ -1361,6 +1378,7 @@ function getCareerMaxCycles(career) {
     });
     $$('[onclick]:not(button):not(a):not(input):not(select):not([role])', root).forEach(e => {
       e.setAttribute('role', 'button'); e.setAttribute('tabindex', '0');
+      e.dataset.keyboardA11y = '1';
       e.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); e.click(); } });
     });
     $$('input:not([type=hidden]),select,textarea', root).forEach(e => {
@@ -1376,7 +1394,6 @@ function getCareerMaxCycles(career) {
 
   /* Navegación: sin ocultar nada; solo foco, título y anuncio */
   const baseGo = window.goToScreen;
-  let started = false;
   window.goToScreen = function (n) {
     baseGo(n);
     const cur = document.getElementById('screen-' + n);
@@ -1391,8 +1408,7 @@ function getCareerMaxCycles(career) {
     document.title = title + ' · Navia';
     const ann = document.getElementById('nvAnnouncer');
     if (ann) { ann.textContent = ''; setTimeout(() => { ann.textContent = 'Pantalla: ' + title; }, 50); }
-    if (started && h && h.tagName === 'H1') h.focus({ preventScroll: true });
-    started = true;
+    if (h && h.tagName === 'H1') h.focus({ preventScroll: true });
     $$('.nav-tab').forEach(t => t.classList.contains('bg-blue-50') ? t.setAttribute('aria-current', 'page') : t.removeAttribute('aria-current'));
   };
 
@@ -1478,7 +1494,7 @@ function getCareerMaxCycles(career) {
     });
     root.querySelectorAll('[role="button"]').forEach(function(el){
       if(el.tagName!=='BUTTON' && el.tagName!=='A' && !el.hasAttribute('tabindex')) el.setAttribute('tabindex','0');
-      if(el.tagName!=='BUTTON' && el.tagName!=='A' && !el.dataset.keyboardA11y){
+      if(el.tagName!=='BUTTON' && el.tagName!=='A' && !el.dataset.keyboardA11y && !el.hasAttribute('onkeydown')){
         el.dataset.keyboardA11y='1';
         el.addEventListener('keydown',function(e){
           if((e.key==='Enter'||e.key===' ') && !e.target.closest('button,a,input,select,textarea')){e.preventDefault();el.click();}

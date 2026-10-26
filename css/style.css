@@ -36,7 +36,7 @@
 .skip-link{position:fixed;left:12px;top:-64px;z-index:300;background:var(--navia-heading);color:#fff;padding:10px 18px;border-radius:4px;font-weight:700;font-size:14px;text-decoration:none;transition:top .2s ease}
 .skip-link:focus{top:12px}
 :focus-visible{outline:3px solid var(--navia-accent)!important;outline-offset:2px}
-#mainContent:focus,h1:focus{outline:none!important}
+#mainContent:focus:not(:focus-visible),h1:focus:not(:focus-visible){outline:none!important}
 #naviaApp>div{min-height:100vh}
 /* ===== Transiciones ligeras (solo opacity/transform, sin fill persistente) ===== */
 @keyframes nvScreenIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
