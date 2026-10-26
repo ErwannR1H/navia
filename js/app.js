@@ -1346,6 +1346,7 @@ function getCareerMaxCycles(career) {
     window.onload = () => {
       renderClosureRows();
       goToScreen(1);
+      document.getElementById('userCareer').addEventListener('change', previewSelectedCareer);
       previewSelectedCareer();
       updateDashboardFromProfile();
       updateHistoryCounts();
@@ -1397,7 +1398,7 @@ function getCareerMaxCycles(career) {
   window.goToScreen = function (n) {
     baseGo(n);
     const cur = document.getElementById('screen-' + n);
-    if (!cur) return;
+    if (!cur || cur.classList.contains('hidden')) return;
     enhance(cur);
     if (!reduce()) {
       cur.classList.remove('nv-screen-in'); void cur.offsetWidth; cur.classList.add('nv-screen-in');
