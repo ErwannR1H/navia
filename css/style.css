@@ -586,3 +586,27 @@ button[class~="bg-[#003366]"], button[class~="bg-[#002A52]"], .screen-panel butt
     font-size: clamp(2.75rem, 12vw, 3.5rem) !important;
   }
 }
+
+#dynamicCurriculumGrid {
+  grid-template-columns: repeat(10, minmax(180px, 1fr));
+}
+
+.cycle-col {
+  min-width: 0;
+}
+
+.cycle-course-label {
+  min-height: 44px;
+  padding: 5px 2px;
+}
+
+.cycle-course-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+}
+
+.cycle-toggle-button {
+  min-height: 44px;
+  line-height: 1.25;
+}

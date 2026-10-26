@@ -213,10 +213,11 @@ function getCareerMaxCycles(career) {
       const curriculum = usilCurriculums[studentProfile.career] || usilCurriculums['Ingeniería de Sistemas de Información'];
       const prevApproved = new Set(Array.from(grid.querySelectorAll('.hist-check:checked')).map(cb => cb.dataset.course));
       grid.innerHTML = curriculum.map((courses, index) => `
-        <div class="cycle-col bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
-          <div class="text-[11px] font-bold text-center py-1 ${index + 1 <= Number(studentProfile.cycle) ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600'} rounded-lg mb-2">${index + 1}.° Ciclo</div>
-          <div class="space-y-1.5 text-[10px]">
-            ${courses.map(course => `<label class="flex items-start gap-1.5 cursor-pointer"><input type="checkbox" onchange="updateHistoryCounts()" class="hist-check mt-0.5 text-blue-600 rounded" aria-label="Marcar ${course} en mi historial" data-course="${course.replace(/"/g, '&quot;')}"><span>${course}</span></label>`).join('')}
+        <div class="cycle-col bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
+          <div class="text-sm font-bold text-center py-2 ${index + 1 <= Number(studentProfile.cycle) ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600'} rounded-lg mb-2">${index + 1}.° Ciclo</div>
+          <button type="button" class="cycle-toggle-button w-full mb-3 px-2 py-1.5 rounded border border-blue-600 text-blue-700 text-xs font-semibold hover:bg-blue-50" data-cycle="${index + 1}" onclick="toggleCycleCourses(${index + 1})">Marcar todos</button>
+          <div class="cycle-course-list space-y-1.5">
+            ${courses.map(course => `<label class="cycle-course-label flex items-start gap-1.5 cursor-pointer"><input type="checkbox" onchange="updateHistoryCounts()" class="hist-check mt-0.5 text-blue-600 rounded shrink-0" aria-label="Marcar ${course} en mi historial" data-cycle="${index + 1}" data-course="${course.replace(/"/g, '&quot;')}"><span class="cycle-course-name">${course}</span></label>`).join('')}
           </div>
         </div>`).join('');
 
@@ -227,6 +228,13 @@ function getCareerMaxCycles(career) {
       document.getElementById('curriculumCareerTitle').textContent = studentProfile.career;
       document.getElementById('curriculumCycleBadge').textContent = `${studentProfile.cycle}.° ciclo actual`;
       (function(){ grid.querySelectorAll('.hist-check').forEach(cb => { if (prevApproved.has(cb.dataset.course)) cb.checked = true; }); })();
+      updateHistoryCounts();
+    }
+
+    function toggleCycleCourses(cycle) {
+      const checkboxes = Array.from(document.querySelectorAll(`.hist-check[data-cycle="${cycle}"]`));
+      const shouldCheck = checkboxes.some(checkbox => !checkbox.checked);
+      checkboxes.forEach(checkbox => { checkbox.checked = shouldCheck; });
       updateHistoryCounts();
     }
 
@@ -1075,6 +1083,14 @@ function getCareerMaxCycles(career) {
       const checked = Array.from(allCheckboxes).filter(cb => cb.checked).length;
       const total = allCheckboxes.length;
       const pending = total - checked;
+
+      document.querySelectorAll('.cycle-toggle-button').forEach(button => {
+        const cycleCheckboxes = Array.from(document.querySelectorAll(`.hist-check[data-cycle="${button.dataset.cycle}"]`));
+        const allChecked = cycleCheckboxes.length > 0 && cycleCheckboxes.every(checkbox => checkbox.checked);
+        button.textContent = allChecked ? 'Desmarcar todos' : 'Marcar todos';
+        button.setAttribute('aria-label', `${allChecked ? 'Desmarcar' : 'Marcar'} todos los cursos del ciclo ${button.dataset.cycle}`);
+        button.setAttribute('aria-pressed', String(allChecked));
+      });
 
       const checkedEl = document.getElementById('histCheckedCount');
       const pendingEl = document.getElementById('histPendingCount');
