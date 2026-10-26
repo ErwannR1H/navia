@@ -1,3 +1,7 @@
+function naviaIcon(name, className = 'nv-icon') {
+      return `<svg class="${className}" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#nv-icon-${name}"/></svg>`;
+    }
+
 function getCareerMaxCycles(career) {
       return (usilCurriculums[career] || []).length || 10;
     }
@@ -240,7 +244,7 @@ function getCareerMaxCycles(career) {
       if (careerEl) careerEl.textContent = safeCareer;
       if (cycleEl) cycleEl.textContent = safeCycle;
       const goalChip = document.getElementById('dashboardGoalChip');
-      if (goalChip) { const g = studentProfile.goal || 'Ninguno'; goalChip.textContent = g === 'Ninguno' ? 'Ruta estándar' : (g === 'Postgrado' ? '🎓 Objetivo: Postgrado' : '🔗 Objetivo: Doble grado'); }
+      if (goalChip) { const g = studentProfile.goal || 'Ninguno'; goalChip.textContent = g === 'Ninguno' ? 'Ruta estándar' : (g === 'Postgrado' ? 'Objetivo: Postgrado' : 'Objetivo: Doble grado'); }
       if (headerName) headerName.textContent = studentProfile.name ? `${studentProfile.name} (USIL)` : 'Tu perfil';
       if (headerMeta) headerMeta.textContent = studentProfile.career ? `${safeCycle} • ${studentProfile.career.replace('Ingeniería de ','')}` : 'Completa tu registro';
       if (headerInitials) {
@@ -702,13 +706,13 @@ function getCareerMaxCycles(career) {
         const course = item.course, checked = selectedRouteCourses.includes(course);
         const [, level] = getCourseConcept(course);
         let icon, badgeClass;
-        if (item.blocked) { icon = '⚪'; badgeClass = 'bg-slate-100 text-slate-500'; }
-        else if (item.level === 1) { icon = '🔴'; badgeClass = 'bg-red-50 text-red-700'; }
-        else if (item.level === 2) { icon = '🟠'; badgeClass = 'bg-amber-50 text-amber-700'; }
-        else if (item.level === 3) { icon = '🟢'; badgeClass = 'bg-emerald-50 text-emerald-700'; }
-        else { icon = '🔹'; badgeClass = 'bg-slate-100 text-slate-600'; }
+        if (item.blocked) { icon = naviaIcon('lock', 'nv-icon h-3.5 w-3.5'); badgeClass = 'bg-slate-100 text-slate-600'; }
+        else if (item.level === 1) { icon = '<span class="nv-status-dot nv-status-dot--urgent" aria-hidden="true"></span>'; badgeClass = 'bg-red-50 text-red-700'; }
+        else if (item.level === 2) { icon = '<span class="nv-status-dot nv-status-dot--current" aria-hidden="true"></span>'; badgeClass = 'bg-amber-50 text-amber-700'; }
+        else if (item.level === 3) { icon = '<span class="nv-status-dot nv-status-dot--available" aria-hidden="true"></span>'; badgeClass = 'bg-emerald-50 text-emerald-700'; }
+        else { icon = '<span class="nv-status-dot nv-status-dot--other" aria-hidden="true"></span>'; badgeClass = 'bg-slate-100 text-slate-600'; }
         const label = item.blocked ? (item.level === 3 ? 'Bloqueado' : item.priority.split(' · ')[0] + ' · Bloqueado') : item.priority;
-        const sub = item.blocked ? `🔒 Primero aprueba: <strong>${item.missing.join(', ')}</strong>` : `${item.cycle}.° ciclo`;
+        const sub = item.blocked ? `${naviaIcon('lock', 'nv-icon inline-icon')} Primero aprueba: <strong>${item.missing.join(', ')}</strong>` : `${item.cycle}.° ciclo`;
         return `<label class="flex items-center justify-between gap-3 p-3.5 border ${item.blocked ? 'bg-slate-50 border-slate-200 opacity-70 cursor-not-allowed' : (checked ? 'bg-blue-50/40 border-blue-500 cursor-pointer hover:bg-slate-50' : 'bg-white border-slate-200 cursor-pointer hover:bg-slate-50')} rounded-2xl transition">
           <div class="flex items-center gap-3 min-w-0"><input type="checkbox" class="route-course-check text-blue-600 rounded" aria-label="Seleccionar curso ${course}" data-course="${course.replace(/"/g, '&quot;')}" ${checked ? 'checked' : ''} ${item.blocked ? 'disabled' : ''} onchange="toggleRouteCourse(this)"><div class="min-w-0"><div class="font-bold text-slate-800 text-sm truncate">${course}</div><div class="text-[11px] text-slate-500">${sub}</div></div></div>
           <div class="flex items-center gap-2 shrink-0"><span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${badgeClass}">${icon} ${label}</span><span class="text-[10px] text-slate-500 hidden sm:inline">${level}</span></div>
@@ -745,14 +749,14 @@ function getCareerMaxCycles(career) {
       const el = document.getElementById('routeWarning');
       if (!el) return;
       const blocked = buildRouteCandidates().filter(i => i.blocked);
-      const blockedNote = blocked.length ? `<div class="mt-2 p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600">🔒 <strong>${blocked.length} curso${blocked.length===1?'':'s'} bloqueado${blocked.length===1?'':'s'}</strong> por prerrequisito. Aprueba primero: ${Array.from(new Set(blocked.flatMap(b => b.missing))).slice(0,4).join(', ')}.</div>` : '';
+      const blockedNote = blocked.length ? `<div class="mt-2 p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600">${naviaIcon('lock', 'nv-icon inline-icon')} <strong>${blocked.length} curso${blocked.length===1?'':'s'} bloqueado${blocked.length===1?'':'s'}</strong> por prerrequisito. Aprueba primero: ${Array.from(new Set(blocked.flatMap(b => b.missing))).slice(0,4).join(', ')}.</div>` : '';
       const skipped = getSkippedPriority();
       if (!skipped.length && selectedRouteCourses.length >= selectedLoadCount) {
-        el.innerHTML = '<div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800">✅ Estás siguiendo la ruta recomendada por Navia con tus cursos prioritarios.</div>' + blockedNote;
+        el.innerHTML = `<div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800">${naviaIcon('check-circle', 'nv-icon inline-icon')} Estás siguiendo la ruta recomendada por Navia con tus cursos prioritarios.</div>` + blockedNote;
         return;
       }
       el.innerHTML = skipped.length
-        ? `<div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-xs text-amber-900 flex items-start justify-between gap-3"><div>⚠️ <strong>Te estás saltando ${skipped.length} curso${skipped.length === 1 ? '' : 's'} prioritario${skipped.length === 1 ? '' : 's'}:</strong> ${skipped.join(', ')}. Esto puede retrasar tu avance.</div><button type="button" onclick="useRecommendedRoute()" class="shrink-0 px-3 py-1.5 rounded-lg bg-amber-500 text-white font-semibold">Usar ruta recomendada</button></div>${blockedNote}`
+        ? `<div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-300 text-xs text-amber-900 flex items-start justify-between gap-3"><div>${naviaIcon('warning', 'nv-icon inline-icon')} <strong>Te estás saltando ${skipped.length} curso${skipped.length === 1 ? '' : 's'} prioritario${skipped.length === 1 ? '' : 's'}:</strong> ${skipped.join(', ')}. Esto puede retrasar tu avance.</div><button type="button" onclick="useRecommendedRoute()" class="shrink-0 px-3 py-1.5 rounded-lg bg-amber-500 text-white font-semibold">Usar ruta recomendada</button></div>${blockedNote}`
         : `<div class="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900">Elegiste ${selectedRouteCourses.length} de ${selectedLoadCount} cursos. Puedes continuar, pero llevar menos cursos alarga tu carrera.</div>${blockedNote}`;
     }
 
@@ -765,7 +769,7 @@ function getCareerMaxCycles(career) {
       m.id = 'routeWarnModal'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true'); m.setAttribute('aria-labelledby','routeWarnTitle');
       m.className = 'fixed inset-0 z-[100] bg-slate-900/60 flex items-center justify-center p-4';
       m.innerHTML = `<div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-amber-200 text-slate-800">
-        <div class="text-3xl mb-1">⚠️</div>
+        ${naviaIcon('warning', 'nv-icon h-8 w-8 mb-1')}
         <h2 id="routeWarnTitle" class="text-lg font-black text-[#003366]">No estás llevando toda tu ruta prioritaria</h2>
         <p class="text-xs text-slate-600 mt-1">Elegiste <strong>${n} de ${selectedLoadCount}</strong> cursos${skipped.length ? ` y dejarías fuera: <strong>${skipped.join(', ')}</strong>` : ''}.</p>
         <p class="text-xs font-bold text-slate-800 mt-3">¿Qué podría pasar?</p>
@@ -775,7 +779,7 @@ function getCareerMaxCycles(career) {
           <li>Los atrasos se acumulan y tu próximo ciclo llegará <strong>más cargado</strong>.</li>
           <li>Menos cursos por ciclo implica menos avance de créditos: revisa con tu coordinación si esto afecta tu beca, prácticas o egreso.</li>
         </ul>
-        <div class="mt-3 p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900">💡 <strong>Recomendación de Navia:</strong> toma primero tus cursos prioritarios (atrasos y los del próximo ciclo). Es la ruta más corta para avanzar sin bloquearte.</div>
+        <div class="mt-3 p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-blue-900">${naviaIcon('bulb', 'nv-icon inline-icon')} <strong>Recomendación de Navia:</strong> toma primero tus cursos prioritarios (atrasos y los del próximo ciclo). Es la ruta más corta para avanzar sin bloquearte.</div>
         <div class="mt-5 flex flex-col sm:flex-row gap-2 justify-end">
           <button type="button" onclick="proceedToConcepts()" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 text-xs font-medium hover:bg-slate-50">Continuar de todas formas</button>
           <button type="button" onclick="useRecommendedRoute()" class="px-5 py-2.5 rounded-xl bg-[#003366] text-white text-xs font-semibold hover:bg-blue-700">Tomar la ruta recomendada</button>
@@ -792,7 +796,7 @@ function getCareerMaxCycles(career) {
       } else {
         container.innerHTML = courses.map((course, i) => {
           const [concept, level, utility] = getCourseConcept(course);
-          return `<div class="border border-slate-200 rounded-2xl bg-white overflow-hidden shadow-xs"><button onclick="toggleScreenAccordion('dynamic-acc-${i}')" class="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition"><div class="flex items-center gap-3 min-w-0"><div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xs">${i+1}</div><span class="font-bold text-slate-800 text-sm truncate">${course}</span></div><span id="dynamic-acc-${i}-arrow" class="text-slate-600">▼</span></button><div id="dynamic-acc-${i}-content" class="p-4 pt-2 border-t border-slate-100 grid grid-cols-1 md:grid-cols-12 gap-4 text-xs hidden"><div class="md:col-span-8 text-slate-600 leading-relaxed">${concept}</div><div class="md:col-span-4 space-y-1.5 border-l border-slate-100 pl-4 text-slate-700"><div>📖 <strong>Tipo:</strong> ${level}</div><div>💡 <strong>Utilidad:</strong> ${utility}</div><div>🧭 <strong>Ruta:</strong> ${i===0?'Prioridad inicial':'Complementa la ruta'}</div></div></div></div>`;
+          return `<div class="border border-slate-200 rounded-2xl bg-white overflow-hidden shadow-xs"><button onclick="toggleScreenAccordion('dynamic-acc-${i}')" class="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition"><div class="flex items-center gap-3 min-w-0"><div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xs">${i+1}</div><span class="font-bold text-slate-800 text-sm truncate">${course}</span></div><span id="dynamic-acc-${i}-arrow" class="text-slate-600">${naviaIcon('chevron-down', 'nv-icon h-4 w-4')}</span></button><div id="dynamic-acc-${i}-content" class="p-4 pt-2 border-t border-slate-100 grid grid-cols-1 md:grid-cols-12 gap-4 text-xs hidden"><div class="md:col-span-8 text-slate-600 leading-relaxed">${concept}</div><div class="md:col-span-4 space-y-1.5 border-l border-slate-100 pl-4 text-slate-700"><div>${naviaIcon('book', 'nv-icon inline-icon')} <strong>Tipo:</strong> ${level}</div><div>${naviaIcon('bulb', 'nv-icon inline-icon')} <strong>Utilidad:</strong> ${utility}</div><div>${naviaIcon('route', 'nv-icon inline-icon')} <strong>Ruta:</strong> ${i===0?'Prioridad inicial':'Complementa la ruta'}</div></div></div></div>`;
         }).join('');
       }
       const count = document.getElementById('conceptsCount');
@@ -848,13 +852,13 @@ function getCareerMaxCycles(career) {
     let closureRowsKey = '', closureApplied = false, lastClosure = null;
     function courseIcon(c) {
       const l = c.toLowerCase();
-      if (l.includes('program')) return '&lt;/&gt;';
-      if (l.includes('dato')) return '🗄️';
-      if (l.includes('english')) return '🌐';
-      if (/matem|cálculo|álgebra|estad|electricidad/.test(l)) return '📐';
-      if (/gest|gobierno|arquitectura|econom|contab|admin|market/.test(l)) return '🏛️';
-      if (/ética|lenguaje|realidad|liderazgo/.test(l)) return '⚖️';
-      return '💻';
+      if (l.includes('program')) return naviaIcon('code', 'nv-icon h-4 w-4');
+      if (l.includes('dato')) return naviaIcon('database', 'nv-icon h-4 w-4');
+      if (l.includes('english')) return naviaIcon('globe', 'nv-icon h-4 w-4');
+      if (/matem|cálculo|álgebra|estad|electricidad/.test(l)) return naviaIcon('ruler', 'nv-icon h-4 w-4');
+      if (/gest|gobierno|arquitectura|econom|contab|admin|market/.test(l)) return naviaIcon('building', 'nv-icon h-4 w-4');
+      if (/ética|lenguaje|realidad|liderazgo/.test(l)) return naviaIcon('scale', 'nv-icon h-4 w-4');
+      return naviaIcon('laptop', 'nv-icon h-4 w-4');
     }
     let plannedCourses = [];
     function renderClosureRows(force) {
@@ -946,10 +950,10 @@ function getCareerMaxCycles(career) {
       const notPassed = rows.filter(r => r.status !== 'Aprobado');
       const wrong = closureQuestions.filter((q, i) => closureAnswers[i] !== q.correctIndex).map(q => q.course);
       const items = [];
-      notPassed.forEach(r => items.push({ c: r.course, why: r.status === 'Desaprobado' ? '❌ Desaprobado: será tu prioridad al volver a llevarlo. ' : '⊝ Retirado: queda pendiente y con prioridad. ' }));
-      wrong.filter((v, i, a) => a.indexOf(v) === i).forEach(c => { if (!items.some(x => x.c === c)) items.push({ c, why: '📘 Fallaste preguntas de este curso: repasa sus temas clave. ' }); });
+      notPassed.forEach(r => items.push({ c: r.course, why: r.status === 'Desaprobado' ? 'Desaprobado: será tu prioridad al volver a llevarlo. ' : 'Retirado: queda pendiente y con prioridad. ' }));
+      wrong.filter((v, i, a) => a.indexOf(v) === i).forEach(c => { if (!items.some(x => x.c === c)) items.push({ c, why: 'Fallaste preguntas de este curso: repasa sus temas clave. ' }); });
       const list = document.getElementById('closureReinforceList');
-      if (list) list.innerHTML = items.map(it => { const [concept] = getCourseConcept(it.c); return `<div class="grid grid-cols-12 p-3 text-xs border-b border-slate-100 items-center"><div class="col-span-5 font-semibold text-slate-800">${it.c}</div><div class="col-span-7 text-slate-600">${it.why}${concept}</div></div>`; }).join('') || '<div class="p-3 text-xs text-emerald-700">🎉 Aprobaste todo y respondiste bien. No hay cursos por reforzar.</div>';
+      if (list) list.innerHTML = items.map(it => { const [concept] = getCourseConcept(it.c); return `<div class="grid grid-cols-12 p-3 text-xs border-b border-slate-100 items-center"><div class="col-span-5 font-semibold text-slate-800">${it.c}</div><div class="col-span-7 text-slate-600">${it.why}${concept}</div></div>`; }).join('') || `<div class="p-3 text-xs text-emerald-700">${naviaIcon('check-circle', 'nv-icon inline-icon')} Aprobaste todo y respondiste bien. No hay cursos por reforzar.</div>`;
     }
 
     function updateClosingUserData() {
@@ -1275,7 +1279,7 @@ function getCareerMaxCycles(career) {
       const list = document.getElementById('commReviewsList');
       const item = document.createElement('div');
       item.className = "review-item p-3.5 rounded-2xl border border-blue-200 bg-blue-50/20 shadow-2xs flex items-start justify-between gap-3";
-      item.innerHTML = '<div class="flex items-start gap-3"><div class="review-avatar w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shrink-0"></div><div><div class="flex items-baseline gap-2"><span class="review-author font-bold text-xs text-slate-900"></span><span class="review-course text-[10px] text-slate-600"></span></div><p class="review-content text-xs text-slate-600 mt-1 leading-relaxed"></p></div></div><button class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition"><span>❤️</span><span class="likes-num">1</span></button>';
+      item.innerHTML = `<div class="flex items-start gap-3"><div class="review-avatar w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shrink-0"></div><div><div class="flex items-baseline gap-2"><span class="review-author font-bold text-xs text-slate-900"></span><span class="review-course text-[10px] text-slate-600"></span></div><p class="review-content text-xs text-slate-600 mt-1 leading-relaxed"></p></div></div><button class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition" aria-label="Me gusta esta opinión"><span>${naviaIcon('heart', 'nv-icon h-4 w-4')}</span><span class="likes-num">1</span></button>`;
       item.querySelector('.review-avatar').textContent = initials;
       item.querySelector('.review-author').textContent = name;
       item.querySelector('.review-course').textContent = course;

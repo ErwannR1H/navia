@@ -6,28 +6,26 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;display=swap" rel="stylesheet">
-  <link href="[https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap)" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            blue:{50:'#E5ECF4',100:'#CCDAE9',200:'#B2C6DD',300:'#80A0C1',400:'#336699',500:'#004080',600:'#003366',700:'#002B57',800:'#00264D',900:'#001F40',950:'#001429'},indigo:{100:'#E5ECF4',700:'#003366'},amber:{50:'#FFF7E0',100:'#FFECB3',500:'#D4AF37',600:'#8A6400',700:'#6E4F00'},yellow:{100:'#FFF0BE',200:'#FFE082',300:'#FFC72C'},slate:{50:'#FAFAFA',100:'#F5F5F5',200:'#E0E0E0',300:'#D1D1D1',400:'#9E9E9E',500:'#616161',600:'#424242',700:'#323232',800:'#242424',900:'#242424'},emerald:{50:'#DFF6DD',100:'#DFF6DD',200:'#9FD89F',400:'#107C10',500:'#107C10',600:'#0E700E',700:'#0B5A0B',800:'#094C09'},red:{50:'#FDF3F4',100:'#F7D7DB',200:'#EEACB2',500:'#C50F1F',600:'#C50F1F',700:'#A90C19',800:'#820914'},rose:{50:'#FDF3F4',100:'#F7D7DB',200:'#EEACB2',500:'#C50F1F',600:'#C50F1F',700:'#A90C19',950:'#50060E'},
+            blue:{50:'#EFF3FF',100:'#DCE5FF',200:'#B9CCFF',300:'#8CAEFF',400:'#5B88FF',500:'#0036DC',600:'#0036DC',700:'#00195A',800:'#00154D',900:'#00123F',950:'#001029'},indigo:{50:'#F3F2F1',100:'#EFF3FF',200:'#B9CCFF',400:'#5B88FF',500:'#0036DC',600:'#0036DC',700:'#00195A'},amber:{50:'#FFF7E0',100:'#FFECB3',500:'#D4AF37',600:'#8A6400',700:'#6E4F00'},yellow:{100:'#EFF3FF',200:'#B9CCFF',300:'#0036DC'},slate:{50:'#FFFFFF',100:'#F3F2F1',200:'#E0DFDE',300:'#D1D0CF',400:'#616569',500:'#616569',600:'#616569',700:'#616569',800:'#00195A',900:'#00195A'},emerald:{50:'#DFF6DD',100:'#DFF6DD',200:'#9FD89F',400:'#107C10',500:'#107C10',600:'#0E700E',700:'#0B5A0B',800:'#094C09'},red:{50:'#FDF3F4',100:'#F7D7DB',200:'#EEACB2',500:'#C50F1F',600:'#C50F1F',700:'#A90C19',800:'#820914'},rose:{50:'#FDF3F4',100:'#F7D7DB',200:'#EEACB2',500:'#C50F1F',600:'#C50F1F',700:'#A90C19',950:'#50060E'},
             brand: {
-              50: '#E5ECF4',
-              100: '#E5ECF4',
-              200: '#CCDAE9',
-              500: '#00478A',
-              600: '#003D7A',
-              700: '#002B57',
-              800: '#00244A',
-              900: '#001F40'
+              50: '#EFF3FF',
+              100: '#DCE5FF',
+              200: '#B9CCFF',
+              500: '#0036DC',
+              600: '#0036DC',
+              700: '#00195A',
+              800: '#00154D',
+              900: '#00123F'
             }
           },
           fontFamily: {
-            sans: ['Segoe UI Variable','Segoe UI','system-ui','sans-serif'],
-            handwritten: ['Caveat', 'cursive']
+            sans: ['Montserrat','sans-serif']
           }
         }
       }
@@ -68,7 +66,7 @@
         <!-- ========================================================================= -->
         <!-- SCREEN 1: PANTALLA DE ACCESO A NAVIA (LOGIN)                              -->
         <!-- ========================================================================= -->
-        <section id="screen-1" class="screen-panel w-full flex-1 flex flex-col justify-between bg-gradient-to-br from-[#002B57] via-[#003D7A] to-[#001F40] text-white p-6 sm:p-10 relative overflow-hidden hidden">
+        <section id="screen-1" class="screen-panel w-full flex-1 flex flex-col justify-between bg-white text-slate-800 p-6 sm:p-10 relative overflow-hidden hidden">
           <div class="absolute inset-0 nv-grid-bg pointer-events-none"></div>
           <div class="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full bg-indigo-400/30 blur-3xl nv-float pointer-events-none"></div>
           <div class="absolute -bottom-32 -left-20 w-[380px] h-[380px] rounded-full bg-yellow-300/20 blur-3xl nv-floatb pointer-events-none"></div>
@@ -85,10 +83,10 @@
                 <div class="nv-fade inline-flex items-center gap-2 px-4 py-2 rounded-full nv-glass text-[11px] font-bold uppercase tracking-[0.18em] text-blue-100">
                   <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Orientación académica inteligente · USIL
                 </div>
-                <h1 tabindex="-1" class="nv-fade nv-d1 mt-6 text-5xl sm:text-6xl lg:text-[4.4rem] font-black leading-[1.02] tracking-tight">
+                <h1 tabindex="-1" class="nv-hero-title nv-fade nv-d1 mt-6 text-5xl sm:text-6xl lg:text-[4.4rem] font-black leading-[1.02] tracking-tight">
                   Tu ruta.<br><span class="nv-grad-text">Más clara.</span>
                 </h1>
-                <p class="nv-fade nv-d2 text-blue-100 text-sm sm:text-base max-w-md mt-5 leading-relaxed">
+                <p class="nv-fade nv-d2 text-slate-600 text-sm sm:text-base max-w-md mt-5 leading-relaxed">
                   Organiza tu avance, elige tu carga ideal y descubre una ruta académica hecha a tu medida, ciclo a ciclo.
                 </p>
                 <div class="nv-fade nv-d3 grid grid-cols-3 gap-3 mt-8 max-w-lg">
@@ -110,7 +108,7 @@
                     <p class="text-sm font-bold text-slate-800">Accede con tu cuenta institucional</p>
                     <p class="text-[11px] text-slate-500 mt-1">Usa Microsoft para iniciar sesión y luego completa tus datos académicos.</p>
                   </div>
-                  <button type="button" onclick="openMicrosoftLogin()" class="w-full py-3.5 px-4 bg-white hover:bg-slate-50 text-slate-800 font-semibold rounded-2xl text-sm border border-slate-300 shadow-sm flex items-center justify-center gap-3 transition active:scale-98">
+                  <button type="button" onclick="openMicrosoftLogin()" class="nv-button-secondary w-full py-3.5 px-4 bg-white hover:bg-slate-50 text-slate-800 font-semibold rounded-2xl text-sm border border-slate-300 shadow-sm flex items-center justify-center gap-3 transition active:scale-98">
                     <span class="grid grid-cols-2 gap-0.5 w-5 h-5 shrink-0">
                       <span class="bg-[#f35325]"></span><span class="bg-[#81bc06]"></span>
                       <span class="bg-[#05a6f0]"></span><span class="bg-[#ffba08]"></span>
@@ -123,7 +121,7 @@
                     <span class="text-[10px] text-slate-600 font-semibold uppercase">o</span>
                     <div class="h-px bg-slate-200 flex-1"></div>
                   </div>
-                  <button type="button" onclick="goToScreen(2); showToast('Modo invitado: completa tu registro académico')" class="w-full py-3 px-4 bg-[#002A52] hover:bg-[#00244A] text-white font-semibold rounded-2xl text-sm shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 transition active:scale-98">
+                  <button type="button" onclick="goToScreen(2); showToast('Modo invitado: completa tu registro académico')" class="nv-button-primary w-full py-3 px-4 bg-[#002A52] hover:bg-[#00244A] text-white font-semibold rounded-2xl text-sm shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 transition active:scale-98">
                     <span>Continuar como invitado</span>
                     <svg aria-hidden="true" focusable="false" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                   </button>
@@ -154,8 +152,36 @@
 <symbol id="i-books" viewBox="0 0 48 48"><rect x="5" y="31" width="38" height="11" rx="3" fill="currentColor"/><rect x="9" y="18" width="32" height="11" rx="3" fill="currentColor" opacity=".7"/><rect x="13" y="5" width="26" height="11" rx="3" fill="#FFC72C"/></symbol>
 <symbol id="i-test" viewBox="0 0 48 48"><circle cx="21" cy="21" r="14" fill="currentColor" opacity=".25" stroke="currentColor" stroke-width="4"/><path d="m31 31 12 12" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m14.5 21 5 5 8-9" fill="none" stroke="#FFC72C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 <symbol id="i-access" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/><circle cx="24" cy="12.5" r="3.5" fill="#FFC72C"/><path d="M12 19c8 2.5 16 2.5 24 0M24 21v9m0 0-6 9m6-9 6 9" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></symbol></defs></svg>
+        <svg class="nv-icon-defs" aria-hidden="true" focusable="false"><defs>
+          <symbol id="nv-icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+          <symbol id="nv-icon-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></symbol>
+          <symbol id="nv-icon-bulb" viewBox="0 0 24 24"><path d="M9 18h6m-5 3h4m-2-20a7 7 0 0 0-4 12.75c.7.5 1 1.25 1 2.25h6c0-1 .3-1.75 1-2.25A7 7 0 0 0 12 1Z"/></symbol>
+          <symbol id="nv-icon-graduation" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c3.5 3 8.5 3 12 0v-5M22 9v6"/></symbol>
+          <symbol id="nv-icon-rocket" viewBox="0 0 24 24"><path d="M5 14c-2 1-3 3-3 5 2 0 4-1 5-3m7-7 3 3m-9 4-2-2c2-5 6-9 14-11 0 8-4 12-9 14l-3-1Z"/><circle cx="15.5" cy="8.5" r="1.5"/></symbol>
+          <symbol id="nv-icon-heart" viewBox="0 0 24 24"><path d="M20.8 8.8c0 5.2-8.8 11-8.8 11s-8.8-5.8-8.8-11a4.8 4.8 0 0 1 8.8-2.6 4.8 4.8 0 0 1 8.8 2.6Z"/></symbol>
+          <symbol id="nv-icon-chat" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H5l-3 3v-10.5A7.5 7.5 0 0 1 9.5 4h3A7.5 7.5 0 0 1 20 11.5Z"/><path d="M8 11h.01M12 11h.01M16 11h.01"/></symbol>
+          <symbol id="nv-icon-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20v-1.5a7 7 0 0 1 14 0V20H2Zm13-15a3.5 3.5 0 0 1 0 7m2 2a5.5 5.5 0 0 1 5 5.5V20h-4"/></symbol>
+          <symbol id="nv-icon-database" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8.5" ry="3"/><path d="M3.5 5v14c0 1.7 3.8 3 8.5 3s8.5-1.3 8.5-3V5M3.5 12c0 1.7 3.8 3 8.5 3s8.5-1.3 8.5-3"/></symbol>
+          <symbol id="nv-icon-laptop" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="13" rx="1.5"/><path d="M2 20h20l-2-4H4l-2 4Z"/></symbol>
+          <symbol id="nv-icon-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 14l4-4 4 3 6-7"/><path d="M17 6h4v4"/></symbol>
+          <symbol id="nv-icon-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2"/></symbol>
+          <symbol id="nv-icon-warning" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3Z"/><path d="M12 9v5m0 3h.01"/></symbol>
+          <symbol id="nv-icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+          <symbol id="nv-icon-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18m0-18a15 15 0 0 0 0 18"/></symbol>
+          <symbol id="nv-icon-ruler" viewBox="0 0 24 24"><path d="m3 17 14-14 4 4L7 21l-4-4Z"/><path d="m14 6 4 4m-7-1 2 2m-5 1 2 2"/></symbol>
+          <symbol id="nv-icon-scale" viewBox="0 0 24 24"><path d="M12 3v18m-7 0h14M5 6h14M7 6l-3 6h6L7 6Zm10 0-3 6h6l-3-6Z"/></symbol>
+          <symbol id="nv-icon-book" viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22V4.5Zm0 0V22"/></symbol>
+          <symbol id="nv-icon-building" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h.01M15 10h.01M9 14h.01M15 14h.01M10 21v-4h4v4"/></symbol>
+          <symbol id="nv-icon-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1 0l3-3A5 5 0 0 0 13 2.9l-1.7 1.7m2.7 6.4a5 5 0 0 0-7.1 0l-3 3A5 5 0 0 0 11 21.1l1.7-1.7"/></symbol>
+          <symbol id="nv-icon-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></symbol>
+          <symbol id="nv-icon-sparkles" viewBox="0 0 24 24"><path d="m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Zm7 12 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></symbol>
+          <symbol id="nv-icon-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></symbol>
+          <symbol id="nv-icon-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+          <symbol id="nv-icon-route" viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h2a4 4 0 0 0 4-4v-2a4 4 0 0 1 4-4h2"/></symbol>
+          <symbol id="nv-icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></symbol>
+        </defs></svg>
         <button type="button" id="guideToggle" class="nv-guide-btn" aria-expanded="false" aria-controls="guidePanel">
-          <span class="nv-guide-ico" aria-hidden="true">i</span>
+          <span class="nv-guide-ico" aria-hidden="true"><svg class="nv-icon h-5 w-5" viewBox="0 0 24 24"><use href="#nv-icon-info"/></svg></span>
           <span><strong>Conoce Navia</strong><small>Guía rápida para nuevos usuarios</small></span>
           <svg class="nv-chev" aria-hidden="true" viewBox="0 0 20 20" width="20" height="20"><path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -234,9 +260,9 @@
                 <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366] leading-tight mt-5">Construyamos tu perfil académico</h1>
                 <p class="text-xs text-slate-500 mt-2 leading-relaxed">Después de iniciar sesión, registra tu carrera y ciclo. Navia cargará la malla correspondiente y actualizará la orientación con esos datos.</p>
                 <div class="mt-6 space-y-3">
-                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">✓</div><div><h2 class="text-xs font-bold text-slate-800">Carreras disponibles</h2><p class="text-[11px] text-slate-500">Elige una de las carreras disponibles para cargar su malla curricular.</p></div></div>
-                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">✓</div><div><h3 class="text-xs font-bold text-slate-800">Malla según tu elección</h3><p class="text-[11px] text-slate-500">Se carga una malla ejemplar basada en la información publicada por USIL.</p></div></div>
-                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">✓</div><div><h4 class="text-xs font-bold text-slate-800">Datos actualizables</h4><p class="text-[11px] text-slate-500">La carrera y el ciclo elegido se reflejan en las siguientes pantallas.</p></div></div>
+                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"/></svg></div><div><h2 class="text-xs font-bold text-slate-800">Carreras disponibles</h2><p class="text-[11px] text-slate-500">Elige una de las carreras disponibles para cargar su malla curricular.</p></div></div>
+                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"/></svg></div><div><h3 class="text-xs font-bold text-slate-800">Malla según tu elección</h3><p class="text-[11px] text-slate-500">Se carga una malla ejemplar basada en la información publicada por USIL.</p></div></div>
+                  <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"/></svg></div><div><h4 class="text-xs font-bold text-slate-800">Datos actualizables</h4><p class="text-[11px] text-slate-500">La carrera y el ciclo elegido se reflejan en las siguientes pantallas.</p></div></div>
                 </div>
               </div>
               <div class="lg:col-span-3 p-6 sm:p-8 bg-slate-50/70">
@@ -364,7 +390,7 @@
                 </div>
               </div>
               <div class="text-xs text-blue-800 bg-white px-3 py-2 rounded-xl border border-blue-100 max-w-xs">
-                💡 Navia continuará con la orientación según tu historial académico.
+                <svg class="nv-icon inline-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-bulb"/></svg> Navia continuará con la orientación según tu historial académico.
               </div>
             </div>
             <!-- Navigation Actions -->
@@ -384,17 +410,17 @@
         <section id="screen-4" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center">
           <div class="w-full max-w-5xl space-y-6">
             <!-- Hero de bienvenida -->
-            <div class="nv-fade relative overflow-hidden rounded-[28px] p-7 sm:p-9 text-white bg-gradient-to-br from-[#002B57] via-[#003D7A] to-[#00478A] shadow-2xl" style="box-shadow:0 30px 60px -28px rgba(0,51,102,.7)">
+            <div class="nv-dashboard-hero nv-fade relative overflow-hidden rounded-[28px] p-7 sm:p-9 text-white bg-gradient-to-br from-[#002B57] via-[#003D7A] to-[#00478A] shadow-2xl" style="box-shadow:0 30px 60px -28px rgba(0,51,102,.7)">
               <div class="absolute inset-0 nv-grid-bg opacity-70 pointer-events-none"></div>
               <div class="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-yellow-300/25 blur-3xl nv-float pointer-events-none"></div>
               <div class="relative flex flex-wrap items-center justify-between gap-5">
                 <div>
                   <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full nv-glass text-[10px] font-bold uppercase tracking-widest text-blue-100"><span id="dashboardGoalChip">Ruta estándar</span></span>
-                  <h1 tabindex="-1" class="text-3xl sm:text-5xl font-black mt-4 leading-tight">Hola, <span id="dashboardStudentName" class="nv-grad-text">Tu nombre</span> 👋</h1>
+                  <h1 tabindex="-1" class="text-3xl sm:text-5xl font-black mt-4 leading-tight">Hola, <span id="dashboardStudentName" class="nv-grad-text">Tu nombre</span></h1>
                   <p class="text-sm sm:text-base text-blue-100 mt-2 font-medium">Sigamos construyendo tu camino académico.</p>
                 </div>
                 <div class="nv-glass rounded-2xl px-5 py-4 max-w-[260px]">
-                  <p class="font-handwritten text-xl leading-snug text-yellow-200">"Disciplina hoy, más oportunidades mañana ♡"</p>
+                  <p class="text-sm leading-relaxed text-slate-600">"Disciplina hoy, más oportunidades mañana."</p>
                 </div>
               </div>
             </div>
@@ -430,19 +456,19 @@
             <!-- Acciones (centradas) -->
             <div class="nv-fade nv-d2 grid grid-cols-1 md:grid-cols-2 gap-5">
               <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(5)" class="nv-card cursor-pointer rounded-[28px] p-7 text-center bg-gradient-to-br from-white to-indigo-50 border border-blue-200 shadow-md flex flex-col items-center">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#003366] to-indigo-500 text-white flex items-center justify-center text-3xl shadow-lg">🚀</div>
+                <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center"><svg class="nv-icon h-8 w-8" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-rocket"/></svg></div>
                 <h3 class="text-lg font-extrabold text-[#003366] mt-4">Prepárate para tu próximo ciclo</h3>
                 <p class="text-xs text-slate-500 mt-1.5 leading-relaxed max-w-xs">Recibe una orientación personalizada según tu avance y tus objetivos de carga.</p>
                 <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#003366] text-white text-xs font-bold shadow-md">Empezar <span>→</span></span>
               </div>
-              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(10)" class="nv-card cursor-pointer rounded-[28px] p-7 text-center bg-gradient-to-br from-white to-rose-50 border border-rose-200 shadow-md flex flex-col items-center">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-500 to-orange-400 text-white flex items-center justify-center text-3xl shadow-lg">✅</div>
-                <h3 class="text-lg font-extrabold text-rose-950 mt-4">¿Culminaste el ciclo?</h3>
+              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(10)" class="nv-card cursor-pointer rounded-[28px] p-7 text-center bg-white border border-slate-200 shadow-md flex flex-col items-center">
+                <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center"><svg class="nv-icon h-8 w-8" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check-circle"/></svg></div>
+                <h3 class="text-lg font-extrabold text-[#00195A] mt-4">¿Culminaste el ciclo?</h3>
                 <p class="text-xs text-slate-500 mt-1.5 leading-relaxed max-w-xs">Actualiza tus resultados académicos y mantén tu malla curricular al día.</p>
                 <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-rose-700 text-white text-xs font-bold shadow-md">Actualizar <span>→</span></span>
               </div>
             </div>
-            <div class="text-center font-handwritten text-xl text-slate-600 pt-1">Mismas ganas. Más futuro. ♡</div>
+            <div class="text-center text-base text-slate-600 pt-1">Mismas ganas. Más futuro.</div>
           </div>
         </section>
         <!-- ========================================================================= -->
@@ -515,7 +541,7 @@
               <p id="suggestedCoursesSubtitle" class="text-xs sm:text-sm text-slate-500 mt-1 max-w-xl mx-auto">Navia combina tu avance, tu carga elegida y los cursos disponibles para construir una ruta eficiente.</p>
               <div id="suggestedCoursesCount" class="inline-block mt-2 bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full border border-blue-100">0 cursos</div>
             </div>
-            <div class="max-w-2xl mx-auto mb-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 justify-center"><span>🔴 Atrasados</span><span>🟠 Pendientes del ciclo actual</span><span>🟢 Próximo ciclo disponible</span><span>⚪ Bloqueado por prerrequisito</span></div>
+            <div class="max-w-2xl mx-auto mb-3 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 justify-center"><span><span class="nv-status-dot nv-status-dot--urgent" aria-hidden="true"></span> Atrasados</span><span><span class="nv-status-dot nv-status-dot--current" aria-hidden="true"></span> Pendientes del ciclo actual</span><span><span class="nv-status-dot nv-status-dot--available" aria-hidden="true"></span> Próximo ciclo disponible</span><span><span class="nv-status-dot nv-status-dot--other" aria-hidden="true"></span> Bloqueado por prerrequisito</span></div>
             <div id="dynamicSuggestedCourses" role="group" aria-label="Cursos sugeridos" class="space-y-2.5 max-w-2xl mx-auto"></div>
             <span id="dynamicSuggestedCourses-error" class="texte-erreur hidden max-w-2xl mx-auto"></span>
             <div id="routeWarning" class="max-w-2xl mx-auto mt-3"></div>
@@ -623,7 +649,7 @@
               <!-- Right Helper Box (4 cols) -->
               <div class="lg:col-span-4 bg-gradient-to-br from-blue-50 to-indigo-50/50 p-5 rounded-2xl border border-blue-100 flex flex-col items-center text-center">
                 <div class="w-12 h-12 rounded-2xl bg-white text-blue-600 shadow-xs flex items-center justify-center text-xl mb-2.5">
-                  🎓
+                  <svg class="nv-icon h-6 w-6" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-graduation"/></svg>
                 </div>
                 <h3 class="font-bold text-slate-800 text-xs sm:text-sm">Este diagnóstico no es un examen.</h3>
                 <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
@@ -924,7 +950,7 @@
             </div>
             <!-- Próximo paso -->
             <div id="updatedMallaNextStep" class="max-w-2xl mx-auto bg-blue-50/80 border border-blue-200 rounded-2xl p-3.5 flex items-start gap-3 mb-5">
-              <span class="text-xl">💡</span>
+              <svg class="nv-icon h-5 w-5 shrink-0" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-bulb"/></svg>
               <div class="text-xs text-blue-950"><strong class="font-bold text-blue-900 block">Siguiente paso</strong><span id="updatedMallaNextText">Tu ruta se actualizará según tus resultados.</span></div>
             </div>
             <!-- Avance -->
@@ -965,7 +991,7 @@
             <div class="max-w-2xl mx-auto mb-7">
               <div class="relative">
                 <input type="text" id="communitySearchInput" aria-label="Buscar curso en la comunidad" oninput="filterCommunityItems(this.value)" placeholder="Busca un curso... (ej: Programación, Datos, Marketing)" class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
-                <span class="absolute left-4 top-2.5 text-slate-600">🔍</span>
+                <svg class="nv-icon absolute left-4 top-2.5 h-5 w-5 text-slate-600" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-search"/></svg>
               </div>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -981,17 +1007,17 @@
                       <button onclick="filterByCourse('Programación Orientada a Objetos II')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
                     </div>
                     <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
-                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5">🗄️</span>
+                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-database"/></svg></span>
                       <h4 class="text-xs font-bold text-slate-800 line-clamp-2 h-8 leading-tight">Gerenciamiento de Datos I</h4>
                       <button onclick="filterByCourse('Gerenciamiento de Datos I')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
                     </div>
                     <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
-                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5">💻</span>
+                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-laptop"/></svg></span>
                       <h5 class="text-xs font-bold text-slate-800 line-clamp-2 h-8 leading-tight">Interacción Humano Computador</h5>
                       <button onclick="filterByCourse('Interacción Humano Computador')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
                     </div>
                     <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
-                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5">📈</span>
+                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-chart"/></svg></span>
                       <h5 class="text-xs font-bold text-slate-800 line-clamp-2 h-8 leading-tight">Marketing</h5>
                       <button onclick="filterByCourse('Marketing')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
                     </div>
@@ -1015,7 +1041,7 @@
                         </div>
                       </div>
                       <button onclick="toggleCommentLike(this, 56)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
-                        <span>❤️</span>
+                        <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-heart"/></svg></span>
                         <span class="likes-num">56</span>
                       </button>
                     </div>
@@ -1033,7 +1059,7 @@
                         </div>
                       </div>
                       <button onclick="toggleCommentLike(this, 48)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
-                        <span>❤️</span>
+                        <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-heart"/></svg></span>
                         <span class="likes-num">48</span>
                       </button>
                     </div>
@@ -1051,7 +1077,7 @@
                         </div>
                       </div>
                       <button onclick="toggleCommentLike(this, 42)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
-                        <span>❤️</span>
+                        <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-heart"/></svg></span>
                         <span class="likes-num">42</span>
                       </button>
                     </div>
@@ -1069,7 +1095,7 @@
                         </div>
                       </div>
                       <button onclick="toggleCommentLike(this, 37)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
-                        <span>❤️</span>
+                        <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-heart"/></svg></span>
                         <span class="likes-num">37</span>
                       </button>
                     </div>
@@ -1077,7 +1103,7 @@
                   <!-- Botón ¡Deja tu opinión! -->
                   <div class="mt-6 text-center">
                     <button onclick="openLeaveReviewModal()" class="px-6 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/25 transition inline-flex items-center gap-2">
-                      <span>💬 ¡Deja tu opinión!</span>
+                      <span><svg class="nv-icon inline-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-chat"/></svg> ¡Deja tu opinión!</span>
                     </button>
                   </div>
                 </div>
@@ -1085,19 +1111,19 @@
               <!-- Right Motivation Side Cards (4 cols) -->
               <div class="lg:col-span-4 space-y-4">
                 <div class="p-5 rounded-2xl bg-blue-50/60 border border-blue-100">
-                  <div class="font-handwritten text-xl text-blue-900 leading-snug">
-                    "Una mejor experiencia universitaria también se construye juntos ♡"
+                  <div class="text-sm text-blue-900 leading-relaxed">
+                    "Una mejor experiencia universitaria también se construye juntos."
                   </div>
                 </div>
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3 shadow-2xs">
-                  <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">👥</div>
+                  <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-users"/></svg></div>
                   <div>
                     <span class="text-xs font-bold text-slate-800 block">Comparte lo que aprendes</span>
                     <span class="text-[11px] text-slate-500">Ayuda a otros estudiantes a tomar mejores decisiones sobre sus ciclos.</span>
                   </div>
                 </div>
                 <div class="p-4 rounded-2xl bg-white border border-slate-200 flex items-start gap-3 shadow-2xs">
-                  <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">💡</div>
+                  <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-bulb"/></svg></div>
                   <div>
                     <span class="text-xs font-bold text-slate-800 block">Tus experiencias inspiran</span>
                     <span class="text-[11px] text-slate-500">Tus vivencias también abren nuevos caminos en la comunidad USIL.</span>
@@ -1115,7 +1141,7 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 relative">
       <div class="flex items-center justify-between mb-4">
         <h2 id="reviewModalTitle" class="text-base font-extrabold text-blue-950">Comparte tu experiencia en la comunidad</h2>
-        <button type="button" aria-label="Cerrar ventana" onclick="closeLeaveReviewModal()" class="text-slate-600 hover:text-slate-900 p-1 text-base font-bold">✕</button>
+        <button type="button" aria-label="Cerrar ventana" onclick="closeLeaveReviewModal()" class="text-slate-600 hover:text-slate-900 p-2"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-close"/></svg></button>
       </div>
       <form onsubmit="handleReviewSubmit(event)" novalidate class="space-y-3.5">
         <div>
