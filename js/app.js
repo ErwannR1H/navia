@@ -900,7 +900,7 @@ function getCareerMaxCycles(career) {
       const cycleOf = c => cur.findIndex(cs => cs.includes(c)) + 1;
       host.innerHTML = list.map((c, i) => `<div class="grid grid-cols-12 p-3.5 ${i < list.length - 1 ? 'border-b border-slate-100' : ''} items-center hover:bg-slate-50">
         <div class="col-span-8 flex items-center gap-3"><span class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">${courseIcon(c)}</span><span><span class="font-bold text-slate-800 text-xs sm:text-sm block">${c}</span><span class="text-[10px] text-slate-600">${cycleOf(c)}.° ciclo de la malla</span></span></div>
-        <div class="col-span-4 flex justify-end"><select aria-label="Estado final de ${c}" class="cierre-status-select bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold rounded-xl text-xs px-3 py-1.5 outline-none cursor-pointer" onchange="adjustStatusColor(this)"><option value="Aprobado" selected>Aprobado</option><option value="Desaprobado">Desaprobado</option><option value="Retirado">Retirado</option></select></div></div>`).join('');
+        <div class="col-span-4 flex justify-end"><select aria-label="Estado final de ${c}" class="cierre-status-select bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold rounded-xl text-xs px-3 py-1.5 outline-none cursor-pointer"><option value="Aprobado" selected>Aprobado</option><option value="Desaprobado">Desaprobado</option><option value="Retirado">Retirado</option></select></div></div>`).join('');
     }
 
     function finalizeClosure() {
@@ -1345,6 +1345,9 @@ function getCareerMaxCycles(career) {
     // Startup Initialization
     window.onload = () => {
       renderClosureRows();
+      document.getElementById('closureRows').addEventListener('change', event => {
+        if (event.target.matches('.cierre-status-select')) adjustStatusColor(event.target);
+      });
       goToScreen(1);
       document.getElementById('userCareer').addEventListener('change', previewSelectedCareer);
       previewSelectedCareer();
