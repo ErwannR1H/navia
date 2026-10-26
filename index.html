@@ -3,6 +3,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Navia - Sistema Inteligente de Orientación Académica USIL</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -43,10 +44,10 @@
       <!-- Inside App Header Navbar (Active for in-app views 4 to 14) -->
       <header id="innerAppNav" role="banner" class="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 sm:px-10 py-3.5 flex items-center justify-between z-30 transition-all">
         <button type="button" aria-label="Navia, ir al inicio" class="flex items-center gap-2.5 cursor-pointer rounded-xl" onclick="goToScreen(4)">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-700 to-blue-500 text-white flex items-center justify-center shadow-md">
-            <svg aria-hidden="true" focusable="false" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path></svg>
+          <div class="nv-brand-mark">
+            <svg class="nv-icon nv-brand-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-graduation"></use></svg>
           </div>
-          <span class="text-2xl font-black text-[#003366] tracking-tight">Navia</span>
+          <span class="nv-brand-name text-2xl font-black tracking-tight">Navia</span>
         </button>
         <nav class="hidden md:flex items-center gap-2" aria-label="Navegación principal">
           <button onclick="goToScreen(4)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-blue-700 font-bold bg-blue-50" data-view="4">Inicio</button>
@@ -72,7 +73,7 @@
           <div class="absolute -bottom-32 -left-20 w-[380px] h-[380px] rounded-full bg-yellow-300/20 blur-3xl nv-floatb pointer-events-none"></div>
           <!-- Top mini-bar -->
           <div class="w-full flex items-center justify-between z-10">
-            <span class="flex items-center gap-2.5 text-3xl font-black tracking-tight text-white"><span class="w-10 h-10 rounded-2xl bg-white text-[#003D7A] flex items-center justify-center shadow-lg"><svg class="nv-home-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><use href="#i-cap"></use></svg></span>Navia</span>
+            <span class="nv-brand-lockup"><span class="nv-brand-mark"><svg class="nv-icon nv-brand-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#nv-icon-graduation"></use></svg></span><span class="nv-brand-name">Navia</span></span>
             <span class="text-xs font-semibold tracking-[0.16em] uppercase text-blue-200">Estudia · Decide · Avanza</span>
           </div>
           <!-- Hero Login Split -->
@@ -90,15 +91,15 @@
                   Organiza tu avance, elige tu carga ideal y descubre una ruta académica hecha a tu medida, ciclo a ciclo.
                 </p>
                 <div class="nv-fade nv-d3 grid grid-cols-3 gap-3 mt-8 max-w-lg">
-                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><use href="#i-grid"></use></svg></div><div class="text-sm font-extrabold">Malla</div><div class="text-[11px] text-blue-100 mt-0.5">Todo tu plan en un vistazo</div></div>
-                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><use href="#i-chart"></use></svg></div><div class="text-sm font-extrabold">Progreso</div><div class="text-[11px] text-blue-100 mt-0.5">Avance siempre al día</div></div>
-                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><use href="#i-route"></use></svg></div><div class="text-sm font-extrabold">Ruta</div><div class="text-[11px] text-blue-100 mt-0.5">Cursos sugeridos para ti</div></div>
+                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#nv-icon-layout-grid"></use></svg></div><div class="text-sm font-extrabold">Malla</div><div class="text-[11px] text-blue-100 mt-0.5">Todo tu plan en un vistazo</div></div>
+                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#nv-icon-chart"></use></svg></div><div class="text-sm font-extrabold">Progreso</div><div class="text-[11px] text-blue-100 mt-0.5">Avance siempre al día</div></div>
+                  <div class="nv-glass rounded-2xl p-4 nv-card"><div class="nv-info-icon mb-1"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#nv-icon-route"></use></svg></div><div class="text-sm font-extrabold">Ruta</div><div class="text-[11px] text-blue-100 mt-0.5">Cursos sugeridos para ti</div></div>
                 </div>
               </div>
             </div>
             <!-- Right Login Form -->
             <div class="lg:col-span-5 flex justify-center">
-              <div class="nv-fade nv-d2 w-full max-w-md bg-white rounded-[28px] p-8 sm:p-9 text-slate-800 shadow-2xl relative border border-white/40" style="box-shadow:0 40px 80px -20px rgba(8,12,80,.7)"><div class="absolute -top-px left-8 right-8 h-1 rounded-b-full bg-gradient-to-r from-[#003366] via-indigo-400 to-yellow-300"></div>
+              <div class="nv-login-card nv-fade nv-d2 w-full max-w-md bg-white rounded-[28px] p-8 sm:p-9 text-slate-800 relative border border-slate-200"><div class="nv-login-card-accent absolute -top-px left-8 right-8 h-1 rounded-b-full"></div>
                 <div class="text-center mb-6">
                   <h2 class="text-3xl font-extrabold text-[#003366] tracking-tight">Navia</h2>
                   <p class="text-xs text-slate-500 mt-1 font-medium">Sistema inteligente de orientación académica</p>
@@ -114,7 +115,7 @@
                       <span class="bg-[#05a6f0]"></span><span class="bg-[#ffba08]"></span>
                     </span>
                     <span>Iniciar sesión con Microsoft</span>
-                    <svg aria-hidden="true" focusable="false" class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    <svg aria-hidden="true" focusable="false" class="nv-icon w-4 h-4 text-slate-500" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg>
                   </button>
                   <div class="flex items-center gap-3 py-1">
                     <div class="h-px bg-slate-200 flex-1"></div>
@@ -123,7 +124,7 @@
                   </div>
                   <button type="button" onclick="goToScreen(2); showToast('Modo invitado: completa tu registro académico')" class="nv-button-primary w-full py-3 px-4 bg-[#002A52] hover:bg-[#00244A] text-white font-semibold rounded-2xl text-sm shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 transition active:scale-98">
                     <span>Continuar como invitado</span>
-                    <svg aria-hidden="true" focusable="false" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    <svg aria-hidden="true" focusable="false" class="nv-icon w-4 h-4" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg>
                   </button>
                   <div class="bg-blue-50 border border-blue-100 rounded-2xl p-3 text-[10px] text-blue-900 leading-relaxed">
                     <strong>Nota:</strong> este prototipo simula el acceso con Microsoft. No realiza una autenticación real contra Microsoft.
@@ -137,23 +138,20 @@
           </div>
       <!-- ===== Proceso 1: panel expandible "Conoce Navia" (guía visual para nuevos usuarios) ===== -->
       <div class="nv-guide w-full max-w-6xl mx-auto relative z-10" style="margin-top:24px">
-        <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-<symbol id="i-cap" viewBox="0 0 48 48"><path d="M24 9 3 20l21 11 21-11z" fill="currentColor"/><path d="M11 26v8c0 3 6 6 13 6s13-3 13-6v-8l-13 7z" fill="currentColor" opacity=".65"/><path d="M43 21v12" stroke="#FFC72C" stroke-width="3" stroke-linecap="round"/><circle cx="43" cy="35" r="3" fill="#FFC72C"/></symbol>
-<symbol id="i-users" viewBox="0 0 48 48"><circle cx="17" cy="16" r="7" fill="currentColor"/><path d="M3 40c0-9 6-14 14-14s14 5 14 14z" fill="currentColor"/><circle cx="35" cy="19" r="5.5" fill="#FFC72C"/><path d="M28 40c0-6 3-10 8-10s9 4 9 10z" fill="#FFC72C"/></symbol>
-<symbol id="i-chart" viewBox="0 0 48 48"><rect x="5" y="28" width="9" height="15" rx="2" fill="currentColor" opacity=".6"/><rect x="19" y="19" width="9" height="24" rx="2" fill="currentColor" opacity=".8"/><rect x="33" y="10" width="9" height="33" rx="2" fill="currentColor"/><path d="M6 20 20 11l9 5 13-10" fill="none" stroke="#FFC72C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-<symbol id="i-user" viewBox="0 0 48 48"><circle cx="24" cy="16" r="9" fill="currentColor"/><path d="M6 43c0-11 8-17 18-17s18 6 18 17z" fill="currentColor" opacity=".7"/><circle cx="37" cy="12" r="4" fill="#FFC72C"/></symbol>
-<symbol id="i-list" viewBox="0 0 48 48"><rect x="8" y="5" width="32" height="38" rx="4" fill="currentColor" opacity=".25"/><path d="m13 15 3 3 6-7M13 27l3 3 6-7" fill="none" stroke="#FFC72C" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 16h9M27 28h9M13 38h23" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></symbol>
-<symbol id="i-route" viewBox="0 0 48 48"><circle cx="11" cy="38" r="5" fill="currentColor"/><path d="M14 33c4-10 14-2 18-12" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="1 6" stroke-linecap="round"/><path d="M35 4a9 9 0 0 1 9 9c0 8-9 16-9 16s-9-8-9-16a9 9 0 0 1 9-9z" fill="#FFC72C"/><circle cx="35" cy="13" r="3.5" fill="currentColor"/></symbol>
-<symbol id="i-quiz" viewBox="0 0 48 48"><rect x="9" y="7" width="30" height="37" rx="4" fill="currentColor" opacity=".25"/><rect x="17" y="3" width="14" height="8" rx="3" fill="currentColor"/><circle cx="24" cy="29" r="9" fill="#FFC72C"/><path d="m19.5 29 3.5 3.5 6-7" fill="none" stroke="#1A1A1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-<symbol id="i-cycle" viewBox="0 0 48 48"><path d="M40 22a16 16 0 0 0-29-7M8 26a16 16 0 0 0 29 7" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/><path d="m8 5 1 12 12-2zM40 43l-1-12-12 2z" fill="#FFC72C"/></symbol>
-<symbol id="i-chat" viewBox="0 0 48 48"><path d="M5 8h28a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H17l-8 7v-7H5a4 4 0 0 1-4-4V12a4 4 0 0 1 4-4z" fill="currentColor"/><path d="M41 16a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4v7l-8-7H21a4 4 0 0 1-4-4v-1h16a8 8 0 0 0 8-8z" fill="#FFC72C"/></symbol>
-<symbol id="i-grid" viewBox="0 0 48 48"><g fill="currentColor"><rect x="4" y="4" width="12" height="12" rx="2"/><rect x="18" y="4" width="12" height="12" rx="2" opacity=".6"/><rect x="32" y="4" width="12" height="12" rx="2" opacity=".6"/><rect x="4" y="18" width="12" height="12" rx="2" opacity=".6"/><rect x="32" y="18" width="12" height="12" rx="2" opacity=".6"/><rect x="18" y="32" width="12" height="12" rx="2" opacity=".6"/></g><rect x="18" y="18" width="12" height="12" rx="2" fill="#FFC72C"/><rect x="4" y="32" width="12" height="12" rx="2" fill="#FFC72C" opacity=".7"/><rect x="32" y="32" width="12" height="12" rx="2" fill="currentColor"/></symbol>
-<symbol id="i-chain" viewBox="0 0 48 48"><path d="M10 34h14V14h14" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="34" r="6" fill="currentColor"/><circle cx="24" cy="24" r="6" fill="#FFC72C"/><circle cx="39" cy="14" r="6" fill="currentColor"/></symbol>
-<symbol id="i-books" viewBox="0 0 48 48"><rect x="5" y="31" width="38" height="11" rx="3" fill="currentColor"/><rect x="9" y="18" width="32" height="11" rx="3" fill="currentColor" opacity=".7"/><rect x="13" y="5" width="26" height="11" rx="3" fill="#FFC72C"/></symbol>
-<symbol id="i-test" viewBox="0 0 48 48"><circle cx="21" cy="21" r="14" fill="currentColor" opacity=".25" stroke="currentColor" stroke-width="4"/><path d="m31 31 12 12" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="m14.5 21 5 5 8-9" fill="none" stroke="#FFC72C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
-<symbol id="i-access" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="3.5"/><circle cx="24" cy="12.5" r="3.5" fill="#FFC72C"/><path d="M12 19c8 2.5 16 2.5 24 0M24 21v9m0 0-6 9m6-9 6 9" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></symbol></defs></svg>
+
         <svg class="nv-icon-defs" aria-hidden="true" focusable="false"><defs>
           <symbol id="nv-icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+          <symbol id="nv-icon-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14m-7-7 7 7-7 7"/></symbol>
+          <symbol id="nv-icon-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5m7 7-7-7 7-7"/></symbol>
+          <symbol id="nv-icon-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5m-7 7 7-7 7 7"/></symbol>
+          <symbol id="nv-icon-arrow-up-right" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
+          <symbol id="nv-icon-accessibility" viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"/><path d="M4 8h16M12 8v5m0 0-4 8m4-8 4 8"/></symbol>
+          <symbol id="nv-icon-books" viewBox="0 0 24 24"><path d="M4 4h5v16H4zM10 3h5v17h-5zM16 5h4v15h-4zM3 21h18"/></symbol>
+          <symbol id="nv-icon-clipboard-check" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="18" rx="2"/><path d="M9 4.5V3h6v1.5M8 13l2.5 2.5L16 10"/></symbol>
+          <symbol id="nv-icon-layout-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></symbol>
+          <symbol id="nv-icon-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="m4 6 .01 0M4 12l.01 0M4 18l.01 0"/></symbol>
+          <symbol id="nv-icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.6 9A7 7 0 0 1 18 6l2 1M4 17l2 1a7 7 0 0 0 12.4-3"/></symbol>
+          <symbol id="nv-icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></symbol>
           <symbol id="nv-icon-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></symbol>
           <symbol id="nv-icon-bulb" viewBox="0 0 24 24"><path d="M9 18h6m-5 3h4m-2-20a7 7 0 0 0-4 12.75c.7.5 1 1.25 1 2.25h6c0-1 .3-1.75 1-2.25A7 7 0 0 0 12 1Z"/></symbol>
           <symbol id="nv-icon-graduation" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5L2 9Z"/><path d="M6 11v5c3.5 3 8.5 3 12 0v-5M22 9v6"/></symbol>
@@ -173,34 +171,36 @@
           <symbol id="nv-icon-book" viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22V4.5Zm0 0V22"/></symbol>
           <symbol id="nv-icon-building" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 10h.01M15 10h.01M9 14h.01M15 14h.01M10 21v-4h4v4"/></symbol>
           <symbol id="nv-icon-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.1 0l3-3A5 5 0 0 0 13 2.9l-1.7 1.7m2.7 6.4a5 5 0 0 0-7.1 0l-3 3A5 5 0 0 0 11 21.1l1.7-1.7"/></symbol>
+          <symbol id="nv-icon-minus-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></symbol>
           <symbol id="nv-icon-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></symbol>
           <symbol id="nv-icon-sparkles" viewBox="0 0 24 24"><path d="m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Zm7 12 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></symbol>
           <symbol id="nv-icon-code" viewBox="0 0 24 24"><path d="m8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14"/></symbol>
           <symbol id="nv-icon-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+          <symbol id="nv-icon-chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
           <symbol id="nv-icon-route" viewBox="0 0 24 24"><circle cx="5" cy="19" r="2"/><circle cx="19" cy="5" r="2"/><path d="M7 19h2a4 4 0 0 0 4-4v-2a4 4 0 0 1 4-4h2"/></symbol>
           <symbol id="nv-icon-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></symbol>
         </defs></svg>
         <button type="button" id="guideToggle" class="nv-guide-btn" aria-expanded="false" aria-controls="guidePanel">
           <span class="nv-guide-ico" aria-hidden="true"><svg class="nv-icon h-5 w-5" viewBox="0 0 24 24"><use href="#nv-icon-info"/></svg></span>
           <span><strong>Conoce Navia</strong><small>Guía rápida para nuevos usuarios</small></span>
-          <svg class="nv-chev" aria-hidden="true" viewBox="0 0 20 20" width="20" height="20"><path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="nv-icon nv-chev w-5 h-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-chevron-down"></use></svg>
         </button>
         <div id="guidePanel" class="nv-guide-panel" role="region" aria-label="Guía para nuevos usuarios">
           <div class="nv-guide-inner">
 <header class="nv-gh"><span class="nv-gh-eyebrow">Orientación académica · USIL</span>
   <h2 class="nv-gh-title">Navia: tu ruta académica, ciclo a ciclo</h2>
   <p class="nv-gh-lead">Una plataforma para planificar tu siguiente ciclo, medir tu preparación y mantener tu malla curricular al día, en un solo recorrido guiado.</p>
-  <ul class="nv-gh-stats"><li><b>5–6</b><span>cursos por ciclo</span></li><li><b>2</b><span>evaluaciones</span></li><li><b>14</b><span>pasos guiados</span></li></ul></header><section class="nv-sec"><span class="nv-eyebrow">Contenido en tres capas</span><h3 class="nv-g-sub2">Toda tu información, organizada</h3><div class="nv-g-grid"><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-grid"/></svg></div><h3>Avance</h3><p>Tu malla y tu historial de cursos aprobados, siempre a la vista.</p></article><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-route"/></svg></div><h3>Ruta</h3><p>Carga elegida, cursos sugeridos y los conceptos clave de cada uno.</p></article><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-quiz"/></svg></div><h3>Evaluación</h3><p>Un diagnóstico antes del ciclo y una evaluación de cierre al terminar.</p></article></div></section><section class="nv-sec"><span class="nv-eyebrow">Navia en gráficos</span><h3 class="nv-g-sub2">Así se ve tu progreso</h3>
+  <ul class="nv-gh-stats"><li><b>5–6</b><span>cursos por ciclo</span></li><li><b>2</b><span>evaluaciones</span></li><li><b>14</b><span>pasos guiados</span></li></ul></header><section class="nv-sec"><span class="nv-eyebrow">Contenido en tres capas</span><h3 class="nv-g-sub2">Toda tu información, organizada</h3><div class="nv-g-grid"><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-layout-grid"/></svg></div><h3>Avance</h3><p>Tu malla y tu historial de cursos aprobados, siempre a la vista.</p></article><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-route"/></svg></div><h3>Ruta</h3><p>Carga elegida, cursos sugeridos y los conceptos clave de cada uno.</p></article><article class=nv-g-card2><div class=nv-g-banner><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-clipboard-check"/></svg></div><h3>Evaluación</h3><p>Un diagnóstico antes del ciclo y una evaluación de cierre al terminar.</p></article></div></section><section class="nv-sec"><span class="nv-eyebrow">Navia en gráficos</span><h3 class="nv-g-sub2">Así se ve tu progreso</h3>
 <div class="nv-gr-grid">
 <figure class="nv-gr"><figcaption>Avance de tu malla</figcaption>
 <svg viewBox="0 0 120 120" role="img" aria-label="Ejemplo: 70 por ciento de avance en la malla"><circle cx="60" cy="60" r="42" fill="none" stroke="#E5ECF4" stroke-width="12"/><circle cx="60" cy="60" r="42" fill="none" stroke="#002447" stroke-width="12" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="79" transform="rotate(-90 60 60)"/><circle cx="60" cy="18" r="3.5" fill="#FFC72C"/><text x="60" y="66" text-anchor="middle" font-size="22" font-weight="700" fill="#002447">70%</text></svg>
 <p>Ves cuántos cursos aprobaste y cuántos te faltan.</p><small>Ejemplo ilustrativo</small></figure>
 <figure class="nv-gr"><figcaption>Diagnóstico por curso</figcaption><div class="nv-bars" role="img" aria-label="Ejemplo de resultados por curso"><div class="nv-bar"><div class="nv-bar-top"><span>Bases de Datos</span><b>85%</b></div><div class="nv-bar-track"><i class="ok" style="width:85%"></i></div></div><div class="nv-bar"><div class="nv-bar-top"><span>Seguridad de la Información</span><b>60%</b></div><div class="nv-bar-track"><i class="low" style="width:60%"></i></div></div><div class="nv-bar"><div class="nv-bar-top"><span>Gobierno de Datos</span><b>40%</b></div><div class="nv-bar-track"><i class="low" style="width:40%"></i></div></div></div>
-<p>Los cursos en dorado son los que conviene reforzar.</p><small>Ejemplo ilustrativo</small></figure>
+<p>Los cursos destacados son los que conviene reforzar.</p><small>Ejemplo ilustrativo</small></figure>
 <figure class="nv-gr"><figcaption>Ciclo a ciclo</figcaption>
 <svg viewBox="0 0 360 270" role="img" aria-label="Ciclo de Navia: planifica, diagnostica, cierra y actualiza"><circle cx="180" cy="135" r="78" fill="none" stroke="#E5ECF4" stroke-width="12"/><polygon points="0,-8 7,6 -7,6" fill="#FFC72C" transform="translate(235.2 79.8) rotate(135)"/><polygon points="0,-8 7,6 -7,6" fill="#FFC72C" transform="translate(235.2 190.2) rotate(225)"/><polygon points="0,-8 7,6 -7,6" fill="#FFC72C" transform="translate(124.8 190.2) rotate(315)"/><polygon points="0,-8 7,6 -7,6" fill="#FFC72C" transform="translate(124.8 79.8) rotate(405)"/><circle cx="180" cy="57" r="22" fill="#002447"/><text x="180" y="63" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">1</text><text x="180" y="28" text-anchor="middle" font-size="15" font-weight="700" fill="#1A1A1A">Planifica</text><circle cx="258" cy="135" r="22" fill="#002447"/><text x="258" y="141" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">2</text><text x="290" y="140" text-anchor="start" font-size="15" font-weight="700" fill="#1A1A1A">Diagnostica</text><circle cx="180" cy="213" r="22" fill="#002447"/><text x="180" y="219" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">3</text><text x="180" y="256" text-anchor="middle" font-size="15" font-weight="700" fill="#1A1A1A">Cierra</text><circle cx="102" cy="135" r="22" fill="#002447"/><text x="102" y="141" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">4</text><text x="70" y="140" text-anchor="end" font-size="15" font-weight="700" fill="#1A1A1A">Actualiza</text><text x="180" y="132" text-anchor="middle" font-size="14" font-weight="700" fill="#002447">Tu ruta</text><text x="180" y="150" text-anchor="middle" font-size="12" fill="#333">se repite</text></svg>
 <p>Cada ciclo comienza con tu malla ya actualizada.</p><small>Esquema del recorrido</small></figure>
-</div></section><section class="nv-sec"><span class="nv-eyebrow">Cómo funciona</span><h3 class="nv-g-sub2">Tu recorrido paso a paso</h3><ol class="nv-tl"><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-user"/></svg><b>1</b></span><div><h4>Perfil</h4><p>Registras tu carrera y tu ciclo actual. Navia carga la malla que te corresponde.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-list"/></svg><b>2</b></span><div><h4>Historial</h4><p>Marcas los cursos que ya aprobaste y ves tu porcentaje de avance en tu panel de inicio.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-route"/></svg><b>3</b></span><div><h4>Próximo ciclo</h4><p>Eliges 5 o 6 cursos. Navia sugiere una ruta según tu avance y te explica qué se estudia en cada curso.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-quiz"/></svg><b>4</b></span><div><h4>Diagnóstico</h4><p>Respondes preguntas por curso y recibes una lista de temas para reforzar. No es un examen.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-cycle"/></svg><b>5</b></span><div><h4>Cierre de ciclo</h4><p>Registras tus resultados, rindes una evaluación breve y tu malla se actualiza.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-chat"/></svg><b>6</b></span><div><h4>Comunidad</h4><p>Consultas cursos y compartes tu experiencia con otros estudiantes.</p></div></li></ol></section><section class="nv-sec"><span class="nv-eyebrow">Glosario rápido</span><h3 class="nv-g-sub2">Antes de empezar</h3><ul class="nv-g-tiles"><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-grid"/></svg><strong>Malla</strong><small>Cursos de tu carrera ordenados por ciclo.</small></li><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-chain"/></svg><strong>Prerrequisito</strong><small>Curso que debes aprobar antes de llevar otro.</small></li><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-books"/></svg><strong>Carga</strong><small>Cantidad de cursos que llevas en un ciclo.</small></li><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-test"/></svg><strong>Diagnóstico</strong><small>Mide tu punto de partida para reforzar a tiempo.</small></li><li><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-cycle"/></svg><strong>Cierre de ciclo</strong><small>Actualiza tus notas y tu malla al terminar.</small></li></ul></section><section class="nv-sec"><span class="nv-eyebrow">Accesible para todos</span><h3 class="nv-g-sub2">Pensado para que cualquiera pueda usarlo</h3><div class="nv-acc"><div class="nv-acc-ic"><svg class="nv-ic" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-access"/></svg></div><ul><li><strong>Teclado</strong><span>Navega con Tab y Enter en todo el prototipo.</span></li><li><strong>Lectores de pantalla</strong><span>Etiquetas ARIA y avisos de estado.</span></li><li><strong>Menos movimiento</strong><span>Respeta la preferencia de reducir animaciones.</span></li><li><strong>Contraste AA</strong><span>Colores USIL con contraste accesible.</span></li></ul></div></section><section class="nv-sec"><span class="nv-eyebrow">Preguntas frecuentes</span><h3 class="nv-g-sub2">Resuelve tus dudas</h3><details class="nv-g-det"><summary>¿Necesito una cuenta real?</summary><p>No. El acceso con Microsoft es una simulación y también puedes continuar como invitado.</p></details><details class="nv-g-det"><summary>¿Para qué carreras es Navia?</summary><p>Para todas las carreras. Eliges la tuya al registrar tu perfil y Navia carga su malla.</p></details><details class="nv-g-det"><summary>¿El diagnóstico es un examen?</summary><p>No. Es una guía para identificar qué temas reforzar antes del ciclo.</p></details><details class="nv-g-det"><summary>¿Mis datos se guardan?</summary><p>El prototipo no los guarda en tu navegador: solo simula la experiencia mientras está abierto.</p></details></section><div class="nv-cta"><div><strong>¿Listo para empezar?</strong><span>Inicia sesión con tu cuenta institucional o continúa como invitado.</span></div><button type="button" id="guideCta">Ir al acceso ↑</button></div>
+</div></section><section class="nv-sec"><span class="nv-eyebrow">Cómo funciona</span><h3 class="nv-g-sub2">Tu recorrido paso a paso</h3><ol class="nv-tl"><li><span class="nv-tl-ic"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-user"/></svg><b>1</b></span><div><h4>Perfil</h4><p>Registras tu carrera y tu ciclo actual. Navia carga la malla que te corresponde.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-list"/></svg><b>2</b></span><div><h4>Historial</h4><p>Marcas los cursos que ya aprobaste y ves tu porcentaje de avance en tu panel de inicio.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-route"/></svg><b>3</b></span><div><h4>Próximo ciclo</h4><p>Eliges 5 o 6 cursos. Navia sugiere una ruta según tu avance y te explica qué se estudia en cada curso.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-clipboard-check"/></svg><b>4</b></span><div><h4>Diagnóstico</h4><p>Respondes preguntas por curso y recibes una lista de temas para reforzar. No es un examen.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-refresh"/></svg><b>5</b></span><div><h4>Cierre de ciclo</h4><p>Registras tus resultados, rindes una evaluación breve y tu malla se actualiza.</p></div></li><li><span class="nv-tl-ic"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-chat"/></svg><b>6</b></span><div><h4>Comunidad</h4><p>Consultas cursos y compartes tu experiencia con otros estudiantes.</p></div></li></ol></section><section class="nv-sec"><span class="nv-eyebrow">Glosario rápido</span><h3 class="nv-g-sub2">Antes de empezar</h3><ul class="nv-g-tiles"><li><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-layout-grid"/></svg><strong>Malla</strong><small>Cursos de tu carrera ordenados por ciclo.</small></li><li><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-link"/></svg><strong>Prerrequisito</strong><small>Curso que debes aprobar antes de llevar otro.</small></li><li><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-books"/></svg><strong>Carga</strong><small>Cantidad de cursos que llevas en un ciclo.</small></li><li><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-check-circle"/></svg><strong>Diagnóstico</strong><small>Mide tu punto de partida para reforzar a tiempo.</small></li><li><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-refresh"/></svg><strong>Cierre de ciclo</strong><small>Actualiza tus notas y tu malla al terminar.</small></li></ul></section><section class="nv-sec"><span class="nv-eyebrow">Accesible para todos</span><h3 class="nv-g-sub2">Pensado para que cualquiera pueda usarlo</h3><div class="nv-acc"><div class="nv-acc-ic"><svg class="nv-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#nv-icon-accessibility"/></svg></div><ul><li><strong>Teclado</strong><span>Navega con Tab y Enter en todo el prototipo.</span></li><li><strong>Lectores de pantalla</strong><span>Etiquetas ARIA y avisos de estado.</span></li><li><strong>Menos movimiento</strong><span>Respeta la preferencia de reducir animaciones.</span></li><li><strong>Contraste AA</strong><span>Colores USIL con contraste accesible.</span></li></ul></div></section><section class="nv-sec"><span class="nv-eyebrow">Preguntas frecuentes</span><h3 class="nv-g-sub2">Resuelve tus dudas</h3><details class="nv-g-det"><summary>¿Necesito una cuenta real?</summary><p>No. El acceso con Microsoft es una simulación y también puedes continuar como invitado.</p></details><details class="nv-g-det"><summary>¿Para qué carreras es Navia?</summary><p>Para todas las carreras. Eliges la tuya al registrar tu perfil y Navia carga su malla.</p></details><details class="nv-g-det"><summary>¿El diagnóstico es un examen?</summary><p>No. Es una guía para identificar qué temas reforzar antes del ciclo.</p></details><details class="nv-g-det"><summary>¿Mis datos se guardan?</summary><p>El prototipo no los guarda en tu navegador: solo simula la experiencia mientras está abierto.</p></details></section><div class="nv-cta"><div><strong>¿Listo para empezar?</strong><span>Inicia sesión con tu cuenta institucional o continúa como invitado.</span></div><button type="button" id="guideCta">Ir al acceso <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-up"></use></svg></button></div>
 <p class="nv-g-note">Prototipo académico · Universidad San Ignacio de Loyola · 2026</p>
           </div>
         </div>
@@ -232,7 +232,7 @@
             </div>
             <!-- Paso 2: contraseña -->
             <div id="msStep2" class="hidden">
-              <button type="button" onclick="msBack()" class="flex items-center gap-2 text-sm text-slate-700 hover:text-slate-900 mb-3"><span>←</span><span id="msEmailShown" class="truncate">correo@usil.pe</span></button>
+              <button type="button" onclick="msBack()" class="flex items-center gap-2 text-sm text-slate-700 hover:text-slate-900 mb-3"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg><span id="msEmailShown" class="truncate">correo@usil.pe</span></button>
               <h2 class="text-2xl font-semibold text-slate-900">Escribir contraseña</h2>
               <div class="mt-5 relative">
                 <label for="microsoftPassword" class="block text-sm font-semibold text-slate-800 mb-2">Contraseña</label>
@@ -253,7 +253,7 @@
         <section id="screen-2" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
           <div class="w-full max-w-6xl bg-white rounded-3xl shadow-xl border border-slate-200/80 overflow-hidden">
             <div class="grid grid-cols-1 lg:grid-cols-4">
-              <div class="lg:col-span-1 bg-gradient-to-br from-[#E5ECF4] to-white p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-slate-200">
+              <div class="nv-profile-sidebar lg:col-span-1 p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-slate-200">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold uppercase tracking-wide">
                   Registro del alumno
                 </div>
@@ -265,7 +265,7 @@
                   <div class="flex items-start gap-3"><div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"/></svg></div><div><h4 class="text-xs font-bold text-slate-800">Datos actualizables</h4><p class="text-[11px] text-slate-500">La carrera y el ciclo elegido se reflejan en las siguientes pantallas.</p></div></div>
                 </div>
               </div>
-              <div class="lg:col-span-3 p-6 sm:p-8 bg-slate-50/70">
+              <div class="lg:col-span-3 p-6 sm:p-8 bg-white">
                 <div class="w-full mb-7">
                   <div id="profileProgress" class="flex items-center justify-between max-w-md mx-auto relative">
                     <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
@@ -314,12 +314,12 @@
                   <input type="radio" name="userGoal" value="Ninguno" checked class="hidden">
                 </div>
                 <div id="careerPreview" class="mt-5 bg-blue-50/70 border border-blue-100 rounded-2xl p-4 flex items-start gap-3">
-                  <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">↗</div>
+                  <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-up-right"></use></svg></div>
                   <div><p class="text-xs font-bold text-blue-950">Malla que se cargará</p><p id="careerPreviewText" class="text-[11px] text-blue-800 mt-1">Selecciona una carrera para cargar la malla curricular.</p></div>
                 </div>
                 <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-end">
-                  <button id="profileBackButton" onclick="goToScreen(1)" class="mr-auto px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">← Volver a la página de inicio</button>
-                  <button onclick="saveStudentProfile()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2"><span>Cargar mi malla →</span></button>
+                  <button id="profileBackButton" onclick="goToScreen(1)" class="mr-auto px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver a la página de inicio</button>
+                  <button onclick="saveStudentProfile()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2"><span>Cargar mi malla <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span></button>
                 </div>
               </div>
             </div>
@@ -335,11 +335,11 @@
               <div class="flex items-center justify-between max-w-md mx-auto relative">
                 <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
                 <div class="flex flex-col items-center relative z-10">
-                  <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
+                  <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div>
                   <span class="text-[10px] text-slate-600 mt-1 font-medium">Cuenta</span>
                 </div>
                 <div class="flex flex-col items-center relative z-10">
-                  <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div>
+                  <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div>
                   <span class="text-[10px] text-slate-600 mt-1 font-medium">Perfil académico</span>
                 </div>
                 <div class="flex flex-col items-center relative z-10">
@@ -372,7 +372,7 @@
             <div class="mt-4 p-4 rounded-2xl bg-blue-50/70 border border-blue-200 flex flex-wrap items-center justify-between gap-4">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center">
-                  <svg aria-hidden="true" focusable="false" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                  <svg class="nv-icon w-5 h-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-chart"></use></svg>
                 </div>
                 <div>
                   <h3 class="text-xs font-bold text-blue-950">Resumen de tu avance</h3>
@@ -396,10 +396,10 @@
             <!-- Navigation Actions -->
             <div class="mt-5 pt-3 border-t border-slate-200 flex items-center justify-between">
               <button onclick="goToScreen(2)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver
               </button>
               <button onclick="goToScreen(4)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Analizar progreso →</span>
+                <span>Analizar progreso <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -410,7 +410,7 @@
         <section id="screen-4" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center">
           <div class="w-full max-w-5xl space-y-6">
             <!-- Hero de bienvenida -->
-            <div class="nv-dashboard-hero nv-fade relative overflow-hidden rounded-[28px] p-7 sm:p-9 text-white bg-gradient-to-br from-[#002B57] via-[#003D7A] to-[#00478A] shadow-2xl" style="box-shadow:0 30px 60px -28px rgba(0,51,102,.7)">
+            <div class="nv-dashboard-hero nv-fade relative overflow-hidden rounded-[28px] p-7 sm:p-9 text-white">
               <div class="absolute inset-0 nv-grid-bg opacity-70 pointer-events-none"></div>
               <div class="absolute -right-16 -top-16 w-72 h-72 rounded-full bg-yellow-300/25 blur-3xl nv-float pointer-events-none"></div>
               <div class="relative flex flex-wrap items-center justify-between gap-5">
@@ -426,14 +426,13 @@
             </div>
             <!-- Progreso -->
             <div class="nv-fade nv-d1 w-full bg-white rounded-[28px] p-6 sm:p-8 border border-indigo-100 shadow-lg relative overflow-hidden">
-              <div class="flex items-center gap-2 text-blue-700 text-xs font-bold uppercase tracking-wider mb-6"><span class="w-6 h-1 rounded-full bg-gradient-to-r from-[#003366] to-yellow-300"></span><span>Tu progreso académico</span></div>
+              <div class="flex items-center gap-2 text-blue-700 text-xs font-bold uppercase tracking-wider mb-6"><span class="nv-progress-marker w-6 h-1 rounded-full"></span><span>Tu progreso académico</span></div>
               <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                 <div class="md:col-span-4 flex items-center justify-center">
                   <div class="relative w-40 h-40 flex items-center justify-center">
                     <svg aria-hidden="true" focusable="false" class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                      <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#003366"/><stop offset="100%" stop-color="#FFC72C"/></linearGradient></defs>
-                      <circle cx="50" cy="50" r="42" stroke="#E5ECF4" stroke-width="9" fill="transparent"></circle>
-                      <circle id="dashboardProgressRing" cx="50" cy="50" r="42" stroke="url(#ringGrad)" stroke-width="9" stroke-dasharray="264" stroke-dashoffset="264" stroke-linecap="round" fill="transparent" style="transition:stroke-dashoffset 1s ease"></circle>
+                      <circle cx="50" cy="50" r="42" stroke="#E0DFDE" stroke-width="9" fill="transparent"></circle>
+                      <circle id="dashboardProgressRing" cx="50" cy="50" r="42" stroke="#0036DC" stroke-width="9" stroke-dasharray="264" stroke-dashoffset="264" stroke-linecap="round" fill="transparent" style="transition:stroke-dashoffset 1s ease"></circle>
                     </svg>
                     <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
                       <span id="dashboardProgressPercent" class="text-4xl font-black text-blue-950">0%</span>
@@ -448,24 +447,24 @@
                 </div>
                 <div class="md:col-span-4 grid grid-cols-3 gap-2 text-center">
                   <div class="rounded-2xl bg-blue-50 p-3"><span id="dashboardApprovedCount" class="text-2xl font-black text-blue-900 block">0</span><span class="text-[10px] text-slate-700 font-medium">aprobados</span></div>
-                  <div class="rounded-2xl bg-amber-50 p-3"><span id="dashboardPendingCount" class="text-2xl font-black text-amber-600 block">60</span><span class="text-[10px] text-slate-700 font-medium">pendientes</span></div>
-                  <div class="rounded-2xl bg-slate-100 p-3"><span id="dashboardTotalCount" class="text-2xl font-black text-slate-700 block">60</span><span class="text-[10px] text-slate-700 font-medium">totales</span></div>
+                  <div class="rounded-2xl bg-slate-100 p-3"><span id="dashboardPendingCount" class="text-2xl font-black text-slate-800 block">60</span><span class="text-[10px] text-slate-700 font-medium">pendientes</span></div>
+                  <div class="rounded-2xl bg-white border border-slate-200 p-3"><span id="dashboardTotalCount" class="text-2xl font-black text-slate-700 block">60</span><span class="text-[10px] text-slate-700 font-medium">totales</span></div>
                 </div>
               </div>
             </div>
             <!-- Acciones (centradas) -->
             <div class="nv-fade nv-d2 grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(5)" class="nv-card cursor-pointer rounded-[28px] p-7 text-center bg-gradient-to-br from-white to-indigo-50 border border-blue-200 shadow-md flex flex-col items-center">
+              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(5)" class="nv-dashboard-action nv-card cursor-pointer rounded-[28px] p-7 text-center border border-blue-200 flex flex-col items-center">
                 <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center"><svg class="nv-icon h-8 w-8" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-rocket"/></svg></div>
                 <h3 class="text-lg font-extrabold text-[#003366] mt-4">Prepárate para tu próximo ciclo</h3>
                 <p class="text-xs text-slate-500 mt-1.5 leading-relaxed max-w-xs">Recibe una orientación personalizada según tu avance y tus objetivos de carga.</p>
-                <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#003366] text-white text-xs font-bold shadow-md">Empezar <span>→</span></span>
+                <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#003366] text-white text-xs font-bold shadow-md">Empezar <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span></span>
               </div>
-              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(10)" class="nv-card cursor-pointer rounded-[28px] p-7 text-center bg-white border border-slate-200 shadow-md flex flex-col items-center">
+              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(10)" class="nv-dashboard-action nv-card cursor-pointer rounded-[28px] p-7 text-center bg-white border border-slate-200 flex flex-col items-center">
                 <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center"><svg class="nv-icon h-8 w-8" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check-circle"/></svg></div>
                 <h3 class="text-lg font-extrabold text-[#00195A] mt-4">¿Culminaste el ciclo?</h3>
                 <p class="text-xs text-slate-500 mt-1.5 leading-relaxed max-w-xs">Actualiza tus resultados académicos y mantén tu malla curricular al día.</p>
-                <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-rose-700 text-white text-xs font-bold shadow-md">Actualizar <span>→</span></span>
+                <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-600 text-white text-xs font-bold shadow-md">Actualizar <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span></span>
               </div>
             </div>
             <div class="text-center text-base text-slate-600 pt-1">Mismas ganas. Más futuro.</div>
@@ -511,10 +510,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
               <button onclick="goToScreen(4)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver al inicio
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver al inicio
               </button>
               <button onclick="continueToSuggestedCourses()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Continuar →</span>
+                <span>Continuar <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -528,7 +527,7 @@
             <div class="w-full mb-7">
               <div class="flex items-center justify-between max-w-2xl mx-auto relative">
                 <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">2</div><span class="text-[11px] font-bold text-blue-700 mt-1">Cursos sugeridos</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">3</div><span class="text-[11px] font-medium text-slate-600 mt-1">Conceptos</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">4</div><span class="text-[11px] font-medium text-slate-600 mt-1">Diagnóstico</span></div>
@@ -548,10 +547,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
               <button onclick="goToScreen(5)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver
               </button>
               <button onclick="continueToConcepts()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Siguiente →</span>
+                <span>Siguiente <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -565,7 +564,7 @@
             <div class="w-full mb-7">
               <div class="flex items-center justify-between max-w-2xl mx-auto relative">
                 <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">2</div><span class="text-[11px] font-bold text-blue-700 mt-1">Conceptos</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">3</div><span class="text-[11px] font-medium text-slate-600 mt-1">Diagnóstico</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">4</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
@@ -581,10 +580,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
               <button onclick="goToScreen(5)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver
               </button>
               <button onclick="goToScreen(8)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Siguiente →</span>
+                <span>Siguiente <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -598,8 +597,8 @@
             <div class="w-full mb-7">
               <div class="flex items-center justify-between max-w-2xl mx-auto relative">
                 <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">✓</div><span class="text-[11px] font-bold text-blue-700 mt-1">Conceptos</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-bold text-blue-700 mt-1">Conceptos</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">3</div><span class="text-[11px] font-bold text-blue-700 mt-1">Diagnóstico</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">4</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
               </div>
@@ -647,7 +646,7 @@
                 </p>
               </div>
               <!-- Right Helper Box (4 cols) -->
-              <div class="lg:col-span-4 bg-gradient-to-br from-blue-50 to-indigo-50/50 p-5 rounded-2xl border border-blue-100 flex flex-col items-center text-center">
+              <div class="nv-dashboard-helper lg:col-span-4 p-5 rounded-2xl border border-blue-100 flex flex-col items-center text-center">
                 <div class="w-12 h-12 rounded-2xl bg-white text-blue-600 shadow-xs flex items-center justify-center text-xl mb-2.5">
                   <svg class="nv-icon h-6 w-6" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-graduation"/></svg>
                 </div>
@@ -664,10 +663,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-3xl mx-auto">
               <button onclick="quizGoBack()" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver
               </button>
               <button onclick="quizNextQuestion()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span id="quizNextBtnLabel">Ver resultados de diagnóstico →</span>
+                <span id="quizNextBtnLabel">Ver resultados de diagnóstico <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -681,9 +680,9 @@
             <div class="w-full mb-7">
               <div class="flex items-center justify-between max-w-2xl mx-auto relative">
                 <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Conceptos</span></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Diagnóstico</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Cantidad</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Conceptos</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Diagnóstico</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">4</div><span class="text-[11px] font-bold text-blue-700 mt-1">Resultado</span></div>
               </div>
             </div>
@@ -723,10 +722,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
               <button onclick="goToScreen(8)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver al test
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver al test
               </button>
               <button onclick="goToScreen(4)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Inicio →</span>
+                <span>Inicio <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -763,10 +762,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
               <button onclick="goToScreen(4)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver al inicio
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver al inicio
               </button>
               <button onclick="goToScreen(11)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Continuar →</span>
+                <span>Continuar <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -780,7 +779,7 @@
             <div class="w-full mb-7">
               <div class="flex items-center justify-between max-w-md mx-auto relative">
                 <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">2</div><span class="text-[11px] font-bold text-blue-700 mt-1">Preguntas</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 text-slate-500 flex items-center justify-center text-xs font-semibold">3</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
               </div>
@@ -825,10 +824,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
               <button onclick="goToScreen(10)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver
               </button>
               <button onclick="closureNextQuestion()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span id="closureNextBtnLabel">Siguiente →</span>
+                <span id="closureNextBtnLabel">Siguiente <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -842,8 +841,8 @@
             <div class="w-full mb-7">
               <div class="flex items-center justify-between max-w-md mx-auto relative">
                 <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Preguntas</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Preguntas</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">3</div><span class="text-[11px] font-bold text-blue-700 mt-1">Resultado</span></div>
               </div>
             </div>
@@ -889,10 +888,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
               <button onclick="goToScreen(11)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver
               </button>
               <button onclick="finalizeClosure()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Finalizar y ver malla actualizada →</span>
+                <span>Finalizar y ver malla actualizada <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -906,9 +905,9 @@
             <div class="w-full mb-7">
               <div class="flex items-center justify-between max-w-xl mx-auto relative">
                 <div class="absolute left-8 right-8 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Preguntas</span></div>
-                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">✓</div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Actualizar cierre</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Preguntas</span></div>
+                <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div><span class="text-[11px] font-medium text-slate-600 mt-1">Resultado</span></div>
                 <div class="flex flex-col items-center relative z-10"><div class="w-8 h-8 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">4</div><span class="text-[11px] font-bold text-blue-700 mt-1">Malla actualizada</span></div>
               </div>
             </div>
@@ -922,7 +921,7 @@
             <!-- Stats 3 Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl mx-auto mb-6">
               <div class="flex items-center gap-3 p-3 bg-emerald-50/80 border border-emerald-200 rounded-2xl">
-                <div class="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm shadow-xs">✓</div>
+                <div class="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center font-bold text-sm shadow-xs"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div>
                 <div>
                   <span id="closingApprovedCount" class="text-2xl font-black text-emerald-800 leading-none">0</span>
                   <div class="text-[11px] font-semibold text-emerald-700 leading-tight">cursos<br>aprobados</div>
@@ -967,10 +966,10 @@
             <!-- Nav Actions -->
             <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between max-w-2xl mx-auto">
               <button onclick="goToScreen(4)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
-                ← Volver al inicio
+                <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver al inicio
               </button>
               <button onclick="goToScreen(14)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Ver comunidad Navia →</span>
+                <span>Ver comunidad Navia <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>

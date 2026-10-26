@@ -11,32 +11,31 @@
 @keyframes nvFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 @keyframes nvFloatB{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(12px) rotate(4deg)}}
 @keyframes nvFade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes nvShine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
 .nv-fade{animation:nvFade .7s both}.nv-d1{animation-delay:.1s}.nv-d2{animation-delay:.2s}.nv-d3{animation-delay:.3s}.nv-d4{animation-delay:.4s}
 .nv-float{animation:nvFloat 6s ease-in-out infinite}.nv-floatb{animation:nvFloatB 7s ease-in-out infinite}
 .nv-grid-bg{background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(ellipse at 30% 40%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at 30% 40%,#000 20%,transparent 75%)}
 .nv-glass{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
-.nv-grad-text{background:linear-gradient(90deg,#FFC72C,#D4AF37,#FFC72C);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:nvShine 5s linear infinite}
-.nv-card{transition:transform .25s,box-shadow .25s}.nv-card:hover{transform:translateY(-4px);box-shadow:0 22px 40px -18px rgba(0,51,102,.45)}
+.nv-grad-text{color:var(--navia-accent)}
+.nv-card{transition:transform .2s,border-color .2s,box-shadow .2s}.nv-card:hover{transform:translateY(-2px);box-shadow:0 2px 8px rgb(0 25 90 / .1)}
 /* pulido global de pasos 2-14 */
-#screen-2>div,#screen-3>div,#screen-5>div,#screen-6>div,#screen-7>div,#screen-8>div,#screen-9>div,#screen-10>div,#screen-11>div,#screen-12>div,#screen-13>div,#screen-14>div{border-radius:28px;box-shadow:0 30px 60px -30px rgba(0,51,102,.28),0 2px 0 rgba(255,255,255,.8) inset;border-color:rgba(199,210,254,.7);position:relative;animation:nvFade .5s both}
-#screen-3>div:before,#screen-5>div:before,#screen-6>div:before,#screen-7>div:before,#screen-8>div:before,#screen-9>div:before,#screen-10>div:before,#screen-11>div:before,#screen-12>div:before,#screen-13>div:before,#screen-14>div:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,#003366,#6366f1,#fbbf24);border-radius:28px 28px 0 0}
+#screen-2>div,#screen-3>div,#screen-5>div,#screen-6>div,#screen-7>div,#screen-8>div,#screen-9>div,#screen-10>div,#screen-11>div,#screen-12>div,#screen-13>div,#screen-14>div{border-radius:8px;box-shadow:none;border-color:var(--navia-border);position:relative;animation:nvFade .5s both}
+#screen-3>div:before,#screen-5>div:before,#screen-6>div:before,#screen-7>div:before,#screen-8>div:before,#screen-9>div:before,#screen-10>div:before,#screen-11>div:before,#screen-12>div:before,#screen-13>div:before,#screen-14>div:before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--navia-accent);border-radius:8px 8px 0 0}
 .screen-panel input[type=text],.screen-panel select{transition:box-shadow .2s,border-color .2s}
-.screen-panel input[type=text]:hover,.screen-panel select:hover{border-color:#D4AF37}
-.screen-panel button[onclick*="goToScreen"][class*="bg-[#003366]"],.screen-panel button[onclick*="saveStudentProfile"],.screen-panel button[onclick*="continueTo"]{background:linear-gradient(135deg,#003366,#00478A)!important;box-shadow:0 10px 22px -8px rgba(0,51,102,.6)!important;transition:transform .2s,box-shadow .2s}
-.screen-panel button[onclick*="goToScreen"][class*="bg-[#003366]"]:hover,.screen-panel button[onclick*="saveStudentProfile"]:hover,.screen-panel button[onclick*="continueTo"]:hover{transform:translateY(-2px)}
-.load-card{min-width:150px;transition:transform .2s,box-shadow .2s}.load-card:hover{transform:translateY(-3px);box-shadow:0 14px 26px -14px rgba(0,51,102,.5)}
+.screen-panel input[type=text]:hover,.screen-panel select:hover{border-color:var(--navia-accent)}
+.screen-panel button[onclick*="goToScreen"][class*="bg-[#003366]"],.screen-panel button[onclick*="saveStudentProfile"],.screen-panel button[onclick*="continueTo"]{background:var(--navia-accent)!important;box-shadow:0 2px 6px rgb(0 25 90 / .12)!important;transition:background-color .2s,box-shadow .2s}
+.screen-panel button[onclick*="goToScreen"][class*="bg-[#003366]"]:hover,.screen-panel button[onclick*="saveStudentProfile"]:hover,.screen-panel button[onclick*="continueTo"]:hover{transform:none}
+.load-card{min-width:150px;transition:border-color .2s,box-shadow .2s}.load-card:hover{box-shadow:0 2px 8px rgb(0 25 90 / .1)}
 .goal-opt{cursor:pointer}.goal-opt input{position:absolute;opacity:0}
-.goal-opt .goal-box{border:2px solid #E0E0E0;background:#fff;border-radius:16px;padding:12px 10px;text-align:center;transition:all .2s}
-.goal-opt input:checked+.goal-box{border-color:#003366;background:#E5ECF4;box-shadow:0 8px 20px -10px rgba(0,51,102,.6)}
-.goal-opt:hover .goal-box{border-color:#D4AF37}
+.goal-opt .goal-box{border:2px solid #E0DFDE;background:#fff;border-radius:8px;padding:12px 10px;text-align:center;transition:background-color .2s,border-color .2s}
+.goal-opt input:checked+.goal-box{border-color:var(--navia-accent);background:var(--navia-surface-accent);box-shadow:0 2px 6px rgb(0 25 90 / .1)}
+.goal-opt:hover .goal-box{border-color:var(--navia-accent)}
 
 
 /* ===== Accesibilidad ===== */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-.skip-link{position:fixed;left:12px;top:-64px;z-index:300;background:#001F40;color:#fff;padding:10px 18px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;transition:top .2s ease}
+.skip-link{position:fixed;left:12px;top:-64px;z-index:300;background:var(--navia-heading);color:#fff;padding:10px 18px;border-radius:4px;font-weight:700;font-size:14px;text-decoration:none;transition:top .2s ease}
 .skip-link:focus{top:12px}
-:focus-visible{outline:3px solid #003366!important;outline-offset:2px}
+:focus-visible{outline:3px solid var(--navia-accent)!important;outline-offset:2px}
 #mainContent:focus,h1:focus{outline:none!important}
 #naviaApp>div{min-height:100vh}
 /* ===== Transiciones ligeras (solo opacity/transform, sin fill persistente) ===== */
@@ -48,6 +47,45 @@ button,[role=button],select,input,textarea{transition:background-color .2s,borde
 button:not(:disabled):active,[role=button]:active{transform:scale(.98)}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+.nv-login-card {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgb(0 25 90 / 0.12) !important;
+}
+
+.nv-login-card-accent,
+.nv-progress-marker {
+  background: var(--navia-accent);
+}
+
+.nv-profile-sidebar {
+  background: var(--navia-surface);
+}
+
+.nv-dashboard-hero {
+  border: 1px solid var(--navia-border);
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.nv-dashboard-action {
+  border-color: var(--navia-border) !important;
+  border-radius: 8px !important;
+  background: var(--navia-white) !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.nv-dashboard-action:hover {
+  border-color: var(--navia-accent) !important;
+  box-shadow: 0 2px 8px rgb(0 25 90 / 0.1) !important;
+}
+
+.nv-dashboard-helper {
+  border-color: var(--navia-border) !important;
+  border-radius: 8px !important;
+  background: var(--navia-surface) !important;
 }
 
 
@@ -75,7 +113,7 @@ button:not(:disabled):active,[role=button]:active{transform:scale(.98)}
 .nv-guide-btn:hover{background:#FAFAFA;box-shadow:0 0 2px rgba(0,0,0,.12),0 8px 16px rgba(0,0,0,.14)}
 .nv-guide-btn strong{display:block;font-size:17px;color:#002447}.nv-guide-btn small{display:block;color:#333;font-size:14px;margin-top:2px}
 .nv-guide-ico{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#003366;color:#FFC72C;font-weight:700;font-family:Georgia,serif}
-.nv-chev{margin-left:auto;flex:none;color:#002447;transition:transform .3s}
+.nv-chev{width:20px;height:20px;min-width:20px;margin-left:auto;flex:0 0 20px;color:#002447;transition:transform .3s}
 .nv-guide-btn[aria-expanded="true"] .nv-chev{transform:rotate(180deg)}
 .nv-guide-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
 .nv-guide-panel.open{grid-template-rows:1fr}
@@ -101,12 +139,11 @@ button:not(:disabled):active,[role=button]:active{transform:scale(.98)}
 .nv-guide-btn:focus-visible,.nv-g-det summary:focus-visible{outline:3px solid #1A1A1A!important;outline-offset:2px}
 .nv-g-det summary:hover{background:#E5ECF4}
 /* ---- Versión visual de la guía (ilustraciones SVG, menos texto) ---- */
-.nv-ic{width:100%;height:100%;display:block}
 .nv-g-lead{font-size:16px;margin:4px 0 18px}
 .nv-g-card2{background:#fff;border:1px solid #BDBDBD;border-radius:8px;overflow:hidden;box-shadow:0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.1);transition:box-shadow .2s,transform .2s}
 .nv-g-card2:hover{box-shadow:0 0 2px rgba(0,0,0,.12),0 8px 16px rgba(0,0,0,.16);transform:translateY(-2px)}
 .nv-g-banner{height:104px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#002447,#003D7A);border-bottom:4px solid #FFC72C}
-.nv-g-banner .nv-ic{width:68px;height:68px}
+.nv-g-banner .nv-icon{width:68px;height:68px}
 .nv-g-card2 h3{font-size:16px;font-weight:700;color:#002447;margin:12px 16px 2px}
 .nv-g-card2 p{font-size:14px;line-height:1.45;color:#262626;margin:0 16px 14px}
 .nv-g-steps2,.nv-g-tiles{list-style:none;margin:0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
@@ -114,7 +151,7 @@ button:not(:disabled):active,[role=button]:active{transform:scale(.98)}
 .nv-g-steps2 li:hover,.nv-g-tiles li:hover{background:#E5ECF4;border-color:#002447}
 .nv-g-bub{position:relative;width:56px;height:56px;padding:12px;border-radius:50%;background:#E5ECF4;color:#002447;margin-bottom:6px}
 .nv-g-bub b{position:absolute;top:-4px;right:-4px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#FFC72C;color:#1A1A1A;font-size:12px;border:2px solid #fff}
-.nv-g-tiles li>.nv-ic{width:52px;height:52px;padding:10px;border-radius:12px;background:#002447;color:#fff;margin-bottom:6px}
+.nv-g-tiles li>.nv-icon{width:52px;height:52px;padding:10px;border-radius:12px;background:#002447;color:#fff;margin-bottom:6px}
 .nv-g-steps2 strong,.nv-g-tiles strong{font-size:14px;font-weight:700;color:#1A1A1A}
 .nv-g-steps2 small,.nv-g-tiles small{font-size:13px;color:#333;line-height:1.35}
 /* ---- Guía extensa (inspirada en un recorrido explicativo one-page) ---- */
@@ -216,7 +253,6 @@ body {font-family: 'Montserrat', sans-serif !important;}
 
   #screen-1 { min-height: 100vh; height: auto; }
   #screen-1 .nv-screen-footer { margin-top: auto; flex: 0 0 auto; padding-bottom: .25rem; }
-  #screen-1 .nv-home-mark { width: 1.55rem; height: 1.55rem; color: #003d7a; }
   #screen-1 .nv-info-icon { min-height: 2rem; display: flex; align-items: center; color: #ffd15c; }
   #screen-1 .nv-info-icon svg { width: 1.75rem; height: 1.75rem; }
   #screen-1 .nv-card { align-content: start; }
@@ -227,6 +263,8 @@ body {font-family: 'Montserrat', sans-serif !important;}
 :root {
   --navia-white: #FFFFFF;
   --navia-surface: #F3F2F1;
+  --navia-surface-accent: #EFF3FF;
+  --navia-border: #E0DFDE;
   --navia-accent: #0036DC;
   --navia-heading: #00195A;
   --navia-text: #616569;
@@ -258,7 +296,7 @@ h3, h4, h5, h6 {
   line-height: 1.4;
 }
 
-.text-xs, [class~="text-[10px]"], [class~="text-[11px]"], [class~="text-[12px]"], [class~="text-[13px]"], [class~="text-[14px]"] {
+.text-xs, [class~="text-[8px]"], [class~="text-[9px]"], [class~="text-[10px]"], [class~="text-[11px]"], [class~="text-[12px]"], [class~="text-[13px]"], [class~="text-[14px]"] {
   font-size: 14px !important;
   line-height: 1.45 !important;
 }
@@ -328,7 +366,7 @@ h3, h4, h5, h6 {
 }
 
 #screen-4 .nv-dashboard-hero {
-  background: var(--navia-surface) !important;
+  background: var(--navia-white) !important;
   border: 1px solid #E0DFDE;
   box-shadow: none !important;
   color: var(--navia-heading) !important;
@@ -433,13 +471,19 @@ h3, h4, h5, h6 {
   background: var(--navia-accent);
 }
 
-.nv-tl-ic, .nv-acc-ic, .nv-g-tiles li > .nv-ic {
+.nv-tl-ic, .nv-acc-ic, .nv-g-tiles li > .nv-icon {
   background: #EFF3FF;
   color: var(--navia-accent);
 }
 
 .nv-tl-ic {
   box-shadow: 0 0 0 2px var(--navia-accent);
+}
+
+.nv-tl-ic > .nv-icon, .nv-acc-ic > .nv-icon {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .nv-acc {
@@ -519,12 +563,6 @@ symbol[id^="i-"] :is(path, circle, rect, polyline, line, ellipse) {
   width: 1.15em;
   height: 1.15em;
   margin-right: 0.25em;
-}
-
-#guidePanel .nv-ic :is(path, circle, rect, polyline, line, ellipse) {
-  fill: none !important;
-  stroke: currentColor !important;
-  stroke-width: 2px !important;
 }
 
 .nv-status-dot {
@@ -609,4 +647,260 @@ button[class~="bg-[#003366]"], button[class~="bg-[#002A52]"], .screen-panel butt
 .cycle-toggle-button {
   min-height: 44px;
   line-height: 1.25;
+}
+
+.nv-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--navia-heading);
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.nv-brand-mark {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  place-items: center;
+  border: 1px solid var(--navia-border);
+  border-radius: 8px;
+  background: var(--navia-white);
+  color: var(--navia-accent);
+}
+
+.nv-brand-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.nv-brand-name {
+  color: var(--navia-heading) !important;
+  font-weight: 800;
+}
+
+.nv-chev {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px;
+  flex: 0 0 20px !important;
+}
+
+#mainContent {
+  background: var(--navia-white) !important;
+}
+
+#innerAppNav {
+  border-color: var(--navia-border);
+}
+
+#reviewModal > div,
+#appToast {
+  border-radius: 8px !important;
+}
+
+[class~="text-[#003366]"],
+[class~="text-[#002447]"],
+[class~="text-blue-950"],
+[class~="text-blue-900"] {
+  color: var(--navia-heading) !important;
+}
+
+[class~="text-blue-800"],
+[class~="text-blue-700"],
+[class~="text-blue-600"] {
+  color: var(--navia-accent) !important;
+}
+
+[class~="bg-[#003366]"],
+[class~="bg-[#002A52]"],
+[class~="bg-blue-700"],
+[class~="bg-blue-600"] {
+  background-color: var(--navia-accent) !important;
+}
+
+[class~="bg-blue-50"],
+[class~="bg-blue-50/40"],
+[class~="bg-blue-50/50"],
+[class~="bg-blue-50/60"],
+[class~="bg-blue-100"] {
+  background-color: var(--navia-surface-accent) !important;
+}
+
+[class~="bg-slate-50"],
+[class~="bg-slate-50/50"],
+[class~="bg-slate-50/70"],
+[class~="bg-slate-100"] {
+  background-color: var(--navia-surface) !important;
+}
+
+[class~="border-slate-200"],
+[class~="border-gray-200"] {
+  border-color: var(--navia-border) !important;
+}
+
+[class~="text-slate-800"],
+[class~="text-slate-700"],
+[class~="text-slate-600"] {
+  color: var(--navia-text) !important;
+}
+
+[class~="text-slate-900"] {
+  color: var(--navia-heading) !important;
+}
+
+[class~="border-blue-700"],
+[class~="border-blue-600"],
+[class~="border-blue-500"] {
+  border-color: var(--navia-accent) !important;
+}
+
+button:not(.nav-tab):not(#headerInitials) {
+  border-radius: 4px !important;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  border-radius: 4px !important;
+}
+
+.screen-panel div[class~="rounded-2xl"],
+.screen-panel div[class~="rounded-3xl"] {
+  border-radius: 8px !important;
+}
+
+.screen-panel [class~="rounded-[28px]"] {
+  border-radius: 8px !important;
+}
+
+.nv-guide .nv-g-note {
+  border-left-color: var(--navia-accent);
+  background: var(--navia-surface-accent);
+  color: var(--navia-text);
+}
+
+.nv-g-det summary::after {
+  color: var(--navia-accent);
+}
+
+.nv-guide-btn {
+  min-height: 60px;
+  border-color: var(--navia-border);
+  border-left: 4px solid var(--navia-accent);
+  border-radius: 4px;
+}
+
+.nv-guide-btn:hover {
+  background: var(--navia-surface);
+}
+
+.nv-guide-btn:focus-visible,
+.nv-g-det summary:focus-visible {
+  outline-color: var(--navia-accent) !important;
+}
+
+.nv-guide :is(.nv-g-card, .nv-g-card2, .nv-gr, .nv-g-steps2 li, .nv-g-tiles li, .nv-g-det) {
+  border-color: var(--navia-border);
+}
+
+.nv-guide :is(.nv-g-card, .nv-g-card2, .nv-gr, .nv-g-steps2 li, .nv-g-tiles li) {
+  border-radius: 8px;
+}
+
+.nv-guide :is(.nv-g-sub, .nv-g-card, .nv-g-note, .nv-gh, .nv-tl::before, .nv-tl-ic, .nv-acc) {
+  border-color: var(--navia-accent);
+}
+
+.nv-guide :is(.nv-gh-eyebrow, .nv-g-sub, .nv-g-steps b, .nv-g-det summary::after) {
+  color: var(--navia-accent);
+}
+
+.nv-guide :is(.nv-g-card2 h3, .nv-g-sub2, .nv-tl h4, .nv-acc strong, .nv-cta strong, .nv-g-steps strong, .nv-g-tiles strong) {
+  color: var(--navia-heading);
+}
+
+.nv-guide :is(.nv-g-steps small, .nv-g-steps2 small, .nv-g-tiles small, .nv-g-det p, .nv-cta span, .nv-acc span) {
+  color: var(--navia-text);
+}
+
+.nv-guide :is(.nv-g-steps b, .nv-g-bub b) {
+  background: var(--navia-accent);
+  color: var(--navia-white);
+}
+
+.nv-guide :is(.nv-g-bub, .nv-tl-ic, .nv-acc-ic, .nv-g-tiles li > .nv-icon, .nv-g-banner) {
+  background: var(--navia-surface-accent);
+  color: var(--navia-accent);
+}
+
+.nv-guide .nv-gh {
+  background: var(--navia-surface);
+  color: var(--navia-heading);
+}
+
+.nv-guide .nv-cta {
+  border-color: var(--navia-border);
+  background: var(--navia-surface-accent);
+}
+
+.nv-guide .nv-cta button {
+  background: var(--navia-accent);
+  color: var(--navia-white);
+}
+
+.nv-guide .nv-cta button:hover {
+  background: var(--navia-heading);
+}
+
+.nv-guide-inner,
+.nv-guide .nv-sec {
+  color: var(--navia-text);
+}
+
+.nv-guide-inner {
+  border-color: var(--navia-border);
+}
+
+.nv-guide .nv-guide-btn small,
+.nv-guide :is(.nv-g-lead, .nv-g-card p, .nv-g-card2 p, .nv-g-steps small, .nv-g-steps2 small, .nv-g-tiles small, .nv-g-det p, .nv-tl p, .nv-acc span, .nv-cta span, .nv-gr p, .nv-gr small) {
+  color: var(--navia-text) !important;
+}
+
+.nv-guide :is(.nv-g-card h3, .nv-g-card2 h3, .nv-g-sub, .nv-g-sub2, .nv-g-steps span, .nv-g-steps2 strong, .nv-g-tiles strong, .nv-g-det summary, .nv-tl h4, .nv-acc strong, .nv-cta strong, .nv-gr figcaption, .nv-bar-top) {
+  color: var(--navia-heading) !important;
+}
+
+.nv-guide :is(.nv-g-steps b, .nv-g-bub b, .nv-tl-ic b) {
+  background: var(--navia-accent) !important;
+  color: var(--navia-white) !important;
+}
+
+.nv-guide .nv-g-det summary::after {
+  color: var(--navia-accent) !important;
+}
+
+.nv-guide .nv-gr {
+  border-top-color: var(--navia-accent);
+}
+
+.nv-guide .nv-bar-track i {
+  background: var(--navia-accent);
+}
+
+.nv-guide .nv-gr svg [fill="#002447"] {
+  fill: var(--navia-accent) !important;
+}
+
+.nv-guide .nv-gr svg [stroke="#002447"] {
+  stroke: var(--navia-accent) !important;
+}
+
+.nv-guide .nv-gr svg [fill="#1A1A1A"] {
+  fill: var(--navia-heading) !important;
+}
+
+.nv-guide .nv-gr svg [fill="#333"] {
+  fill: var(--navia-text) !important;
 }

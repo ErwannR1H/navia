@@ -883,7 +883,7 @@ function getCareerMaxCycles(career) {
       const cycleOf = c => cur.findIndex(cs => cs.includes(c)) + 1;
       host.innerHTML = list.map((c, i) => `<div class="grid grid-cols-12 p-3.5 ${i < list.length - 1 ? 'border-b border-slate-100' : ''} items-center hover:bg-slate-50">
         <div class="col-span-8 flex items-center gap-3"><span class="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">${courseIcon(c)}</span><span><span class="font-bold text-slate-800 text-xs sm:text-sm block">${c}</span><span class="text-[10px] text-slate-600">${cycleOf(c)}.° ciclo de la malla</span></span></div>
-        <div class="col-span-4 flex justify-end"><select aria-label="Estado final de ${c}" class="cierre-status-select bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold rounded-xl text-xs px-3 py-1.5 outline-none cursor-pointer" onchange="adjustStatusColor(this)"><option value="Aprobado" selected>Aprobado ✓</option><option value="Desaprobado">Desaprobado ✕</option><option value="Retirado">Retirado ⊝</option></select></div></div>`).join('');
+        <div class="col-span-4 flex justify-end"><select aria-label="Estado final de ${c}" class="cierre-status-select bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold rounded-xl text-xs px-3 py-1.5 outline-none cursor-pointer" onchange="adjustStatusColor(this)"><option value="Aprobado" selected>Aprobado</option><option value="Desaprobado">Desaprobado</option><option value="Retirado">Retirado</option></select></div></div>`).join('');
     }
 
     function finalizeClosure() {
@@ -917,7 +917,9 @@ function getCareerMaxCycles(career) {
       const saved = Number.isInteger(closureAnswers[closureQuizIndex]) ? closureAnswers[closureQuizIndex] : null;
       container.innerHTML = q.options.map((opt,i)=>`<label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 ${saved===i?'border-blue-600 bg-blue-50/40':'border-slate-200 bg-white'} cursor-pointer hover:bg-slate-50 transition"><input type="radio" name="closure_q_active" ${saved===i?'checked':''} value="${i}" class="text-blue-600 focus:ring-blue-500 w-4 h-4"><span class="text-xs sm:text-sm text-slate-800">${String.fromCharCode(65+i)}) ${opt}</span></label>`).join('');
       container.querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>highlightSelectedOption(inp)));
-      document.getElementById('closureNextBtnLabel').textContent = closureQuizIndex === closureQuestions.length-1 ? 'Ver resultado →' : 'Siguiente →';
+      document.getElementById('closureNextBtnLabel').innerHTML = closureQuizIndex === closureQuestions.length-1
+        ? `Ver resultado ${naviaIcon('arrow-right', 'nv-icon h-4 w-4')}`
+        : `Siguiente ${naviaIcon('arrow-right', 'nv-icon h-4 w-4')}`;
     }
 
     function startClosureEvaluation() {
@@ -987,7 +989,7 @@ function getCareerMaxCycles(career) {
       const title=document.getElementById('updatedMallaTitle'); if(title) title.textContent=`Malla actualizada, ${studentProfile.name || 'estudiante'}`;
       const summary=document.getElementById('updatedMallaSummary'); if(summary) summary.textContent=`${studentProfile.career || 'Tu carrera'} · ${lastClosure ? 'Cerraste el '+lastClosure.cycle+'.° ciclo y ahora estás en el '+studentProfile.cycle+'.°' : (studentProfile.cycle ? studentProfile.cycle+'.° ciclo' : 'ciclo actual')} · ${approved} cursos aprobados en este cierre.`;
       const list=document.getElementById('updatedMallaCourses');
-      if(list) list.innerHTML=rows.map(r=>`<div class="flex items-center justify-between p-3 bg-white border ${r.status==='Aprobado'?'border-slate-200':'border-red-200 bg-red-50/30'} rounded-xl"><span class="text-xs font-semibold text-slate-800">${r.course}</span><span class="text-[11px] px-2 py-0.5 rounded-full ${r.status==='Aprobado'?'bg-emerald-100 text-emerald-800':'bg-red-100 text-red-800'} font-bold">${r.status==='Aprobado'?'✓ Aprobado':r.status==='Retirado'?'⊝ Retirado':'! Pendiente'}</span></div>`).join('');
+      if(list) list.innerHTML=rows.map(r=>`<div class="flex items-center justify-between p-3 bg-white border ${r.status==='Aprobado'?'border-slate-200':'border-red-200 bg-red-50/30'} rounded-xl"><span class="text-xs font-semibold text-slate-800">${r.course}</span><span class="text-[11px] px-2 py-0.5 rounded-full ${r.status==='Aprobado'?'bg-emerald-100 text-emerald-800':'bg-red-100 text-red-800'} font-bold">${r.status==='Aprobado'?naviaIcon('check', 'nv-icon h-3 w-3')+' Aprobado':r.status==='Retirado'?naviaIcon('minus-circle', 'nv-icon h-3 w-3')+' Retirado':'! Pendiente'}</span></div>`).join('');
       const next=document.getElementById('updatedMallaNextText'); if(next) next.textContent = pending ? `Navia mantendrá ${pending} curso${pending===1?'':'s'} pendiente${pending===1?'':'s'} como prioridad para recuperar tu ruta.` : 'Tu ciclo quedó actualizado. Navia puede continuar con tu siguiente ruta.';
       const pt=document.getElementById('updatedMallaProgressText'); if(pt) pt.textContent=`${approved} aprobados · ${pending} pendientes`;
       const pr=document.getElementById('updatedMallaPercent'); if(pr) pr.textContent=`${percent}%`;
@@ -1128,10 +1130,10 @@ function getCareerMaxCycles(career) {
       const arrow = document.getElementById(`${id}-arrow`);
       if (content.classList.contains('hidden')) {
         content.classList.remove('hidden');
-        if (arrow) arrow.textContent = '▲';
+        if (arrow) arrow.innerHTML = naviaIcon('chevron-up', 'nv-icon h-4 w-4');
       } else {
         content.classList.add('hidden');
-        if (arrow) arrow.textContent = '▼';
+        if (arrow) arrow.innerHTML = naviaIcon('chevron-down', 'nv-icon h-4 w-4');
       }
     }
 
@@ -1191,7 +1193,9 @@ function getCareerMaxCycles(career) {
       const saved = Number.isInteger(quizAnswers[idx]) ? quizAnswers[idx] : -1;
       document.getElementById('quizOptionsContainer').innerHTML = q.options.map((opt, i) =>
         `<label class="flex items-start gap-3 p-3.5 rounded-2xl border-2 ${i === saved ? 'border-blue-600 bg-blue-50/50' : 'border-slate-200 bg-white'} cursor-pointer transition hover:bg-blue-50/60"><input type="radio" name="diag_q_active" ${i === saved ? 'checked' : ''} onchange="highlightSelectedOption(this)" class="mt-1 text-blue-600 focus:ring-blue-500 w-4 h-4"><span class="text-xs sm:text-sm text-slate-700 font-medium">${opt}</span></label>`).join('');
-      document.getElementById('quizNextBtnLabel').textContent = idx === qs.length - 1 ? 'Ver resultados de diagnóstico →' : 'Siguiente pregunta →';
+      document.getElementById('quizNextBtnLabel').innerHTML = idx === qs.length - 1
+        ? `Ver resultados de diagnóstico ${naviaIcon('arrow-right', 'nv-icon h-4 w-4')}`
+        : `Siguiente pregunta ${naviaIcon('arrow-right', 'nv-icon h-4 w-4')}`;
     }
 
     function highlightSelectedOption(inputEl) {
