@@ -904,3 +904,162 @@ textarea {
 .nv-guide .nv-gr svg [fill="#333"] {
   fill: var(--navia-text) !important;
 }
+
+@media (max-width: 640px) {
+  #screen-2 .nv-profile-sidebar {
+    display: none;
+  }
+
+  #dynamicCurriculumGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-width: 0;
+  }
+
+  #profileProgress,
+  #screen-3 > div > .w-full.mb-6 > .flex.items-center.justify-between,
+  .screen-panel > div > .w-full.mb-7 > .flex.items-center.justify-between {
+    align-items: flex-start;
+  }
+
+  #profileProgress > .profile-progress-step,
+  #screen-3 > div > .w-full.mb-6 > .flex.items-center.justify-between > .flex.flex-col,
+  .screen-panel > div > .w-full.mb-7 > .flex.items-center.justify-between > .flex.flex-col {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  #profileProgress > .profile-progress-step > span,
+  #screen-3 > div > .w-full.mb-6 > .flex.items-center.justify-between > .flex.flex-col > span,
+  .screen-panel > div > .w-full.mb-7 > .flex.items-center.justify-between > .flex.flex-col > span {
+    max-width: 100%;
+    padding: 0 2px;
+    font-size: clamp(9px, 2.7vw, 11px) !important;
+    line-height: 1.25 !important;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .screen-panel .border-t.flex.items-center.justify-between {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .screen-panel .border-t.flex.items-center.justify-between > button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #screen-2 .mt-6.pt-4.border-t {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  #screen-2 .mt-6.pt-4.border-t > button {
+    width: 100%;
+    justify-content: center;
+    margin-right: 0;
+    text-align: center;
+  }
+}
+
+.nv-menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--navia-border, #E0DFDE);
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: var(--navia-heading, #00195A);
+}
+
+.nv-menu-toggle svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.nv-mobile-menu:not(.hidden) {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 50;
+  display: flex;
+  width: min(280px, calc(100vw - 32px));
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid var(--navia-border, #E0DFDE);
+  border-radius: 8px;
+  background: #FFFFFF;
+  box-shadow: 0 8px 24px rgb(0 25 90 / 0.16);
+}
+
+.nv-mobile-menu > button {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--navia-heading, #00195A);
+  font: inherit;
+  text-align: left;
+}
+
+.nv-mobile-menu > button:hover,
+.nv-mobile-menu > button:focus-visible {
+  background: var(--navia-surface-accent, #EFF3FF);
+}
+
+@media (max-width: 767px) {
+  #innerAppNav {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .nv-inner-menu-toggle,
+  .nv-home-menu-toggle {
+    display: inline-flex;
+  }
+
+  #homeTopBar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    column-gap: 12px;
+    row-gap: 12px;
+  }
+
+  #homeTopBar .nv-brand-lockup {
+    min-width: 0;
+  }
+
+  #homeTopBar .nv-home-tagline {
+    grid-column: 1 / -1;
+    justify-self: center;
+    max-width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--navia-border, #E0DFDE);
+    border-radius: 9999px;
+    background: var(--navia-surface, #F3F2F1);
+    color: var(--navia-heading, #00195A);
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+    letter-spacing: 0.12em;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  #homeTopBar .nv-home-menu-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}

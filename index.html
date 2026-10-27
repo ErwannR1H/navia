@@ -42,7 +42,7 @@
     <!-- App Inner Canvas -->
     <div class="w-full min-h-[760px] md:min-h-[820px] bg-white flex flex-col relative overflow-hidden text-slate-800">
       <!-- Inside App Header Navbar (Active for in-app views 4 to 14) -->
-      <header id="innerAppNav" role="banner" class="w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 sm:px-10 py-3.5 flex items-center justify-between z-30 transition-all">
+      <header id="innerAppNav" role="banner" class="relative w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 sm:px-10 py-3.5 flex items-center justify-between z-30 transition-all">
         <button type="button" aria-label="Navia, ir al inicio" class="flex items-center gap-2.5 cursor-pointer rounded-xl" onclick="goToScreen(4)">
           <div class="nv-brand-mark">
             <svg class="nv-icon nv-brand-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-graduation"></use></svg>
@@ -60,7 +60,15 @@
             <span id="headerStudentMeta" class="text-[11px] text-slate-500">Completa tu registro</span>
           </div>
           <button type="button" id="headerInitials" aria-label="Ir a mi perfil" class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs border border-blue-200 cursor-pointer shadow-xs hover:ring-2 hover:ring-blue-300" onclick="goToScreen(2)">NA</button>
+          <button type="button" class="nv-menu-toggle nv-inner-menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="innerMobileMenu" onclick="toggleNavMenu('innerMobileMenu', this)">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
         </div>
+        <nav id="innerMobileMenu" class="nv-mobile-menu hidden" aria-label="Navegación principal móvil">
+          <button onclick="closeNavMenus(); goToScreen(4)" class="nav-tab" data-view="4">Inicio</button>
+          <button onclick="closeNavMenus(); goToScreen(14)" class="nav-tab" data-view="14">Comunidad</button>
+          <button onclick="closeNavMenus(); goToScreen(2)" class="nav-tab" data-view="2">Perfil</button>
+        </nav>
       </header>
       <!-- Main Workspace Views Container -->
       <main id="mainContent" tabindex="-1" class="flex-1 flex flex-col relative overflow-y-auto bg-slate-50/50 outline-none">
@@ -72,9 +80,17 @@
           <div class="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full bg-indigo-400/30 blur-3xl nv-float pointer-events-none"></div>
           <div class="absolute -bottom-32 -left-20 w-[380px] h-[380px] rounded-full bg-yellow-300/20 blur-3xl nv-floatb pointer-events-none"></div>
           <!-- Top mini-bar -->
-          <div class="w-full flex items-center justify-between z-10">
+          <div id="homeTopBar" class="w-full flex items-center justify-between z-10">
             <span class="nv-brand-lockup"><span class="nv-brand-mark"><svg class="nv-icon nv-brand-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#nv-icon-graduation"></use></svg></span><span class="nv-brand-name">Navia</span></span>
-            <span class="text-xs font-semibold tracking-[0.16em] uppercase text-blue-200">Estudia · Decide · Avanza</span>
+            <span class="nv-home-tagline text-xs font-semibold tracking-[0.16em] uppercase text-blue-200">Estudia · Decide · Avanza</span>
+            <button type="button" class="nv-menu-toggle nv-home-menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="homeMobileMenu" onclick="toggleNavMenu('homeMobileMenu', this)">
+              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <nav id="homeMobileMenu" class="nv-mobile-menu nv-home-mobile-menu hidden" aria-label="Menú principal">
+              <button onclick="closeNavMenus(); openMicrosoftLogin()">Iniciar sesión</button>
+              <button onclick="closeNavMenus(); goToScreen(2)">Continuar como invitado</button>
+              <button onclick="openHomeGuide()">Conoce Navia</button>
+            </nav>
           </div>
           <!-- Hero Login Split -->
           <div class="w-full max-w-6xl mx-auto my-auto py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center z-10">

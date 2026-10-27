@@ -2,6 +2,47 @@ function naviaIcon(name, className = 'nv-icon') {
       return `<svg class="${className}" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#nv-icon-${name}"/></svg>`;
     }
 
+function closeNavMenus() {
+      document.querySelectorAll('.nv-mobile-menu').forEach(menu => {
+        menu.classList.add('hidden');
+        const toggle = document.querySelector(`[aria-controls="${menu.id}"]`);
+        if (toggle) {
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.setAttribute('aria-label', 'Abrir menú');
+        }
+      });
+    }
+
+    function toggleNavMenu(menuId, toggle) {
+      const menu = document.getElementById(menuId);
+      if (!menu || !toggle) return;
+      const shouldOpen = menu.classList.contains('hidden');
+      closeNavMenus();
+      if (shouldOpen) {
+        menu.classList.remove('hidden');
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Cerrar menú');
+      }
+    }
+
+    function openHomeGuide() {
+      closeNavMenus();
+      const guideToggle = document.getElementById('guideToggle');
+      if (guideToggle && guideToggle.getAttribute('aria-expanded') !== 'true') guideToggle.click();
+      document.querySelector('.nv-guide')?.scrollIntoView({
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start'
+      });
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeNavMenus();
+    });
+
+    document.addEventListener('click', event => {
+      if (!event.target.closest('.nv-mobile-menu, .nv-menu-toggle')) closeNavMenus();
+    });
+
 function getCareerMaxCycles(career) {
       return (usilCurriculums[career] || []).length || 10;
     }
@@ -1078,6 +1119,8 @@ function getCareerMaxCycles(career) {
       if (screenNumber === 12) { renderClosureResult(); }
       if (screenNumber === 13) { updateFinalMalla(); }
 
+      const mainContent = document.getElementById('mainContent');
+      if (mainContent) mainContent.scrollTop = 0;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
