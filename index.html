@@ -53,6 +53,7 @@
           <button onclick="goToScreen(4)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-blue-700 font-bold bg-blue-50" data-view="4">Inicio</button>
           <button onclick="goToScreen(14)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="14">Comunidad</button>
           <button onclick="goToScreen(2)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="2">Perfil</button>
+          <button type="button" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" onclick="replayTutorial()">Tutorial</button>
         </nav>
         <div class="flex items-center gap-3">
           <div class="hidden sm:flex flex-col text-right">
@@ -68,6 +69,7 @@
           <button onclick="closeNavMenus(); goToScreen(4)" class="nav-tab" data-view="4">Inicio</button>
           <button onclick="closeNavMenus(); goToScreen(14)" class="nav-tab" data-view="14">Comunidad</button>
           <button onclick="closeNavMenus(); goToScreen(2)" class="nav-tab" data-view="2">Perfil</button>
+          <button type="button" onclick="replayTutorial()">Tutorial</button>
         </nav>
       </header>
       <!-- Main Workspace Views Container -->
@@ -294,7 +296,7 @@
                   <div><h3 class="text-xl sm:text-2xl font-black text-[#003366]">Datos del alumno</h3><p class="text-xs text-slate-500 mt-1">Selecciona tu carrera para cargar automáticamente su malla curricular.</p></div>
                   <div id="microsoftAccountBadge" class="hidden px-3 py-2 rounded-xl bg-white border border-slate-200 text-[10px] text-slate-600">Cuenta: <strong id="studentEmailLabel">alumno@usil.pe</strong></div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div id="studentProfileFields" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div class="md:col-span-2">
                     <label for="studentName" class="block text-xs font-bold text-slate-700 mb-1">Nombre completo<span class="sr-only"> (obligatorio)</span></label>
                     <input id="studentName" name="studentName" type="text" required aria-required="true" autocomplete="name" value="" class="w-full py-2.5 px-3.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none" placeholder="Escribe tu nombre completo">
@@ -1181,6 +1183,40 @@
           <button type="submit" class="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md">Publicar opinión</button>
         </div>
       </form>
+    </div>
+  </div>
+  <div id="tutorialModal" role="dialog" aria-modal="true" aria-label="Tutorial guiado de Navia" class="nv-tutorial-layer hidden">
+    <div id="tutorialDimTop" class="nv-tutorial-dim"></div>
+    <div id="tutorialDimRight" class="nv-tutorial-dim"></div>
+    <div id="tutorialDimBottom" class="nv-tutorial-dim"></div>
+    <div id="tutorialDimLeft" class="nv-tutorial-dim"></div>
+    <div id="tutorialTargetBlocker" class="nv-tutorial-target-blocker" aria-hidden="true"></div>
+    <section id="tutorialTooltip" class="nv-tutorial-tooltip" role="region" aria-labelledby="tutorialTitle" aria-describedby="tutorialDescription">
+      <div class="nv-tutorial-header">
+        <span id="tutorialContext" class="nv-tutorial-eyebrow">Recorrido por Navia</span>
+        <span id="tutorialProgressLabel" class="nv-tutorial-progress-label">Paso 1 de 1</span>
+      </div>
+      <div class="nv-tutorial-progress" role="progressbar" aria-label="Progreso del tutorial" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1">
+        <span id="tutorialProgressBar"></span>
+      </div>
+      <h2 id="tutorialTitle" class="nv-tutorial-title"></h2>
+      <p id="tutorialDescription" class="nv-tutorial-description"></p>
+      <p id="tutorialLockHint" class="nv-tutorial-lock-hint">Durante el tutorial no se puede interactuar con la página; los controles se activarán al terminar.</p>
+      <div class="nv-tutorial-footer">
+        <button id="tutorialPreviousButton" type="button" class="nv-tutorial-secondary" onclick="previousTutorialStep()">Anterior</button>
+        <button id="tutorialNextButton" type="button" class="nv-tutorial-primary" onclick="nextTutorialStep()">Siguiente</button>
+      </div>
+    </section>
+    <button id="tutorialSkipButton" type="button" class="nv-tutorial-skip hidden" aria-haspopup="dialog" aria-controls="tutorialSkipConfirm" onclick="openTutorialSkipConfirm()">Saltar el tutorial</button>
+  </div>
+  <div id="tutorialSkipConfirm" role="dialog" aria-modal="true" aria-labelledby="tutorialSkipTitle" aria-describedby="tutorialSkipDescription" class="nv-tutorial-confirm hidden items-center justify-center p-4">
+    <div class="nv-tutorial-confirm-card">
+      <h2 id="tutorialSkipTitle">¿Quieres saltar el tutorial?</h2>
+      <p id="tutorialSkipDescription">No volverá a mostrarse automáticamente. Podrás continuar con tu perfil académico.</p>
+      <div class="nv-tutorial-confirm-actions">
+        <button type="button" class="nv-tutorial-secondary" onclick="closeTutorialSkipConfirm()">Seguir con el tutorial</button>
+        <button type="button" class="nv-tutorial-primary" onclick="confirmTutorialSkip()">Sí, saltarlo</button>
+      </div>
     </div>
   </div>
   <!-- Interactive Floating Toast -->

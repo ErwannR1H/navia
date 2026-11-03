@@ -1063,3 +1063,208 @@ textarea {
     grid-row: 1;
   }
 }
+
+.nv-tutorial-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+}
+
+.nv-tutorial-layer.hidden,
+.nv-tutorial-confirm.hidden {
+  display: none;
+}
+
+.nv-tutorial-dim {
+  position: fixed;
+  z-index: 70;
+  background: rgb(30 41 59 / 30%);
+  pointer-events: auto;
+}
+
+body.nv-tutorial-open,
+body.nv-tutorial-open #mainContent {
+  overflow: hidden !important;
+}
+
+.nv-tutorial-target-blocker {
+  position: fixed;
+  z-index: 71;
+  box-sizing: border-box;
+  border: 2px solid #FFFFFF;
+  border-radius: 8px;
+  outline: 2px solid var(--navia-accent, #0036DC);
+  box-shadow: 0 0 0 4px rgb(0 54 220 / 20%);
+  pointer-events: auto;
+}
+
+.nv-tutorial-tooltip {
+  position: fixed;
+  z-index: 75;
+  width: min(300px, calc(100vw - 32px));
+  padding: 12px;
+  border: 1px solid var(--navia-border, #E0DFDE);
+  border-top: 4px solid var(--navia-accent, #0036DC);
+  border-radius: 10px;
+  background: #FFFFFF;
+  box-shadow: 0 12px 32px rgb(0 16 41 / 22%);
+  pointer-events: auto;
+}
+
+.nv-tutorial-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--navia-accent, #0036DC);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.nv-tutorial-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.nv-tutorial-progress {
+  height: 4px;
+  margin: 6px 0 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--navia-surface, #F3F2F1);
+}
+
+.nv-tutorial-progress > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--navia-accent, #0036DC);
+  transition: width .2s ease;
+}
+
+.nv-tutorial-title {
+  color: var(--navia-heading, #00195A);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.nv-tutorial-description {
+  margin-top: 4px;
+  color: var(--navia-text, #616569);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.nv-tutorial-lock-hint {
+  margin-top: 7px;
+  color: var(--navia-heading, #00195A);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.nv-tutorial-footer,
+.nv-tutorial-confirm-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.nv-tutorial-primary,
+.nv-tutorial-secondary,
+.nv-tutorial-skip {
+  min-height: 34px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.nv-tutorial-primary {
+  background: var(--navia-accent, #0036DC);
+  color: #FFFFFF;
+}
+
+.nv-tutorial-primary:hover {
+  background: var(--navia-heading, #00195A);
+}
+
+.nv-tutorial-secondary {
+  border: 1px solid var(--navia-border, #E0DFDE);
+  background: #FFFFFF;
+  color: var(--navia-heading, #00195A);
+}
+
+.nv-tutorial-secondary:hover:not(:disabled) {
+  background: var(--navia-surface, #F3F2F1);
+}
+
+.nv-tutorial-secondary:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+
+.nv-tutorial-skip {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 80;
+  border: 1px solid #FFFFFF;
+  background: #FFFFFF;
+  color: var(--navia-heading, #00195A);
+  box-shadow: 0 4px 18px rgb(0 16 41 / 24%);
+  pointer-events: auto;
+}
+
+.nv-tutorial-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgb(0 16 41 / 45%);
+}
+
+.nv-tutorial-confirm.hidden {
+  display: none;
+}
+
+.nv-tutorial-confirm-card {
+  width: min(100%, 420px);
+  padding: 24px;
+  border: 1px solid var(--navia-border, #E0DFDE);
+  border-radius: 10px;
+  background: #FFFFFF;
+  box-shadow: 0 20px 60px rgb(0 16 41 / 30%);
+}
+
+.nv-tutorial-confirm-card h2 {
+  color: var(--navia-heading, #00195A);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.nv-tutorial-confirm-card p {
+  margin-top: 8px;
+  color: var(--navia-text, #616569);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.nv-tutorial-confirm-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .nv-tutorial-skip {
+    right: 12px;
+    bottom: 12px;
+  }
+}

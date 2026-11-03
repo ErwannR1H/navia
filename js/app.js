@@ -1060,11 +1060,389 @@ function getCareerMaxCycles(career) {
     let currentActiveScreen = 1;
     let currentQuizIndex = 0;
     const totalScreens = 14;
+    const TUTORIAL_STORAGE_KEY = 'naviaTutorialCompletedV3';
+    let tutorialActive = false;
+    let tutorialStepIndex = 0;
+    let tutorialDemoSnapshot = null;
+    let tutorialDemoLoaded = false;
+    let tutorialClosureSeeded = false;
+    let tutorialMallaSeeded = false;
+
+    const tutorialSteps = [
+      { screen: 2, target: '#studentProfileFields', title: 'Completa tu perfil', text: 'Ingresa aquí tus datos académicos para que Navia cargue tu malla y adapte las recomendaciones a tu carrera y ciclo.', context: 'Perfil académico', placement: 'top' },
+      { screen: 3, target: '#dynamicCurriculumGrid .cycle-col:first-child .cycle-course-label:first-child', title: 'Registra tu historial', text: 'Marca en esta malla los cursos que ya aprobaste. Navia usará ese avance para sugerir los cursos disponibles.', context: 'Historial académico', placement: 'corner-top-right' },
+      { screen: 4, target: '#screen-4 .nv-dashboard-action:nth-child(1)', title: 'Planifica el próximo ciclo', text: 'Desde Inicio, selecciona «Empezar» para elegir tu carga y organizar los cursos del ciclo siguiente.', context: 'Inicio', placement: 'top' },
+      { screen: 5, target: '#loadOptionsGrid [data-load-count="5"]', title: 'Elige tu carga', text: 'Selecciona cuántos cursos planeas llevar. Navia ajustará las sugerencias a esa carga.', context: 'Próximo ciclo', placement: 'corner-top-right' },
+      { screen: 6, target: '#dynamicSuggestedCourses > label:first-child', title: 'Elige tus cursos', text: 'Aquí puedes seleccionar los cursos que llevarás. Navia los ordena según tu avance y sus prerrequisitos.', context: 'Próximo ciclo', placement: 'corner-top-right' },
+      { screen: 7, target: '#dynamicCourseConcepts > div:first-child', title: 'Revisa tu ruta', text: 'Consulta los conceptos de los cursos elegidos para saber qué aprenderás antes de empezar el ciclo.', context: 'Próximo ciclo', placement: 'corner-top-right' },
+      { screen: 8, target: '#quizOptionsContainer label:first-child', title: 'Responde el diagnóstico', text: 'Elige una opción por pregunta. Tus respuestas ayudan a orientar el repaso; no son una calificación oficial.', context: 'Próximo ciclo', placement: 'corner-top-right' },
+      { screen: 9, target: '#dynamicRecommendationList > div:first-child', title: 'Consulta qué reforzar', text: 'Navia relaciona tus respuestas con los cursos para sugerir qué temas conviene repasar.', context: 'Próximo ciclo', placement: 'corner-top-right' },
+      { screen: 4, target: '#screen-4 .nv-dashboard-action:nth-child(2)', title: 'Finaliza el semestre', text: 'Al terminar el ciclo, selecciona «Actualizar» para registrar los resultados de tus cursos y ajustar tu malla.', context: 'Cierre del semestre', placement: 'top' },
+      { screen: 10, target: '#closureRows > div:first-child .cierre-status-select', title: 'Registra los resultados', text: 'Indica si aprobaste, desaprobaste o te retiraste de cada curso. Estos estados actualizarán tu historial.', context: 'Cierre del semestre', placement: 'corner-top-right' },
+      { screen: 11, target: '#closureOptionsContainer label:first-child', title: 'Completa la evaluación', text: 'Responde las preguntas para que Navia identifique qué temas podrías reforzar.', context: 'Cierre del semestre', placement: 'corner-top-right' },
+      { screen: 12, target: '#closureReinforceList > div:first-child', title: 'Revisa las recomendaciones', text: 'Aquí aparecen los cursos pendientes y los temas que conviene repasar antes de continuar.', context: 'Cierre del semestre', placement: 'corner-top-right' },
+      { screen: 13, target: '#updatedMallaCourses > div:first-child', title: 'Consulta tu malla actualizada', text: 'Navia incorpora los resultados del cierre y conserva como prioridad los cursos que aún tienes pendientes.', context: 'Malla académica', placement: 'corner-top-right' },
+      { screen: 4, target: '#innerAppNav .nav-tab[data-view="14"]', title: 'Explora la comunidad', text: 'En Comunidad puedes consultar experiencias de otros estudiantes y compartir las tuyas.', context: 'Comunidad', placement: 'bottom', fallback: '#innerAppNav .nv-menu-toggle' },
+      { screen: 14, target: '#communitySearchInput', title: 'Busca opiniones por curso', text: 'Busca un curso para leer experiencias relacionadas. También puedes compartir una opinión útil y respetuosa.', context: 'Comunidad', placement: 'bottom' },
+      { screen: 14, target: '#commCourseGrid .comm-card:first-child button', title: 'Filtra las opiniones', text: 'Selecciona «Ver opiniones» en un curso para consultar las experiencias relacionadas con esa materia.', context: 'Comunidad', placement: 'corner-top-right' },
+      { screen: 14, target: '#commReviewsList .like-btn', title: 'Valora una opinión', text: 'Usa el corazón para indicar que una opinión te resultó útil para decidir sobre un curso.', context: 'Comunidad', placement: 'corner-top-right' },
+      { screen: 14, target: '#screen-14 button[onclick="openLeaveReviewModal()"]', title: 'Comparte tu experiencia', text: 'Publica una opinión seleccionando un curso y escribiendo un consejo útil para otros estudiantes.', context: 'Comunidad', placement: 'top' },
+      { screen: 2, target: '#studentProfileFields', title: 'Ahora, completa tu perfil', text: 'El recorrido terminó. Ingresa tus datos académicos para empezar a usar Navia; los datos de ejemplo no se guardaron.', context: '¡Listo!', placement: 'top' }
+    ];
+
+    function snapshotTutorialDemoState() {
+      return {
+        studentProfile: { ...studentProfile },
+        profileCompleted,
+        selectedLoadCount,
+        suggestedCourses: [...suggestedCourses],
+        selectedRouteCourses: [...selectedRouteCourses],
+        routeCustomized,
+        plannedCourses: [...plannedCourses],
+        dynamicDiagnosticScore,
+        quizAnswers: [...quizAnswers],
+        currentQuizIndex,
+        diagWrongCourses: [...diagWrongCourses],
+        diagCorrect,
+        diagTotal,
+        closureQuestions: [...closureQuestions],
+        closureAnswers: [...closureAnswers],
+        closureQuizIndex,
+        closureScore,
+        closureStatuses: getClosureCourses().map(row => row.status),
+        closureRowsKey,
+        closureApplied,
+        lastClosure: lastClosure ? { ...lastClosure, rows: lastClosure.rows.map(row => ({ ...row })) } : null,
+        historyRendered: document.querySelectorAll('#dynamicCurriculumGrid .cycle-col').length > 0,
+        checkedCourses: Array.from(document.querySelectorAll('.hist-check:checked'), checkbox => checkbox.dataset.course)
+      };
+    }
+
+    function startTutorialDemo() {
+      if (tutorialDemoSnapshot) return;
+      tutorialDemoSnapshot = snapshotTutorialDemoState();
+      tutorialDemoLoaded = true;
+      studentProfile = {
+        ...studentProfile,
+        name: 'María López',
+        career: 'Ingeniería de Sistemas de Información',
+        cycle: '5',
+        goal: 'Ninguno'
+      };
+      profileCompleted = true;
+      renderDynamicCurriculum();
+      document.querySelectorAll('.hist-check').forEach(checkbox => {
+        const cycle = Number(checkbox.dataset.cycle);
+        const currentCycleCourses = usilCurriculums[studentProfile.career][4];
+        checkbox.checked = cycle < 5 || (cycle === 5 && currentCycleCourses.slice(0, 2).includes(checkbox.dataset.course));
+      });
+      updateHistoryCounts();
+      selectedLoadCount = 5;
+      selectedRouteCourses = [];
+      routeCustomized = false;
+      renderLoadOptions();
+      renderSuggestedCourses();
+      plannedCourses = [...selectedRouteCourses];
+      renderCourseConcepts();
+      dynamicDiagnosticScore = 70;
+      diagCorrect = 7;
+      diagTotal = 10;
+      diagWrongCourses = selectedRouteCourses.slice(0, 2);
+      quizAnswers = [];
+      currentQuizIndex = 0;
+      updateDashboardFromProfile();
+      const hint = document.getElementById('tutorialLockHint');
+      if (hint) hint.textContent = 'Estás viendo datos de ejemplo; no se guardarán. La página estará bloqueada hasta terminar el recorrido.';
+    }
+
+    function restoreTutorialDemoState() {
+      if (!tutorialDemoSnapshot) return;
+      const snapshot = tutorialDemoSnapshot;
+      studentProfile = { ...snapshot.studentProfile };
+      profileCompleted = snapshot.profileCompleted;
+      selectedLoadCount = snapshot.selectedLoadCount;
+      suggestedCourses = [...snapshot.suggestedCourses];
+      selectedRouteCourses = [...snapshot.selectedRouteCourses];
+      routeCustomized = snapshot.routeCustomized;
+      plannedCourses = [...snapshot.plannedCourses];
+      dynamicDiagnosticScore = snapshot.dynamicDiagnosticScore;
+      quizAnswers = [...snapshot.quizAnswers];
+      currentQuizIndex = snapshot.currentQuizIndex;
+      diagWrongCourses = [...snapshot.diagWrongCourses];
+      diagCorrect = snapshot.diagCorrect;
+      diagTotal = snapshot.diagTotal;
+      closureQuestions = [...snapshot.closureQuestions];
+      closureAnswers = [...snapshot.closureAnswers];
+      closureQuizIndex = snapshot.closureQuizIndex;
+      closureScore = snapshot.closureScore;
+      closureRowsKey = '';
+      closureApplied = snapshot.closureApplied;
+      lastClosure = snapshot.lastClosure;
+      tutorialDemoSnapshot = null;
+      tutorialDemoLoaded = false;
+      tutorialClosureSeeded = false;
+      tutorialMallaSeeded = false;
+
+      const grid = document.getElementById('dynamicCurriculumGrid');
+      if (snapshot.historyRendered) {
+        renderDynamicCurriculum();
+        const checked = new Set(snapshot.checkedCourses);
+        grid.querySelectorAll('.hist-check').forEach(checkbox => {
+          checkbox.checked = checked.has(checkbox.dataset.course);
+        });
+        updateHistoryCounts();
+      } else {
+        grid.innerHTML = '';
+      }
+      renderLoadOptions();
+      renderSuggestedCourses();
+      renderCourseConcepts();
+      renderClosureRows(true);
+      document.querySelectorAll('.cierre-status-select').forEach((select, index) => {
+        if (snapshot.closureStatuses[index]) select.value = snapshot.closureStatuses[index];
+        adjustStatusColor(select);
+      });
+      closureRowsKey = snapshot.closureRowsKey;
+      closureApplied = snapshot.closureApplied;
+      updateDashboardFromProfile();
+      updateNavigationAccess();
+      const hint = document.getElementById('tutorialLockHint');
+      if (hint) hint.textContent = 'Durante el tutorial no se puede interactuar con la página; los controles se activarán al terminar.';
+    }
+
+    function findTutorialTarget(step) {
+      const candidates = Array.from(document.querySelectorAll(step.target));
+      const visibleTarget = candidates.find(element => element.getClientRects().length > 0);
+      if (visibleTarget) return visibleTarget;
+      return step.fallback ? document.querySelector(step.fallback) : null;
+    }
+
+    let activeTutorialTarget = null;
+    function positionTutorialSpotlight(target, preferredPlacement) {
+      activeTutorialTarget = target;
+      const rect = target.getBoundingClientRect();
+      const pad = 8;
+      const left = Math.max(0, rect.left - pad);
+      const top = Math.max(0, rect.top - pad);
+      const right = Math.min(window.innerWidth, rect.right + pad);
+      const bottom = Math.min(window.innerHeight, rect.bottom + pad);
+      const dimRegions = {
+        tutorialDimTop: [0, 0, window.innerWidth, top],
+        tutorialDimRight: [right, top, Math.max(0, window.innerWidth - right), Math.max(0, bottom - top)],
+        tutorialDimBottom: [0, bottom, window.innerWidth, Math.max(0, window.innerHeight - bottom)],
+        tutorialDimLeft: [0, top, left, Math.max(0, bottom - top)]
+      };
+      Object.entries(dimRegions).forEach(([id, [x, y, width, height]]) => {
+        const region = document.getElementById(id);
+        region.style.left = `${x}px`;
+        region.style.top = `${y}px`;
+        region.style.width = `${width}px`;
+        region.style.height = `${height}px`;
+      });
+
+      const blocker = document.getElementById('tutorialTargetBlocker');
+      blocker.style.left = `${left}px`;
+      blocker.style.top = `${top}px`;
+      blocker.style.width = `${Math.max(0, right - left)}px`;
+      blocker.style.height = `${Math.max(0, bottom - top)}px`;
+
+      const tooltip = document.getElementById('tutorialTooltip');
+      const gap = 16;
+      const margin = 12;
+      const width = tooltip.offsetWidth;
+      const height = tooltip.offsetHeight;
+      if (preferredPlacement === 'corner-top-right') {
+        const cornerLeft = Math.max(margin, window.innerWidth - width - margin);
+        const cornerRight = cornerLeft + width;
+        const cornerBottom = margin + height;
+        if (cornerLeft >= right || cornerRight <= left || cornerBottom <= top || margin >= bottom) {
+          tooltip.style.left = `${cornerLeft}px`;
+          tooltip.style.top = `${margin}px`;
+          return;
+        }
+      }
+      const spaces = {
+        top: Math.max(0, top - margin),
+        bottom: Math.max(0, window.innerHeight - bottom - margin),
+        left: Math.max(0, left - margin),
+        right: Math.max(0, window.innerWidth - right - margin)
+      };
+      const verticalPlacements = ['bottom', 'top'].filter(side => spaces[side] >= height + gap);
+      const horizontalPlacements = ['right', 'left'].filter(side => spaces[side] >= width + gap);
+      const availablePlacements = [...verticalPlacements, ...horizontalPlacements];
+      const placement = availablePlacements.includes(preferredPlacement)
+        ? preferredPlacement
+        : availablePlacements.sort((a, b) => spaces[b] - spaces[a])[0] ||
+          (spaces.bottom >= spaces.top ? 'bottom' : 'top');
+      let x = left + (right - left - width) / 2;
+      let y = bottom + gap;
+      if (placement === 'top') y = top - height - gap;
+      if (placement === 'left') { x = left - width - gap; y = top + (bottom - top - height) / 2; }
+      if (placement === 'right') { x = right + gap; y = top + (bottom - top - height) / 2; }
+      tooltip.style.left = `${Math.max(margin, Math.min(window.innerWidth - width - margin, x))}px`;
+      y = Math.max(margin, Math.min(window.innerHeight - height - margin, y));
+      if (y + height > window.innerHeight - 78 && x + width > window.innerWidth - 220) {
+        y = Math.max(margin, window.innerHeight - height - 90);
+      }
+      tooltip.style.top = `${y}px`;
+    }
+
+    window.addEventListener('resize', () => {
+      if (tutorialActive && activeTutorialTarget?.isConnected) {
+        positionTutorialSpotlight(activeTutorialTarget, tutorialSteps[tutorialStepIndex].placement);
+      }
+    });
+    document.addEventListener('wheel', event => {
+      if (tutorialActive) event.preventDefault();
+    }, { capture: true, passive: false });
+    document.addEventListener('touchmove', event => {
+      if (tutorialActive) event.preventDefault();
+    }, { capture: true, passive: false });
+
+    function renderTutorialStep() {
+      const step = tutorialSteps[tutorialStepIndex];
+      if (step.screen >= 3 && !tutorialDemoSnapshot) startTutorialDemo();
+      if (step.screen === 10 && tutorialDemoLoaded && tutorialMallaSeeded) {
+        studentProfile.cycle = '5';
+        updateDashboardFromProfile();
+      }
+      if (currentActiveScreen !== step.screen) goToScreen(step.screen);
+      if (step.screen === 3 && !document.querySelector('#dynamicCurriculumGrid .cycle-col')) renderDynamicCurriculum();
+      if (step.screen === 7) renderCourseConcepts();
+      if (step.screen === 10) {
+        renderClosureRows(tutorialDemoLoaded && !tutorialClosureSeeded);
+        if (tutorialDemoLoaded && !tutorialClosureSeeded) {
+          const statuses = document.querySelectorAll('.cierre-status-select');
+          if (statuses[0]) { statuses[0].value = 'Desaprobado'; adjustStatusColor(statuses[0]); }
+          if (statuses[1]) { statuses[1].value = 'Retirado'; adjustStatusColor(statuses[1]); }
+          tutorialClosureSeeded = true;
+        }
+      }
+      if (step.screen === 11) startClosureEvaluation();
+      if (step.screen === 12) {
+        if (tutorialDemoLoaded) {
+          closureQuestions = buildClosureQuestions();
+          closureAnswers = closureQuestions.map(question => question.correctIndex);
+          closureScore = closureQuestions.length;
+        }
+        renderClosureResult();
+      }
+      if (step.screen === 13) {
+        if (tutorialDemoLoaded && !tutorialMallaSeeded) {
+          const rows = getClosureCourses();
+          lastClosure = { cycle: 5, rows, newCycle: 6 };
+          studentProfile.cycle = '6';
+          document.querySelectorAll('.hist-check').forEach(checkbox => {
+            const row = rows.find(item => item.course === checkbox.dataset.course);
+            if (row) checkbox.checked = row.status === 'Aprobado';
+          });
+          updateDashboardFromProfile();
+          updateHistoryCounts();
+          tutorialMallaSeeded = true;
+        }
+        if (tutorialDemoLoaded && studentProfile.cycle !== '6') {
+          studentProfile.cycle = '6';
+          updateDashboardFromProfile();
+        }
+        updateFinalMalla();
+      }
+
+      const target = findTutorialTarget(step);
+      if (!target) {
+        throw new Error(`No se encontró el elemento del tutorial: ${step.target}`);
+      }
+      target.scrollIntoView({
+        block: step.target === '#studentProfileFields' ? 'end' : 'center',
+        inline: 'nearest',
+        behavior: 'auto'
+      });
+
+      document.getElementById('tutorialContext').textContent = step.context;
+      document.getElementById('tutorialTitle').textContent = step.title;
+      document.getElementById('tutorialDescription').textContent = step.text;
+      const hint = document.getElementById('tutorialLockHint');
+      if (hint && tutorialDemoLoaded) hint.textContent = 'Estás viendo datos de ejemplo; no se guardarán. La página estará bloqueada hasta terminar el recorrido.';
+
+      const stepNumber = tutorialStepIndex + 1;
+      const progress = document.querySelector('#tutorialModal [role="progressbar"]');
+      document.getElementById('tutorialProgressLabel').textContent = `Paso ${stepNumber} de ${tutorialSteps.length}`;
+      document.getElementById('tutorialProgressBar').style.width = `${(stepNumber / tutorialSteps.length) * 100}%`;
+      progress.setAttribute('aria-valuemax', String(tutorialSteps.length));
+      progress.setAttribute('aria-valuenow', String(stepNumber));
+      document.getElementById('tutorialPreviousButton').disabled = tutorialStepIndex === 0;
+      document.getElementById('tutorialNextButton').textContent = stepNumber === tutorialSteps.length ? 'Terminar' : 'Siguiente';
+      positionTutorialSpotlight(target, step.placement);
+      document.getElementById('tutorialNextButton').focus();
+    }
+
+    function beginTutorial() {
+      if (tutorialActive || localStorage.getItem(TUTORIAL_STORAGE_KEY) === 'true') return;
+      launchTutorial();
+    }
+
+    function replayTutorial() {
+      closeNavMenus();
+      if (tutorialActive) return;
+      launchTutorial();
+    }
+
+    function launchTutorial() {
+      tutorialActive = true;
+      tutorialStepIndex = 0;
+      document.body.classList.add('nv-tutorial-open');
+      document.getElementById('tutorialModal').classList.remove('hidden');
+      document.getElementById('tutorialSkipButton').classList.remove('hidden');
+      renderTutorialStep();
+    }
+
+    function completeTutorial() {
+      localStorage.setItem(TUTORIAL_STORAGE_KEY, 'true');
+      restoreTutorialDemoState();
+      tutorialActive = false;
+      document.body.classList.remove('nv-tutorial-open');
+      document.getElementById('tutorialModal').classList.add('hidden');
+      document.getElementById('tutorialSkipButton').classList.add('hidden');
+      document.getElementById('tutorialTargetBlocker').removeAttribute('style');
+      closeTutorialSkipConfirm();
+      goToScreen(2);
+    }
+
+    function nextTutorialStep() {
+      if (tutorialStepIndex >= tutorialSteps.length - 1) {
+        completeTutorial();
+        return;
+      }
+      tutorialStepIndex += 1;
+      renderTutorialStep();
+    }
+
+    function previousTutorialStep() {
+      if (tutorialStepIndex === 0) return;
+      tutorialStepIndex -= 1;
+      renderTutorialStep();
+    }
+
+    function openTutorialSkipConfirm() {
+      const modal = document.getElementById('tutorialSkipConfirm');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeTutorialSkipConfirm() {
+      const modal = document.getElementById('tutorialSkipConfirm');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function confirmTutorialSkip() {
+      completeTutorial();
+    }
 
     // Direct Navigation Controller
     function goToScreen(screenNumber) {
       if (screenNumber < 1 || screenNumber > totalScreens) return;
-      if (!profileCompleted && [4, 14].includes(screenNumber)) return;
+      if (!profileCompleted && !tutorialActive && [4, 14].includes(screenNumber)) return;
       updateNavigationAccess();
       
       // Hide all panels
@@ -1121,7 +1499,8 @@ function getCareerMaxCycles(career) {
 
       const mainContent = document.getElementById('mainContent');
       if (mainContent) mainContent.scrollTop = 0;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: tutorialActive ? 'auto' : 'smooth' });
+      if (screenNumber === 2 && !tutorialActive) beginTutorial();
     }
 
     // Screen 1: Login Handler (compatibilidad con versiones anteriores del prototipo)
@@ -1460,7 +1839,7 @@ function getCareerMaxCycles(career) {
   };
 
   /* Diálogos: foco, trampa de Tab, Escape */
-  const CLOSERS = { microsoftLoginModal: () => window.closeMicrosoftLogin && closeMicrosoftLogin(), reviewModal: () => window.closeLeaveReviewModal && closeLeaveReviewModal(), routeWarnModal: () => window.closeRouteWarning && closeRouteWarning() };
+  const CLOSERS = { microsoftLoginModal: () => window.closeMicrosoftLogin && closeMicrosoftLogin(), reviewModal: () => window.closeLeaveReviewModal && closeLeaveReviewModal(), routeWarnModal: () => window.closeRouteWarning && closeRouteWarning(), tutorialSkipConfirm: () => window.closeTutorialSkipConfirm && closeTutorialSkipConfirm() };
   const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
   const open = new Map();
   const shown = d => getComputedStyle(d).display !== 'none';
