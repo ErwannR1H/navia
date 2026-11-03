@@ -348,32 +348,28 @@
         <!-- ========================================================================= -->
         <section id="screen-3" class="screen-panel w-full p-4 sm:p-6 flex flex-col items-center justify-center hidden">
           <div class="w-full max-w-6xl bg-white rounded-3xl p-5 sm:p-7 shadow-xl border border-slate-200/80 relative">
-            <!-- Top Stepper 1-4 -->
+            <!-- Top Stepper -->
             <div class="w-full mb-6">
-              <div class="flex items-center justify-between max-w-md mx-auto relative">
+              <div id="historyProgress" class="nv-progress-steps flex items-center justify-between max-w-md mx-auto relative">
                 <div class="absolute left-6 right-6 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 -z-0"></div>
-                <div class="flex flex-col items-center relative z-10">
-                  <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div>
-                  <span class="text-[10px] text-slate-600 mt-1 font-medium">Cuenta</span>
+                <div class="profile-progress-step flex flex-col items-center relative z-10">
+                  <div class="w-7 h-7 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">1</div>
+                  <span class="text-[10px] text-blue-700 mt-1 font-bold">Registro alumno</span>
                 </div>
-                <div class="flex flex-col items-center relative z-10">
-                  <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check"></use></svg></div>
-                  <span class="text-[10px] text-slate-600 mt-1 font-medium">Perfil académico</span>
+                <div class="profile-progress-step flex flex-col items-center relative z-10">
+                  <div class="w-7 h-7 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">2</div>
+                  <span class="text-[10px] text-blue-700 mt-1 font-bold">Historial</span>
                 </div>
-                <div class="flex flex-col items-center relative z-10">
-                  <div class="w-7 h-7 rounded-full bg-blue-700 text-white flex items-center justify-center text-xs font-bold ring-4 ring-blue-100">3</div>
-                  <span class="text-[10px] text-blue-700 mt-1 font-bold">Historial de cursos</span>
-                </div>
-                <div class="flex flex-col items-center relative z-10">
-                  <div class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-semibold">4</div>
-                  <span class="text-[10px] text-slate-600 mt-1">Listo</span>
+                <div class="profile-progress-step flex flex-col items-center relative z-10">
+                  <div class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-xs font-semibold">3</div>
+                  <span class="text-[10px] text-slate-600 mt-1">¡A usar Navia!</span>
                 </div>
               </div>
             </div>
             <!-- Title -->
             <div class="text-center mb-5">
               <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Registra tu historial de cursos</h1>
-              <p class="text-xs text-slate-500 mt-1">Marca los cursos que ya llevaste. La malla mostrada cambia según la carrera seleccionada en tu registro.</p>
+              <p class="text-xs text-slate-500 mt-1">Marca los cursos que ya aprobaste. La malla mostrada cambia según la carrera seleccionada en tu registro.</p>
             </div>
             <!-- Malla curricular dinámica según el registro del alumno -->
             <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -383,8 +379,8 @@
               </div>
               <div id="curriculumCycleBadge" class="px-3 py-2 rounded-xl bg-blue-50 border border-blue-100 text-[10px] font-bold text-blue-800">5.° ciclo actual</div>
             </div>
-            <div class="w-full overflow-x-auto pb-4 border border-slate-200 rounded-2xl bg-slate-50/50 p-3">
-              <div id="dynamicCurriculumGrid" class="min-w-[2000px] grid grid-cols-10 gap-2.5 text-left"></div>
+            <div class="w-full pb-4 border border-slate-200 rounded-2xl bg-slate-50/50 p-3">
+              <div id="dynamicCurriculumGrid" class="nv-curriculum-grid grid gap-2.5 text-left"></div>
             </div>
             <!-- Summary dynamic stats -->
             <div class="mt-4 p-4 rounded-2xl bg-blue-50/70 border border-blue-200 flex flex-wrap items-center justify-between gap-4">

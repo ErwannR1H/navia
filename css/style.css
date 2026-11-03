@@ -626,7 +626,8 @@ button[class~="bg-[#003366]"], button[class~="bg-[#002A52]"], .screen-panel butt
 }
 
 #dynamicCurriculumGrid {
-  grid-template-columns: repeat(10, minmax(180px, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  min-width: 0;
 }
 
 .cycle-col {
@@ -647,6 +648,12 @@ button[class~="bg-[#003366]"], button[class~="bg-[#002A52]"], .screen-panel butt
 .cycle-toggle-button {
   min-height: 44px;
   line-height: 1.25;
+}
+
+@media (min-width: 641px) and (max-width: 1023px) {
+  #dynamicCurriculumGrid {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  }
 }
 
 .nv-brand-lockup {
@@ -912,16 +919,17 @@ textarea {
 
   #dynamicCurriculumGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    min-width: 0;
   }
 
   #profileProgress,
+  #historyProgress,
   #screen-3 > div > .w-full.mb-6 > .flex.items-center.justify-between,
   .screen-panel > div > .w-full.mb-7 > .flex.items-center.justify-between {
     align-items: flex-start;
   }
 
   #profileProgress > .profile-progress-step,
+  #historyProgress > .profile-progress-step,
   #screen-3 > div > .w-full.mb-6 > .flex.items-center.justify-between > .flex.flex-col,
   .screen-panel > div > .w-full.mb-7 > .flex.items-center.justify-between > .flex.flex-col {
     flex: 1 1 0;
@@ -929,6 +937,7 @@ textarea {
   }
 
   #profileProgress > .profile-progress-step > span,
+  #historyProgress > .profile-progress-step > span,
   #screen-3 > div > .w-full.mb-6 > .flex.items-center.justify-between > .flex.flex-col > span,
   .screen-panel > div > .w-full.mb-7 > .flex.items-center.justify-between > .flex.flex-col > span {
     max-width: 100%;
