@@ -1218,8 +1218,22 @@ function getCareerMaxCycles(career) {
     }
 
     let activeTutorialTarget = null;
+    let observedTutorialTarget = null;
+    const tutorialSpotlightObserver = new ResizeObserver(() => {
+      if (tutorialActive && activeTutorialTarget?.isConnected) {
+        positionTutorialSpotlight(activeTutorialTarget, tutorialSteps[tutorialStepIndex].placement);
+      }
+    });
+
     function positionTutorialSpotlight(target, preferredPlacement) {
       activeTutorialTarget = target;
+      if (observedTutorialTarget !== target) {
+        tutorialSpotlightObserver.disconnect();
+        observedTutorialTarget = target;
+        [target, target.parentElement, target.closest('.screen-panel')].filter(Boolean).forEach(element => {
+          tutorialSpotlightObserver.observe(element);
+        });
+      }
       const rect = target.getBoundingClientRect();
       const pad = 8;
       const left = Math.max(0, rect.left - pad);
@@ -1292,6 +1306,11 @@ function getCareerMaxCycles(career) {
         positionTutorialSpotlight(activeTutorialTarget, tutorialSteps[tutorialStepIndex].placement);
       }
     });
+    window.addEventListener('scroll', () => {
+      if (tutorialActive && activeTutorialTarget?.isConnected) {
+        positionTutorialSpotlight(activeTutorialTarget, tutorialSteps[tutorialStepIndex].placement);
+      }
+    }, { capture: true, passive: true });
     document.addEventListener('wheel', event => {
       if (tutorialActive) event.preventDefault();
     }, { capture: true, passive: false });
@@ -1371,8 +1390,8 @@ function getCareerMaxCycles(career) {
       progress.setAttribute('aria-valuenow', String(stepNumber));
       document.getElementById('tutorialPreviousButton').disabled = tutorialStepIndex === 0;
       document.getElementById('tutorialNextButton').textContent = stepNumber === tutorialSteps.length ? 'Terminar' : 'Siguiente';
-      positionTutorialSpotlight(target, step.placement);
       document.getElementById('tutorialNextButton').focus();
+      positionTutorialSpotlight(target, step.placement);
     }
 
     function beginTutorial() {
@@ -1392,7 +1411,9 @@ function getCareerMaxCycles(career) {
       document.body.classList.add('nv-tutorial-open');
       document.getElementById('tutorialModal').classList.remove('hidden');
       document.getElementById('tutorialSkipButton').classList.remove('hidden');
-      renderTutorialStep();
+      requestAnimationFrame(() => {
+        if (tutorialActive) renderTutorialStep();
+      });
     }
 
     function completeTutorial() {
@@ -1400,6 +1421,9 @@ function getCareerMaxCycles(career) {
       restoreTutorialDemoState();
       tutorialActive = false;
       document.body.classList.remove('nv-tutorial-open');
+      tutorialSpotlightObserver.disconnect();
+      activeTutorialTarget = null;
+      observedTutorialTarget = null;
       document.getElementById('tutorialModal').classList.add('hidden');
       document.getElementById('tutorialSkipButton').classList.add('hidden');
       document.getElementById('tutorialTargetBlocker').removeAttribute('style');

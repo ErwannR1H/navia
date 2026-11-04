@@ -1097,6 +1097,12 @@ body.nv-tutorial-open #mainContent {
   overflow: hidden !important;
 }
 
+body.nv-tutorial-open .screen-panel,
+body.nv-tutorial-open .screen-panel * {
+  animation: none !important;
+  transition: none !important;
+}
+
 .nv-tutorial-target-blocker {
   position: fixed;
   z-index: 71;
