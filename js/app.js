@@ -167,24 +167,21 @@ function getCareerMaxCycles(career) {
       const local = email.split('@')[0].replace(/\d+/g, '');
       return local.split(/[._-]+/).filter(Boolean).map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
     }
-    function continueMicrosoftLogin() {
+    async function continueMicrosoftLogin() {
       const email = document.getElementById('microsoftEmail').value.trim().toLowerCase();
       const password = document.getElementById('microsoftPassword').value;
       if (!isValidUsilEmail(email)) { msShowStep(1); showError('microsoftEmail', 'Usa el formato nombre.apellido@usil.pe.'); return; }
       if (!password) { showError('microsoftPassword', 'Escribe tu contraseña.'); return; }
-      studentProfile.email = email;
-      document.getElementById('studentEmailLabel').textContent = email;
-      document.getElementById('microsoftAccountBadge').classList.remove('hidden');
-      // No se autocompletan datos del alumno; el nombre del correo solo se usa como ejemplo en el placeholder.
-      document.getElementById('studentName').value = '';
-      document.getElementById('studentName').placeholder = 'Ej. ' + suggestNameFromEmail(email);
-      document.getElementById('studentCode').value = '';
-      clearCodeError();
-      document.getElementById('userCareer').value = '';
-      document.getElementById('userCurrentCycle').value = '';
-      closeMicrosoftLogin();
-      showToast('Acceso institucional simulado correctamente');
-      goToScreen(2);
+      try {
+        await window.naviaSignIn(email, password);
+        document.getElementById('microsoftAccountBadge').classList.remove('hidden');
+        document.getElementById('studentName').placeholder = 'Ej. ' + suggestNameFromEmail(email);
+        closeMicrosoftLogin();
+        showToast('Sesión iniciada correctamente.');
+      } catch (error) {
+        console.error(error);
+        showToast(error.message || 'No se pudo iniciar sesión. Revisa tus datos e inténtalo de nuevo.');
+      }
     }
 
     function handleMicrosoftLogin() { openMicrosoftLogin(); }
@@ -226,7 +223,7 @@ function getCareerMaxCycles(career) {
       preview.textContent = career ? `${career} · ${maxCycles} ciclos · malla cargada con los cursos proporcionados.` : 'Selecciona una carrera para cargar su malla.';
     }
 
-    function saveStudentProfile() {
+    async function saveStudentProfile() {
       const name = document.getElementById('studentName').value.trim();
       const code = document.getElementById('studentCode').value.trim();
       const career = document.getElementById('userCareer').value;
@@ -240,6 +237,13 @@ function getCareerMaxCycles(career) {
       if (!validateStudentCode()) return;
 
       studentProfile = { ...studentProfile, name, code, career, cycle, goal };
+      try {
+        await window.naviaPersistProfile(studentProfile);
+      } catch (error) {
+        console.error(error);
+        showToast(error.message || 'No se pudo guardar tu perfil.');
+        return;
+      }
       profileCompleted = true;
       updateNavigationAccess();
       renderDynamicCurriculum();
@@ -959,6 +963,10 @@ function getCareerMaxCycles(career) {
         updateHistoryCounts();
         closureApplied = true;
         plannedCourses = [];
+        window.naviaPersistProfile?.(studentProfile).catch(error => {
+          console.error(error);
+          showToast(error.message || 'No se pudo guardar el nuevo ciclo.');
+        });
       }
       goToScreen(13);
     }
@@ -1059,7 +1067,7 @@ function getCareerMaxCycles(career) {
     // Prototype State
     let currentActiveScreen = 1;
     let currentQuizIndex = 0;
-    const totalScreens = 14;
+    const totalScreens = 17;
     const TUTORIAL_STORAGE_KEY = 'naviaTutorialCompletedV3';
     let tutorialActive = false;
     let tutorialStepIndex = 0;
@@ -1466,6 +1474,14 @@ function getCareerMaxCycles(career) {
     // Direct Navigation Controller
     function goToScreen(screenNumber) {
       if (screenNumber < 1 || screenNumber > totalScreens) return;
+      if ([16, 17].includes(screenNumber) && !window.naviaCurrentUser) {
+        showToast('Inicia sesión para acceder al centro de ayuda.');
+        return;
+      }
+      if (screenNumber === 17 && !window.naviaIsAdmin?.()) {
+        showToast('Esta sección está reservada al equipo administrador.');
+        return;
+      }
       if (!profileCompleted && !tutorialActive && [4, 14].includes(screenNumber)) return;
       updateNavigationAccess();
       
@@ -1500,6 +1516,8 @@ function getCareerMaxCycles(career) {
           ((screenNumber >= 5 && screenNumber <= 9) && viewAttr === 6) ||
           ((screenNumber >= 10 && screenNumber <= 13) && viewAttr === 13) ||
           (screenNumber === 14 && viewAttr === 14) ||
+          ((screenNumber === 15 || screenNumber === 16) && viewAttr === 15) ||
+          (screenNumber === 17 && viewAttr === 17) ||
           ((screenNumber === 2 || screenNumber === 3) && viewAttr === 2)
         ) {
           tab.classList.add('text-blue-700', 'font-bold', 'bg-blue-50');
@@ -1579,6 +1597,7 @@ function getCareerMaxCycles(career) {
       const closingPending = document.getElementById('closingPendingCount');
       if (closingApproved) closingApproved.textContent = checked;
       if (closingPending) closingPending.textContent = pending;
+      window.naviaScheduleAcademicSave?.();
     }
 
     function continueToSuggestedCourses() {
@@ -1721,6 +1740,7 @@ function getCareerMaxCycles(career) {
 
     function filterCommunityItems(query) {
       const term = query.toLowerCase().trim();
+      const selectedStatus = document.getElementById('communityStatusFilter')?.value || 'all';
       const cards = document.querySelectorAll('#commCourseGrid .comm-card');
       const reviews = document.querySelectorAll('#commReviewsList .review-item');
 
@@ -1731,7 +1751,8 @@ function getCareerMaxCycles(career) {
 
       reviews.forEach(r => {
         const text = r.innerText.toLowerCase();
-        r.style.display = text.includes(term) ? '' : 'none';
+        const statusMatches = selectedStatus === 'all' || (r.dataset.communityStatus || 'discussion') === selectedStatus;
+        r.style.display = text.includes(term) && statusMatches ? '' : 'none';
       });
     }
 

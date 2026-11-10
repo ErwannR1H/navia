@@ -52,6 +52,8 @@
         <nav class="hidden md:flex items-center gap-2" aria-label="Navegación principal">
           <button onclick="goToScreen(4)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-blue-700 font-bold bg-blue-50" data-view="4">Inicio</button>
           <button onclick="goToScreen(14)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="14">Comunidad</button>
+          <button onclick="goToScreen(15)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="15">Ayuda</button>
+          <button id="adminNavButton" onclick="goToScreen(17)" class="nav-tab hidden px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="17">Administración</button>
           <button onclick="goToScreen(2)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="2">Perfil</button>
           <button type="button" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" onclick="replayTutorial()">Tutorial</button>
         </nav>
@@ -68,6 +70,8 @@
         <nav id="innerMobileMenu" class="nv-mobile-menu hidden" aria-label="Navegación principal móvil">
           <button onclick="closeNavMenus(); goToScreen(4)" class="nav-tab" data-view="4">Inicio</button>
           <button onclick="closeNavMenus(); goToScreen(14)" class="nav-tab" data-view="14">Comunidad</button>
+          <button onclick="closeNavMenus(); goToScreen(15)" class="nav-tab" data-view="15">Ayuda</button>
+          <button id="adminMobileNavButton" onclick="closeNavMenus(); goToScreen(17)" class="nav-tab hidden" data-view="17">Administración</button>
           <button onclick="closeNavMenus(); goToScreen(2)" class="nav-tab" data-view="2">Perfil</button>
           <button type="button" onclick="replayTutorial()">Tutorial</button>
         </nav>
@@ -90,7 +94,7 @@
             </button>
             <nav id="homeMobileMenu" class="nv-mobile-menu nv-home-mobile-menu hidden" aria-label="Menú principal">
               <button onclick="closeNavMenus(); openMicrosoftLogin()">Iniciar sesión</button>
-              <button onclick="closeNavMenus(); goToScreen(2)">Continuar como invitado</button>
+              <button onclick="closeNavMenus(); openMicrosoftLogin()">Iniciar sesión</button>
               <button onclick="openHomeGuide()">Conoce Navia</button>
             </nav>
           </div>
@@ -125,7 +129,7 @@
                 <div class="space-y-4">
                   <div class="text-center">
                     <p class="text-sm font-bold text-slate-800">Accede con tu cuenta institucional</p>
-                    <p class="text-[11px] text-slate-500 mt-1">Usa Microsoft para iniciar sesión y luego completa tus datos académicos.</p>
+                    <p class="text-[11px] text-slate-500 mt-1">Acceso de demostración con correo institucional y contraseña; después completa tus datos académicos.</p>
                   </div>
                   <button type="button" onclick="openMicrosoftLogin()" class="nv-button-secondary w-full py-3.5 px-4 bg-white hover:bg-slate-50 text-slate-800 font-semibold rounded-2xl text-sm border border-slate-300 shadow-sm flex items-center justify-center gap-3 transition active:scale-98">
                     <span class="grid grid-cols-2 gap-0.5 w-5 h-5 shrink-0">
@@ -140,12 +144,12 @@
                     <span class="text-[10px] text-slate-600 font-semibold uppercase">o</span>
                     <div class="h-px bg-slate-200 flex-1"></div>
                   </div>
-                  <button type="button" onclick="goToScreen(2); showToast('Modo invitado: completa tu registro académico')" class="nv-button-primary w-full py-3 px-4 bg-[#002A52] hover:bg-[#00244A] text-white font-semibold rounded-2xl text-sm shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 transition active:scale-98">
-                    <span>Continuar como invitado</span>
+                  <button type="button" onclick="goToScreen(15)" class="nv-button-primary w-full py-3 px-4 bg-[#002A52] hover:bg-[#00244A] text-white font-semibold rounded-2xl text-sm shadow-md shadow-blue-900/20 flex items-center justify-center gap-2 transition active:scale-98">
+                    <span>Consultar preguntas frecuentes</span>
                     <svg aria-hidden="true" focusable="false" class="nv-icon w-4 h-4" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg>
                   </button>
                   <div class="bg-blue-50 border border-blue-100 rounded-2xl p-3 text-[10px] text-blue-900 leading-relaxed">
-                    <strong>Nota:</strong> este prototipo simula el acceso con Microsoft. No realiza una autenticación real contra Microsoft.
+                    <strong>Nota:</strong> la pantalla reproduce el flujo de Microsoft, pero el acceso se valida con una cuenta de demostración creada en Supabase.
                   </div>
                 </div>
                 <p class="text-center text-[11px] text-slate-600 mt-5">
@@ -254,11 +258,11 @@
               <h2 class="text-2xl font-semibold text-slate-900">Escribir contraseña</h2>
               <div class="mt-5 relative">
                 <label for="microsoftPassword" class="block text-sm font-semibold text-slate-800 mb-2">Contraseña</label>
-                <input id="microsoftPassword" aria-label="Contraseña" type="password" autocomplete="new-password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')continueMicrosoftLogin()" class="w-full py-2 pl-1 pr-14 border-0 border-b border-slate-400 focus:border-blue-600 text-sm text-slate-900 outline-none bg-transparent">
+                <input id="microsoftPassword" aria-label="Contraseña" type="password" autocomplete="current-password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')continueMicrosoftLogin()" class="w-full py-2 pl-1 pr-14 border-0 border-b border-slate-400 focus:border-blue-600 text-sm text-slate-900 outline-none bg-transparent">
                 <span id="microsoftPassword-error" class="texte-erreur hidden"></span>
                 <button type="button" onclick="msTogglePass()" id="msPassToggle" aria-label="Mostrar u ocultar contraseña" aria-pressed="false" class="absolute right-0 top-2 text-xs text-blue-700">Mostrar</button>
               </div>
-              <p class="text-[10px] text-slate-600 mt-5">Prototipo: estos datos no se envían ni se almacenan en un servidor.</p>
+              <p class="text-[10px] text-slate-600 mt-5">Acceso de demostración: las credenciales se validan mediante Supabase Auth.</p>
               <div class="flex items-center justify-end mt-6">
                 <button type="button" onclick="continueMicrosoftLogin()" class="px-7 py-1.5 bg-[#0067b8] hover:bg-[#005a9e] text-white text-sm">Iniciar sesión</button>
               </div>
@@ -1006,6 +1010,10 @@
                 <input type="text" id="communitySearchInput" aria-label="Buscar curso en la comunidad" oninput="filterCommunityItems(this.value)" placeholder="Busca un curso... (ej: Programación, Datos, Marketing)" class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
                 <svg class="nv-icon absolute left-4 top-2.5 h-5 w-5 text-slate-600" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-search"/></svg>
               </div>
+              <label for="communityStatusFilter" class="sr-only">Filtrar publicaciones por estado</label>
+              <select id="communityStatusFilter" onchange="filterCommunityItems(document.getElementById('communitySearchInput').value)" class="mt-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700">
+                <option value="all">Todos los estados</option><option value="resolved">Resuelto</option><option value="discussion">En debate</option><option value="academic_question">Pregunta académica</option>
+              </select>
             </div>
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               <!-- Feed Area (8 cols) -->
@@ -1146,7 +1154,137 @@
             </div>
           </div>
         </section>
+        <section id="screen-15" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-5xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <header class="text-center mb-7">
+              <span class="inline-flex px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase">Centro de ayuda</span>
+              <h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366] mt-3">Estamos para ayudarte</h1>
+              <p class="text-sm text-slate-500 mt-2">Resuelve dudas en la FAQ o contacta al equipo de soporte.</p>
+            </header>
+            <div class="flex flex-wrap justify-center gap-3 mb-7">
+              <button type="button" onclick="goToScreen(16)" class="px-5 py-3 rounded-xl bg-[#003366] text-white text-sm font-bold">Crear o consultar tickets</button>
+              <button type="button" onclick="goToScreen(16); showSupportTab('complaint')" class="px-5 py-3 rounded-xl border border-blue-600 text-blue-700 text-sm font-bold">Libro de reclamaciones</button>
+            </div>
+            <div id="faqList" class="grid md:grid-cols-2 gap-3">
+              <details class="faq-item"><summary>¿Mis datos personales y académicos están seguros en Navia?</summary><p>Navia limita el acceso a tu cuenta y a tus datos. La protección también depende de la configuración de la base de datos y del alojamiento.</p></details>
+              <details class="faq-item"><summary>¿Qué hago si me recomiendan un curso sin cumplir los prerrequisitos?</summary><p>Verifica el historial que registraste y repórtalo desde Ayuda → Crear ticket, categoría «Recomendaciones académicas».</p></details>
+              <details class="faq-item"><summary>¿Por qué mi porcentaje de avance académico parece incorrecto?</summary><p>El porcentaje se calcula con los cursos marcados como aprobados. Revisa y actualiza tu historial académico.</p></details>
+              <details class="faq-item"><summary>¿Qué hago si mi diagnóstico académico parece erróneo?</summary><p>Revisa tus respuestas y abre un ticket de prioridad alta en la categoría de recomendaciones académicas si el resultado sigue siendo incorrecto.</p></details>
+              <details class="faq-item"><summary>Actualicé mi historial, pero no se guardó. ¿Por qué?</summary><p>Comprueba que tienes conexión y vuelve a iniciar sesión. Si el problema continúa, crea un ticket «Historial académico».</p></details>
+              <details class="faq-item"><summary>La plataforma está muy lenta, ¿es normal?</summary><p>Comprueba tu conexión e inténtalo de nuevo. Si Navia no responde o la incidencia afecta a muchos usuarios, crea un ticket de caída de plataforma.</p></details>
+              <details class="faq-item"><summary>¿Cómo recupero mi contraseña?</summary><p>Por ahora, el acceso es un prototipo con cuentas provisionadas por el administrador. Contacta al equipo de Navia para restablecer tu cuenta.</p></details>
+              <details class="faq-item"><summary>¿Puedo usar Navia desde mi smartphone?</summary><p>Sí. La interfaz se adapta a navegadores modernos de escritorio y dispositivos móviles.</p></details>
+              <details class="faq-item"><summary>¿Cómo reporto contenido inapropiado de la comunidad?</summary><p>Usa el botón «Reportar» en la publicación. El equipo administrador revisará el reporte.</p></details>
+              <details class="faq-item"><summary>¿Cuánto tarda soporte técnico en responder?</summary><p>La atención depende de la categoría: inmediata para incidencias críticas, máximo 24 horas para las altas, y resolución estimada de 2–5 o 5–10 días hábiles para las medias y bajas.</p></details>
+            </div>
+            <p class="mt-5 text-xs text-slate-500 text-center">Los plazos son estimaciones propuestas en el SLA de Navia, no una garantía de servicio.</p>
+          </div>
+        </section>
+        <section id="screen-16" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-6xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <header class="flex flex-wrap items-center justify-between gap-4 mb-6">
+              <div><h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Ayuda y seguimiento</h1><p class="text-sm text-slate-500 mt-1">Cada conversación queda asociada a un ticket.</p></div>
+              <button type="button" onclick="goToScreen(15)" class="px-4 py-2 rounded-xl border border-slate-300 text-sm">Volver a FAQ</button>
+            </header>
+            <div class="flex flex-wrap gap-2 mb-6 border-b border-slate-200 pb-4">
+              <button type="button" class="support-tab active" data-support-tab="tickets" onclick="showSupportTab('tickets')">Mis tickets</button>
+              <button type="button" class="support-tab" data-support-tab="complaint" onclick="showSupportTab('complaint')">Libro de reclamaciones</button>
+            </div>
+            <section id="supportTicketsPanel" class="support-panel grid lg:grid-cols-12 gap-6">
+              <div class="lg:col-span-4 space-y-4">
+                <form id="ticketForm" class="support-card space-y-3">
+                  <h2 class="text-lg font-bold text-[#003366]">Crear ticket</h2>
+                  <label class="support-label">Asunto<input id="ticketSubject" maxlength="160" minlength="4" required placeholder="Resume el problema"></label>
+                  <label class="support-label">Categoría
+                    <select id="ticketCategory" required onchange="updateTicketSla()">
+                      <option value="">Selecciona el problema</option>
+                      <option value="platform_outage">Caída o indisponibilidad de Navia</option>
+                      <option value="data_security">Seguridad, privacidad o pérdida de datos</option>
+                      <option value="academic_recommendation">Recomendación o diagnóstico académico</option>
+                      <option value="academic_history">Registro del historial académico</option>
+                      <option value="login">Problemas de acceso</option>
+                      <option value="functionality">Otra función no disponible</option>
+                      <option value="visual_issue">Problema visual menor</option>
+                      <option value="community_content">Contenido inapropiado en la comunidad</option>
+                      <option value="other">Otra consulta</option>
+                    </select>
+                  </label>
+                  <p id="ticketSlaMessage" class="rounded-xl bg-blue-50 p-3 text-xs text-blue-900" aria-live="polite">Elige una categoría para ver el plazo estimado según el SLA.</p>
+                  <label class="support-label">Descripción<textarea id="ticketDescription" rows="4" maxlength="10000" required placeholder="Describe qué ocurrió y qué esperabas"></textarea></label>
+                  <label class="support-label">Adjunto (PNG, JPG, WEBP o PDF; máx. 5 MB)<input id="ticketAttachment" type="file" accept="image/png,image/jpeg,image/webp,application/pdf"></label>
+                  <button class="w-full rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white" type="submit">Publicar ticket</button>
+                </form>
+                <div class="support-card"><h2 class="text-lg font-bold text-[#003366]">Mis conversaciones</h2><div id="ticketList" class="mt-3 space-y-2"><p class="text-sm text-slate-500">Inicia sesión para ver tus tickets.</p></div></div>
+              </div>
+              <div class="lg:col-span-8 support-card min-h-[420px]">
+                <div id="ticketThreadEmpty" class="flex min-h-[360px] items-center justify-center text-center text-sm text-slate-500">Selecciona un ticket para consultar el hilo de conversación.</div>
+                <div id="ticketThread" class="hidden">
+                  <header class="flex flex-wrap items-start justify-between gap-3 border-b border-slate-200 pb-4">
+                    <div><p id="ticketThreadMeta" class="text-xs font-semibold text-blue-700"></p><h2 id="ticketThreadSubject" class="text-lg font-bold text-[#003366] mt-1"></h2></div>
+                    <button id="ticketCloseButton" type="button" class="hidden rounded-lg border border-slate-300 px-3 py-2 text-xs font-bold" onclick="closeCurrentTicket()">Cerrar ticket</button>
+                  </header>
+                  <div id="ticketMessages" class="my-4 max-h-[360px] space-y-3 overflow-y-auto" aria-live="polite"></div>
+                  <form id="ticketReplyForm" class="flex gap-2 border-t border-slate-200 pt-4">
+                    <label class="sr-only" for="ticketReply">Tu respuesta</label><textarea id="ticketReply" required maxlength="10000" rows="2" class="min-w-0 flex-1 rounded-xl border border-slate-300 p-3 text-sm" placeholder="Escribe una respuesta…"></textarea>
+                    <button class="self-end rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white" type="submit">Enviar</button>
+                  </form>
+                </div>
+              </div>
+            </section>
+            <section id="supportComplaintPanel" class="support-panel hidden">
+              <div class="max-w-3xl mx-auto">
+                <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 mb-5"><strong>Libro de reclamaciones</strong><p class="mt-1">Formulario de prototipo basado en los campos usuales del consumidor en Perú. Su adecuación legal y el plazo de respuesta deben ser validados antes del uso real.</p></div>
+                <form id="complaintForm" class="support-card grid sm:grid-cols-2 gap-4">
+                  <label class="support-label">Nombre completo<input name="consumer_name" required maxlength="160" autocomplete="name"></label>
+                  <label class="support-label">Domicilio<input name="consumer_address" required maxlength="300" autocomplete="street-address"></label>
+                  <label class="support-label">DNI / documento de identidad<input name="consumer_document" required maxlength="40"></label>
+                  <label class="support-label">Correo electrónico<input name="consumer_email" type="email" required maxlength="254" autocomplete="email"></label>
+                  <label class="support-label">Teléfono (opcional)<input name="consumer_phone" maxlength="40" autocomplete="tel"></label>
+                  <label class="support-label">Tipo
+                    <select name="complaint_type" required><option value="reclamo">Reclamo (producto/servicio)</option><option value="queja">Queja (atención al usuario)</option></select>
+                  </label>
+                  <label class="support-label sm:col-span-2">Servicio contratado<input name="service_description" required maxlength="300"></label>
+                  <label class="support-label sm:col-span-2">Detalle de la reclamación o queja<textarea name="detail" rows="4" required maxlength="10000"></textarea></label>
+                  <label class="support-label sm:col-span-2">Pedido del consumidor<textarea name="request" rows="3" required maxlength="5000"></textarea></label>
+                  <label class="sm:col-span-2 flex gap-2 text-xs text-slate-600"><input name="accept_copy" type="checkbox" required> Confirmo la información y deseo recibir una constancia de esta presentación.</label>
+                  <div class="sm:col-span-2 text-right"><button type="submit" class="rounded-xl bg-[#003366] px-5 py-3 text-sm font-bold text-white">Enviar reclamación</button></div>
+                </form>
+              </div>
+            </section>
+          </div>
+        </section>
+        <section id="screen-17" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
+          <div class="w-full max-w-6xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
+            <header class="flex flex-wrap items-center justify-between gap-4 mb-6">
+              <div><h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Panel de administración</h1><p class="text-sm text-slate-500 mt-1">Revisa tickets y reportes de la comunidad.</p></div>
+              <button type="button" onclick="goToScreen(16)" class="rounded-xl border border-slate-300 px-4 py-2 text-sm">Ver soporte</button>
+            </header>
+            <div class="grid lg:grid-cols-2 gap-6">
+              <section class="support-card"><h2 class="text-lg font-bold text-[#003366]">Tickets pendientes</h2><div id="adminTicketList" class="mt-3 space-y-2"></div></section>
+              <section class="support-card"><h2 class="text-lg font-bold text-[#003366]">Contenido reportado</h2><div id="moderationList" class="mt-3 space-y-3"></div></section>
+            </div>
+            <section class="support-card mt-6"><h2 class="text-lg font-bold text-[#003366]">Reclamaciones recibidas</h2><div id="adminComplaintList" class="mt-3 grid md:grid-cols-2 gap-3"></div></section>
+            <div id="adminTicketThread" class="support-card hidden mt-6">
+              <header class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+                <div><p id="adminTicketMeta" class="text-xs font-semibold text-blue-700"></p><h2 id="adminTicketSubject" class="text-lg font-bold text-[#003366] mt-1"></h2></div>
+                <label class="text-xs font-semibold">Estado<select id="adminTicketStatus" class="ml-2 rounded-lg border border-slate-300 p-2" onchange="setAdminTicketStatus(this.value)"><option value="open">Abierto</option><option value="in_progress">En curso</option><option value="closed">Cerrado</option></select></label>
+              </header>
+              <div id="adminTicketMessages" class="my-4 max-h-[360px] space-y-3 overflow-y-auto"></div>
+              <form id="adminTicketReplyForm" class="flex gap-2 border-t border-slate-200 pt-4"><label class="sr-only" for="adminTicketReply">Respuesta de soporte</label><textarea id="adminTicketReply" required maxlength="10000" rows="2" class="min-w-0 flex-1 rounded-xl border border-slate-300 p-3 text-sm" placeholder="Responder como soporte…"></textarea><button class="self-end rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white" type="submit">Responder</button></form>
+            </div>
+          </div>
+        </section>
       </main>
+      <footer class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 bg-white px-5 py-3 text-xs text-slate-600">
+        <span>© 2026 Navia · Prototipo académico</span>
+        <nav class="flex flex-wrap gap-4" aria-label="Enlaces de asistencia">
+          <button type="button" class="underline" onclick="goToScreen(15)">FAQ y ayuda</button>
+          <button type="button" class="underline" onclick="goToScreen(16); showSupportTab('complaint')">Libro de reclamaciones</button>
+          <button type="button" class="underline" onclick="goToScreen(16)">Soporte técnico</button>
+          <button type="button" id="signOutButton" class="hidden underline" onclick="signOutNaviaUser()">Cerrar sesión</button>
+        </nav>
+      </footer>
+      <button type="button" class="nv-help-fab" onclick="goToScreen(16)" aria-label="Abrir ayuda y tickets">Ayuda</button>
     </div>
   </div>
   <!-- Modal: Deja tu opinión -->
@@ -1220,6 +1358,9 @@
     <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
     <span id="toastText">Estado cambiado a: Aprobado</span>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/backend.js"></script>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/support.js"></script>
 </body></html>
