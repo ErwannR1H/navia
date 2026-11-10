@@ -65,6 +65,7 @@
     if (!supabase) throw new Error(window.naviaBackendError?.message || 'No se pudo conectar con Supabase. Revisa la configuración del proyecto.');
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
+    closeMicrosoftLogin();
 
     const { data: profile, error: profileError } = await supabase
       .from('profiles').select('id,email,role,display_name,student_code,career,cycle,goal')
@@ -83,19 +84,50 @@
     document.getElementById('microsoftAccountBadge').classList.remove('hidden');
     updateRoleNavigation();
     await restoreAccount(profile);
-    await Promise.all([loadTickets(), loadCommunityPosts()]);
-    if (isAdmin()) await Promise.all([loadModerationDashboard(), loadAdminComplaints()]);
+    if (isAdmin()) {
+      goToScreen(17);
+      await Promise.all([loadTickets(), loadModerationDashboard(), loadAdminComplaints()]);
+    } else {
+      await Promise.all([loadTickets(), loadCommunityPosts()]);
+    }
     return profile;
   }
 
+  async function restoreExistingSession(session) {
+    if (!session?.user) return;
+    const supabase = client();
+    const { data: profile, error } = await supabase
+      .from('profiles').select('id,email,role,display_name,student_code,career,cycle,goal')
+      .eq('id', session.user.id).maybeSingle();
+    if (error) throw error;
+    if (!profile) {
+      await supabase.auth.signOut();
+      throw new Error('Tu cuenta no tiene un perfil de Navia activo.');
+    }
+
+    window.naviaCurrentUser = session.user;
+    currentUserProfile = profile;
+    document.getElementById('microsoftAccountBadge').classList.remove('hidden');
+    updateRoleNavigation();
+    await restoreAccount(profile);
+    if (isAdmin()) {
+      goToScreen(17);
+      await Promise.all([loadTickets(), loadModerationDashboard(), loadAdminComplaints()]);
+    } else {
+      await Promise.all([loadTickets(), loadCommunityPosts()]);
+    }
+  }
+
   async function signOut() {
-    await persistAcademicState();
+    if (!isAdmin()) await persistAcademicState();
     const { error } = await client().auth.signOut();
     if (error) throw error;
     window.naviaCurrentUser = null;
     currentUserProfile = null;
     studentProfile = { name: '', code: '', email: '', career: '', cycle: '', goal: 'Ninguno' };
     profileCompleted = false;
+    document.getElementById('microsoftAccountBadge').classList.add('hidden');
+    closeUserMenu();
     updateRoleNavigation();
     goToScreen(1);
     showToast('Sesión cerrada.');
@@ -103,14 +135,28 @@
 
   function updateRoleNavigation() {
     const isSignedIn = Boolean(user());
+    const adminOnly = isAdmin();
     ['adminNavButton', 'adminMobileNavButton'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.classList.toggle('hidden', !isAdmin());
+      if (el) el.classList.toggle('hidden', !adminOnly);
     });
+    document.querySelectorAll('#innerAppNav .nav-tab:not([data-view="17"])').forEach(button => {
+      button.classList.toggle('hidden', adminOnly);
+    });
+    document.querySelectorAll('#innerMobileMenu .nav-tab:not([data-view="17"])').forEach(button => {
+      button.classList.toggle('hidden', adminOnly);
+    });
+    document.querySelector('#innerMobileMenu > button:not([data-view])')?.classList.toggle('hidden', adminOnly);
+    document.querySelector('.nv-inner-menu-toggle')?.classList.toggle('hidden', adminOnly);
+    const userMenuProfile = document.querySelector('#userMenu [role="menuitem"]:first-child');
+    if (userMenuProfile) userMenuProfile.classList.toggle('hidden', adminOnly);
+    const helpButton = document.querySelector('.nv-help-fab');
+    if (helpButton) helpButton.classList.toggle('hidden', adminOnly);
+    $('#appFooter')?.classList.toggle('hidden', adminOnly);
     const signOutButton = document.getElementById('signOutButton');
     if (signOutButton) signOutButton.classList.toggle('hidden', !isSignedIn);
     document.querySelectorAll('.support-tab[data-support-tab="moderation"]').forEach(button => {
-      button.classList.toggle('hidden', !isAdmin());
+      button.classList.toggle('hidden', !adminOnly);
     });
   }
 
@@ -241,6 +287,21 @@
       $('#supportComplaintPanel').classList.toggle('hidden', tab !== 'complaint');
     }
   };
+
+  window.closeUserMenu = function () {
+    const menu = $('#userMenu');
+    const toggle = $('#userMenuToggle');
+    menu?.classList.add('hidden');
+    toggle?.setAttribute('aria-expanded', 'false');
+  };
+
+  function toggleUserMenu() {
+    const menu = $('#userMenu');
+    const toggle = $('#userMenuToggle');
+    const willOpen = menu.classList.contains('hidden');
+    menu.classList.toggle('hidden', !willOpen);
+    toggle.setAttribute('aria-expanded', String(willOpen));
+  }
 
   window.updateTicketSla = function () {
     const category = $('#ticketCategory').value;
@@ -785,11 +846,20 @@
   async function initializeSupport() {
     addCommunityStatusField();
     attachReportControls();
+    $('#userMenuToggle').addEventListener('click', toggleUserMenu);
+    document.addEventListener('click', event => {
+      if (!event.target.closest('#userMenu, #userMenuToggle')) closeUserMenu();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeUserMenu();
+    });
     updateRoleNavigation();
     if (window.naviaBackendReady) {
       window.naviaBackendReady.then(() => {
-        window.naviaSupabase.auth.onAuthStateChange((_event, session) => {
-          if (!session) {
+        window.naviaSupabase.auth.onAuthStateChange((event, session) => {
+          if (event === 'INITIAL_SESSION' && session) {
+            queueMicrotask(() => restoreExistingSession(session).catch(showActionError));
+          } else if (event === 'SIGNED_OUT') {
             window.naviaCurrentUser = null;
             currentUserProfile = null;
             updateRoleNavigation();

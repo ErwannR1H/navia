@@ -18,7 +18,13 @@
       throw new Error('No se pudo cargar el cliente de Supabase.');
     }
 
-    window.naviaSupabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+    window.naviaSupabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true
+      }
+    });
     return window.naviaSupabase;
   })();
 })();

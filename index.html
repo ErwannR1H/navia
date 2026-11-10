@@ -57,12 +57,18 @@
           <button onclick="goToScreen(2)" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" data-view="2">Perfil</button>
           <button type="button" class="nav-tab px-4 py-1.5 rounded-full text-sm font-medium transition text-slate-600" onclick="replayTutorial()">Tutorial</button>
         </nav>
-        <div class="flex items-center gap-3">
-          <div class="hidden sm:flex flex-col text-right">
-            <span id="headerStudentName" class="text-xs font-bold text-slate-800">Tu perfil</span>
-            <span id="headerStudentMeta" class="text-[11px] text-slate-500">Completa tu registro</span>
+        <div class="relative flex items-center gap-3">
+          <button type="button" id="userMenuToggle" aria-label="Abrir menú de usuario" aria-expanded="false" aria-controls="userMenu" class="flex items-center gap-3 rounded-xl p-1.5 hover:bg-slate-50">
+            <span class="hidden flex-col text-right sm:flex">
+              <span id="headerStudentName" class="text-xs font-bold text-slate-800">Tu perfil</span>
+              <span id="headerStudentMeta" class="text-[11px] text-slate-500">Completa tu registro</span>
+            </span>
+            <span id="headerInitials" aria-hidden="true" class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs border border-blue-200 shadow-xs">NA</span>
+          </button>
+          <div id="userMenu" class="user-menu hidden absolute right-0 top-full z-50 mt-2 w-52 rounded-xl border border-slate-200 bg-white p-2 shadow-xl" role="menu" aria-label="Menú de usuario">
+            <button type="button" role="menuitem" class="w-full rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100" onclick="goToScreen(2); closeUserMenu()">Mi perfil</button>
+            <button type="button" role="menuitem" class="w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-red-700 hover:bg-red-50" onclick="signOutNaviaUser()">Cerrar sesión</button>
           </div>
-          <button type="button" id="headerInitials" aria-label="Ir a mi perfil" class="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs border border-blue-200 cursor-pointer shadow-xs hover:ring-2 hover:ring-blue-300" onclick="goToScreen(2)">NA</button>
           <button type="button" class="nv-menu-toggle nv-inner-menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="innerMobileMenu" onclick="toggleNavMenu('innerMobileMenu', this)">
             <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
           </button>
@@ -1257,7 +1263,6 @@
           <div class="w-full max-w-6xl bg-white rounded-3xl p-6 sm:p-9 shadow-xl border border-slate-200/80">
             <header class="flex flex-wrap items-center justify-between gap-4 mb-6">
               <div><h1 tabindex="-1" class="text-2xl sm:text-3xl font-black text-[#003366]">Panel de administración</h1><p class="text-sm text-slate-500 mt-1">Revisa tickets y reportes de la comunidad.</p></div>
-              <button type="button" onclick="goToScreen(16)" class="rounded-xl border border-slate-300 px-4 py-2 text-sm">Ver soporte</button>
             </header>
             <div class="grid lg:grid-cols-2 gap-6">
               <section class="support-card"><h2 class="text-lg font-bold text-[#003366]">Tickets pendientes</h2><div id="adminTicketList" class="mt-3 space-y-2"></div></section>
@@ -1275,7 +1280,7 @@
           </div>
         </section>
       </main>
-      <footer class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 bg-white px-5 py-3 text-xs text-slate-600">
+      <footer id="appFooter" class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 bg-white px-5 py-3 text-xs text-slate-600">
         <span>© 2026 Navia · Prototipo académico</span>
         <nav class="flex flex-wrap gap-4" aria-label="Enlaces de asistencia">
           <button type="button" class="underline" onclick="goToScreen(15)">FAQ y ayuda</button>

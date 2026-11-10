@@ -1474,6 +1474,9 @@ function getCareerMaxCycles(career) {
     // Direct Navigation Controller
     function goToScreen(screenNumber) {
       if (screenNumber < 1 || screenNumber > totalScreens) return;
+      if (window.naviaCurrentUser && window.naviaIsAdmin?.() && screenNumber !== 17) {
+        screenNumber = 17;
+      }
       if ([16, 17].includes(screenNumber) && !window.naviaCurrentUser) {
         showToast('Inicia sesión para acceder al centro de ayuda.');
         return;
