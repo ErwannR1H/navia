@@ -63,6 +63,20 @@ create table if not exists public.complaints (
   complaint_type text not null check (complaint_type in ('reclamo', 'queja')),
   detail text not null,
   request text not null,
+  status text not null default 'open',
+  created_at timestamptz not null default now()
+);
+
+alter table public.complaints add column if not exists status text not null default 'open';
+alter table public.complaints drop constraint if exists complaints_status_check;
+alter table public.complaints add constraint complaints_status_check
+  check (status in ('open', 'in_progress', 'closed'));
+
+create table if not exists public.complaint_messages (
+  id uuid primary key default gen_random_uuid(),
+  complaint_id uuid not null references public.complaints(id) on delete cascade,
+  author_id uuid not null references auth.users(id) on delete cascade,
+  body text not null check (char_length(body) between 1 and 10000),
   created_at timestamptz not null default now()
 );
 
@@ -112,6 +126,7 @@ create table if not exists public.community_likes (
 create index if not exists tickets_owner_updated_idx on public.tickets(owner_id, updated_at desc);
 create index if not exists ticket_messages_ticket_created_idx on public.ticket_messages(ticket_id, created_at);
 create index if not exists complaints_owner_created_idx on public.complaints(owner_id, created_at desc);
+create index if not exists complaint_messages_complaint_created_idx on public.complaint_messages(complaint_id, created_at);
 create index if not exists community_posts_created_idx on public.community_posts(created_at desc);
 create index if not exists community_comments_post_created_idx on public.community_comments(post_id, created_at);
 create index if not exists community_reports_pending_idx on public.community_reports(status, created_at);
@@ -367,6 +382,7 @@ alter table public.community_public_profiles enable row level security;
 alter table public.tickets enable row level security;
 alter table public.ticket_messages enable row level security;
 alter table public.complaints enable row level security;
+alter table public.complaint_messages enable row level security;
 alter table public.community_posts enable row level security;
 alter table public.community_reports enable row level security;
 
@@ -420,6 +436,26 @@ for insert to authenticated with check (owner_id = (select auth.uid()));
 drop policy if exists "complaints_read_owner_or_admin" on public.complaints;
 create policy "complaints_read_owner_or_admin" on public.complaints
 for select to authenticated using (owner_id = (select auth.uid()) or (select public.is_navia_admin()));
+
+drop policy if exists "complaints_update_admin" on public.complaints;
+create policy "complaints_update_admin" on public.complaints
+for update to authenticated using ((select public.is_navia_admin()))
+with check ((select public.is_navia_admin()));
+
+drop policy if exists "complaint_messages_read_participants" on public.complaint_messages;
+create policy "complaint_messages_read_participants" on public.complaint_messages
+for select to authenticated using (
+  exists (
+    select 1 from public.complaints c where c.id = complaint_id
+      and (c.owner_id = (select auth.uid()) or (select public.is_navia_admin()))
+  )
+);
+
+drop policy if exists "complaint_messages_add_admin" on public.complaint_messages;
+create policy "complaint_messages_add_admin" on public.complaint_messages
+for insert to authenticated with check (
+  author_id = (select auth.uid()) and (select public.is_navia_admin())
+);
 
 drop policy if exists "community_posts_read_visible" on public.community_posts;
 create policy "community_posts_read_visible" on public.community_posts
@@ -486,6 +522,10 @@ create policy "community_comments_moderate" on public.community_comments
 for update to authenticated using ((select public.is_navia_admin()))
 with check ((select public.is_navia_admin()));
 
+drop policy if exists "community_comments_delete_self" on public.community_comments;
+create policy "community_comments_delete_self" on public.community_comments
+for delete to authenticated using (author_id = (select auth.uid()));
+
 alter table public.community_likes enable row level security;
 alter table public.community_comments enable row level security;
 
@@ -542,11 +582,12 @@ grant select on public.community_public_profiles to authenticated;
 grant select, insert, update on public.student_data to authenticated;
 grant select, insert on public.tickets to authenticated;
 grant select, insert on public.ticket_messages to authenticated;
-grant select, insert on public.complaints to authenticated;
+grant select, insert, update on public.complaints to authenticated;
+grant select, insert on public.complaint_messages to authenticated;
 grant select, insert on public.community_posts to authenticated;
 grant select, insert, update on public.community_reports to authenticated;
 grant select, insert, delete on public.community_likes to authenticated;
-grant select, insert, update on public.community_comments to authenticated;
+grant select, insert, update, delete on public.community_comments to authenticated;
 
 revoke all on function public.set_student_profile(text, text, text, integer, text) from public, anon;
 revoke all on function public.attach_ticket_file(uuid, text) from public, anon;

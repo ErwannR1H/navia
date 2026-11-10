@@ -35,6 +35,8 @@
   let adminTicketId = null;
   let academicSaveTimer = null;
   let currentUserProfile = null;
+  let guestModeSelected = false;
+  let signedOutDestination = 1;
 
   function client() {
     if (!window.naviaSupabase) throw new Error(window.naviaBackendError?.message || 'Supabase no está configurado. Sigue la guía de configuración del proyecto.');
@@ -65,6 +67,8 @@
     if (!supabase) throw new Error(window.naviaBackendError?.message || 'No se pudo conectar con Supabase. Revisa la configuración del proyecto.');
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
+    guestModeSelected = false;
+    signedOutDestination = 1;
     closeMicrosoftLogin();
 
     const { data: profile, error: profileError } = await supabase
@@ -94,12 +98,13 @@
   }
 
   async function restoreExistingSession(session) {
-    if (!session?.user) return;
+    if (!session?.user || guestModeSelected) return;
     const supabase = client();
     const { data: profile, error } = await supabase
       .from('profiles').select('id,email,role,display_name,student_code,career,cycle,goal')
       .eq('id', session.user.id).maybeSingle();
     if (error) throw error;
+    if (guestModeSelected) return;
     if (!profile) {
       await supabase.auth.signOut();
       throw new Error('Tu cuenta no tiene un perfil de Navia activo.');
@@ -110,6 +115,16 @@
     document.getElementById('microsoftAccountBadge').classList.remove('hidden');
     updateRoleNavigation();
     await restoreAccount(profile);
+    if (guestModeSelected) {
+      window.naviaCurrentUser = null;
+      currentUserProfile = null;
+      window.naviaResetStudentProfile?.();
+      document.getElementById('microsoftAccountBadge').classList.add('hidden');
+      document.getElementById('studentEmailLabel').textContent = 'alumno@usil.pe';
+      updateRoleNavigation();
+      goToScreen(signedOutDestination);
+      return;
+    }
     if (isAdmin()) {
       goToScreen(17);
       await Promise.all([loadTickets(), loadModerationDashboard(), loadAdminComplaints()]);
@@ -118,24 +133,30 @@
     }
   }
 
-  async function signOut() {
-    if (!isAdmin()) await persistAcademicState();
+  async function signOut(destination = 1) {
+    if (destination !== 2 && user() && !isAdmin()) await persistAcademicState();
+    guestModeSelected = true;
+    signedOutDestination = destination;
     const { error } = await client().auth.signOut();
-    if (error) throw error;
+    if (error) {
+      guestModeSelected = false;
+      throw error;
+    }
     window.naviaCurrentUser = null;
     currentUserProfile = null;
-    studentProfile = { name: '', code: '', email: '', career: '', cycle: '', goal: 'Ninguno' };
-    profileCompleted = false;
+    window.naviaResetStudentProfile?.();
     document.getElementById('microsoftAccountBadge').classList.add('hidden');
+    document.getElementById('studentEmailLabel').textContent = 'alumno@usil.pe';
     closeUserMenu();
     updateRoleNavigation();
-    goToScreen(1);
-    showToast('Sesión cerrada.');
+    goToScreen(destination);
+    if (destination === 1) showToast('Sesión cerrada.');
   }
 
   function updateRoleNavigation() {
     const isSignedIn = Boolean(user());
     const adminOnly = isAdmin();
+    $('#userMenuToggle')?.classList.toggle('hidden', !isSignedIn);
     ['adminNavButton', 'adminMobileNavButton'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.classList.toggle('hidden', !adminOnly);
@@ -346,13 +367,23 @@
 
   function renderAdminTicketList(tickets) {
     const host = $('#adminTicketList');
+    const closedHost = $('#adminClosedTicketList');
     if (!host) return;
     const pending = tickets.filter(ticket => ticket.status !== 'closed');
+    const closed = tickets.filter(ticket => ticket.status === 'closed');
     if (!pending.length) {
       host.innerHTML = '<p class="text-sm text-slate-500">No hay tickets abiertos.</p>';
-      return;
+    } else {
+      renderAdminTicketCards(host, pending);
     }
-    host.replaceChildren(...pending.map(ticket => {
+    if (closedHost) {
+      if (!closed.length) closedHost.innerHTML = '<p class="text-sm text-slate-500">No hay tickets cerrados.</p>';
+      else renderAdminTicketCards(closedHost, closed);
+    }
+  }
+
+  function renderAdminTicketCards(host, tickets) {
+    host.replaceChildren(...tickets.map(ticket => {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'w-full rounded-xl border border-slate-200 p-3 text-left hover:border-blue-400';
@@ -412,7 +443,7 @@
       $('#adminTicketMeta').textContent = `#${ticket.id.slice(0, 8)} · ${categoryNames[ticket.category]} · ${priorityDetails[ticket.priority]?.estimate}`;
       await renderTicketAttachment(ticket, $('#adminTicketMeta'));
       $('#adminTicketStatus').value = ticket.status;
-      $('#adminTicketReplyForm').classList.toggle('hidden', ticket.status === 'closed');
+      $('#adminTicketReplyForm').classList.remove('hidden');
       renderMessages($('#adminTicketMessages'), messages, ticket);
       $('#adminTicketReplyForm').onsubmit = event => sendReply(event, ticket, $('#adminTicketReply'));
       $('#adminTicketThread').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -441,6 +472,12 @@
     const body = input.value.trim();
     if (!body) return;
     try {
+      if (isAdmin() && ticket.status === 'closed') {
+        const { error: reopenError } = await client().rpc('set_ticket_status', {
+          p_ticket_id: ticket.id, p_status: 'in_progress'
+        });
+        if (reopenError) throw reopenError;
+      }
       const { error } = await client().from('ticket_messages').insert({
         ticket_id: ticket.id, author_id: user().id, body
       });
@@ -649,12 +686,29 @@
     host.replaceChildren();
     comments.forEach(comment => {
       const author = authorNames.get(comment.author_id);
+      const isOwnComment = comment.author_id === user()?.id;
       const commentCard = document.createElement('div');
       commentCard.className = 'rounded-lg bg-slate-50 p-2.5';
-      commentCard.innerHTML = `<div class="flex flex-wrap justify-between gap-2"><strong class="text-[10px] text-slate-700">${escapeHtml(author?.display_name || 'Estudiante Navia')}</strong><time class="text-[9px] text-slate-500">${escapeHtml(formatDate(comment.created_at))}</time></div><p class="mt-1 whitespace-pre-wrap text-xs text-slate-700">${escapeHtml(comment.body)}</p><button type="button" class="mt-1 text-[10px] font-semibold text-red-700 underline">Reportar comentario</button>`;
-      commentCard.querySelector('button').addEventListener('click', () => reportComment(comment.id));
+      commentCard.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-2"><div class="flex flex-wrap items-center gap-1"><strong class="text-[10px] text-slate-700">${escapeHtml(author?.display_name || (isOwnComment ? studentProfile.name : 'Estudiante Navia'))}</strong>${isOwnComment ? '<span class="text-[9px] text-slate-500">(mon message)</span>' : ''}</div><time class="text-[9px] text-slate-500">${escapeHtml(formatDate(comment.created_at))}</time></div><p class="mt-1 whitespace-pre-wrap text-xs text-slate-700"></p><div class="mt-1 flex flex-wrap gap-3"><button type="button" class="report-comment text-[10px] font-semibold text-red-700 underline">Reportar comentario</button>${isOwnComment ? '<button type="button" class="delete-comment text-[10px] font-semibold text-slate-600 underline">Eliminar mi comentario</button>' : ''}</div>`;
+      commentCard.querySelector('p').textContent = comment.body;
+      commentCard.querySelector('.report-comment').addEventListener('click', () => reportComment(comment.id));
+      commentCard.querySelector('.delete-comment')?.addEventListener('click', () => deleteOwnComment(comment.id));
       host.append(commentCard);
     });
+  }
+
+  async function deleteOwnComment(commentId) {
+    try {
+      requireUser();
+      if (!window.confirm('¿Eliminar tu comentario?')) return;
+      const { error } = await client().from('community_comments')
+        .delete().eq('id', commentId).eq('author_id', user().id);
+      if (error) throw error;
+      await loadCommunityPosts();
+      showToast('Comentario eliminado.');
+    } catch (error) {
+      showActionError(error);
+    }
   }
 
   async function addPostComment(event, postId) {
@@ -729,7 +783,7 @@
   async function loadAdminComplaints() {
     if (!isAdmin()) return;
     const { data, error } = await client().from('complaints')
-      .select('tracking_code,consumer_name,consumer_email,consumer_phone,service_description,complaint_type,detail,request,created_at')
+      .select('id,tracking_code,consumer_name,consumer_email,consumer_phone,service_description,complaint_type,detail,request,created_at,status')
       .order('created_at', { ascending: false });
     if (error) throw error;
     const host = $('#adminComplaintList');
@@ -737,12 +791,71 @@
       host.innerHTML = '<p class="text-sm text-slate-500">Aún no se han recibido reclamaciones.</p>';
       return;
     }
+    const complaintIds = data.map(complaint => complaint.id);
+    const { data: messages, error: messagesError } = await client().from('complaint_messages')
+      .select('id,complaint_id,author_id,body,created_at')
+      .in('complaint_id', complaintIds).order('created_at');
+    if (messagesError) throw messagesError;
+    const messagesByComplaint = new Map();
+    (messages || []).forEach(message => {
+      if (!messagesByComplaint.has(message.complaint_id)) messagesByComplaint.set(message.complaint_id, []);
+      messagesByComplaint.get(message.complaint_id).push(message);
+    });
     host.replaceChildren(...data.map(complaint => {
       const card = document.createElement('article');
       card.className = 'rounded-xl border border-slate-200 p-3';
-      card.innerHTML = `<p class="text-xs font-bold text-blue-800">${escapeHtml(complaint.tracking_code)} · ${escapeHtml(complaint.complaint_type)}</p><p class="mt-1 text-[10px] text-slate-500">${escapeHtml(formatDate(complaint.created_at))}</p><p class="mt-2 text-sm font-bold">${escapeHtml(complaint.consumer_name)}</p><p class="text-xs text-slate-600">${escapeHtml(complaint.consumer_email)} ${escapeHtml(complaint.consumer_phone || '')}</p><p class="mt-2 text-xs"><strong>Servicio:</strong> ${escapeHtml(complaint.service_description)}</p><p class="mt-2 whitespace-pre-wrap text-xs text-slate-700">${escapeHtml(complaint.detail)}</p><p class="mt-2 whitespace-pre-wrap text-xs"><strong>Pedido:</strong> ${escapeHtml(complaint.request)}</p>`;
+      card.innerHTML = `<p class="text-xs font-bold text-blue-800">${escapeHtml(complaint.tracking_code)} · ${escapeHtml(complaint.complaint_type)}</p><p class="mt-1 text-[10px] text-slate-500">${escapeHtml(formatDate(complaint.created_at))}</p><p class="mt-2 text-sm font-bold">${escapeHtml(complaint.consumer_name)}</p><p class="text-xs text-slate-600">${escapeHtml(complaint.consumer_email)} ${escapeHtml(complaint.consumer_phone || '')}</p><p class="mt-2 text-xs"><strong>Servicio:</strong> ${escapeHtml(complaint.service_description)}</p><p class="mt-2 whitespace-pre-wrap text-xs text-slate-700">${escapeHtml(complaint.detail)}</p><p class="mt-2 whitespace-pre-wrap text-xs"><strong>Pedido:</strong> ${escapeHtml(complaint.request)}</p><label class="mt-3 block text-xs font-semibold">Estado<select class="complaint-status mt-1 w-full rounded-lg border border-slate-300 p-2" aria-label="Estado de ${escapeHtml(complaint.tracking_code)}"><option value="open">Abierta</option><option value="in_progress">En curso</option><option value="closed">Cerrada</option></select></label><div class="complaint-messages my-3 space-y-2 border-t border-slate-100 pt-3"></div><form class="complaint-reply-form flex flex-col gap-2"><label class="sr-only">Respuesta a ${escapeHtml(complaint.tracking_code)}</label><textarea required maxlength="10000" rows="2" class="min-w-0 rounded-xl border border-slate-300 p-3 text-sm" placeholder="Responder a la reclamación…"></textarea><button type="submit" class="self-end rounded-xl bg-[#003366] px-4 py-2 text-sm font-bold text-white">Enviar respuesta</button></form>`;
+      const status = card.querySelector('.complaint-status');
+      status.value = complaint.status || 'open';
+      status.addEventListener('change', () => setComplaintStatus(complaint, status.value));
+      const messageHost = card.querySelector('.complaint-messages');
+      const complaintMessages = messagesByComplaint.get(complaint.id) || [];
+      if (complaintMessages.length) {
+        complaintMessages.forEach(message => {
+          const entry = document.createElement('article');
+          entry.className = 'rounded-lg bg-slate-50 p-2.5';
+          entry.innerHTML = `<div class="flex justify-between gap-2"><strong class="text-[10px] text-[#003366]">Administración Navia</strong><time class="text-[9px] text-slate-500">${escapeHtml(formatDate(message.created_at))}</time></div><p class="mt-1 whitespace-pre-wrap text-xs text-slate-700">${escapeHtml(message.body)}</p>`;
+          messageHost.append(entry);
+        });
+      } else {
+        messageHost.innerHTML = '<p class="text-xs text-slate-500">Sin respuestas administrativas.</p>';
+      }
+      card.querySelector('.complaint-reply-form').addEventListener('submit', event =>
+        sendComplaintReply(event, complaint, card.querySelector('textarea')));
       return card;
     }));
+  }
+
+  async function setComplaintStatus(complaint, status) {
+    try {
+      const { error } = await client().from('complaints').update({ status }).eq('id', complaint.id);
+      if (error) throw error;
+      showToast(`Reclamación ${statusLabel(status).toLowerCase()}.`);
+    } catch (error) {
+      showActionError(error);
+      await loadAdminComplaints();
+    }
+  }
+
+  async function sendComplaintReply(event, complaint, input) {
+    event.preventDefault();
+    const body = input.value.trim();
+    if (!body) return;
+    try {
+      if (complaint.status === 'closed') {
+        const { error: statusError } = await client().from('complaints')
+          .update({ status: 'in_progress' }).eq('id', complaint.id);
+        if (statusError) throw statusError;
+      }
+      const { error } = await client().from('complaint_messages').insert({
+        complaint_id: complaint.id, author_id: user().id, body
+      });
+      if (error) throw error;
+      await loadAdminComplaints();
+      showToast('Respuesta enviada a la reclamación.');
+    } catch (error) {
+      showActionError(error);
+    }
   }
 
   async function moderateReport(report, hidePost) {
@@ -862,6 +975,9 @@
           } else if (event === 'SIGNED_OUT') {
             window.naviaCurrentUser = null;
             currentUserProfile = null;
+            window.naviaResetStudentProfile?.();
+            $('#microsoftAccountBadge').classList.add('hidden');
+            $('#studentEmailLabel').textContent = 'alumno@usil.pe';
             updateRoleNavigation();
           }
         });
@@ -890,6 +1006,38 @@
   }
 
   window.signOutNaviaUser = () => signOut().catch(showActionError);
+  window.continueAsGuest = async function () {
+    try {
+      if (user()) {
+        await signOut(2);
+        return;
+      }
+      guestModeSelected = true;
+      signedOutDestination = 2;
+      if (window.naviaBackendReady) {
+        try {
+          const supabase = await window.naviaBackendReady;
+          const { data, error: sessionError } = await supabase.auth.getSession();
+          if (sessionError) throw sessionError;
+          if (data.session) {
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+          }
+        } catch (error) {
+          if (!window.naviaBackendError) throw error;
+        }
+      }
+      window.naviaCurrentUser = null;
+      currentUserProfile = null;
+      window.naviaResetStudentProfile?.();
+      document.getElementById('microsoftAccountBadge').classList.add('hidden');
+      document.getElementById('studentEmailLabel').textContent = 'alumno@usil.pe';
+      updateRoleNavigation();
+      goToScreen(2);
+    } catch (error) {
+      showActionError(error);
+    }
+  };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeSupport);
   else initializeSupport();

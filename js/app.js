@@ -306,6 +306,18 @@ function getCareerMaxCycles(career) {
       }
     }
 
+    window.naviaResetStudentProfile = function () {
+      studentProfile = { name: '', code: '', email: '', career: '', cycle: '', goal: 'Ninguno' };
+      profileCompleted = false;
+      ['studentName', 'studentCode', 'userCareer', 'userCurrentCycle'].forEach(id => {
+        const field = document.getElementById(id);
+        if (field) field.value = '';
+      });
+      updateDashboardFromProfile();
+      updateNavigationAccess();
+      updateProfileScreenState();
+    };
+
     // ========================================================================
     // NAVIA: RUTA DINÁMICA SEGÚN AVANCE, CARGA, CHECKS Y DIAGNÓSTICO
     // ========================================================================

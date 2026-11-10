@@ -650,6 +650,18 @@ button[class~="bg-[#003366]"], button[class~="bg-[#002A52]"], .screen-panel butt
   line-height: 1.25;
 }
 
+#commCourseGrid,
+#commReviewsList,
+#commReviewsList .review-item,
+#commReviewsList .post-content-area {
+  min-width: 0;
+}
+
+#commReviewsList .review-course {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 @media (min-width: 641px) and (max-width: 1023px) {
   #dynamicCurriculumGrid {
     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
