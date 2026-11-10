@@ -248,7 +248,9 @@ function getCareerMaxCycles(career) {
       updateNavigationAccess();
       renderDynamicCurriculum();
       updateDashboardFromProfile();
-      showToast(`Malla de ${career} cargada para ${name}`);
+      showToast(window.naviaCurrentUser
+        ? `Malla de ${career} cargada para ${name}`
+        : 'Perfil invitado: tus datos son temporales y no se guardarán.');
       goToScreen(3);
     }
 

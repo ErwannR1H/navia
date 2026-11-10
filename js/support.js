@@ -182,7 +182,7 @@
   }
 
   async function persistProfile(profile) {
-    requireUser();
+    if (!user()) return;
     const { error } = await client().rpc('set_student_profile', {
       p_display_name: profile.name,
       p_student_code: profile.code || null,
