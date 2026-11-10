@@ -33,7 +33,7 @@ Los estudiantes completan su perfil académico al iniciar sesión por primera ve
 
 Para probar la función `/api/config` localmente se necesita Vercel CLI (`vercel dev`) y las mismas variables de entorno; un servidor estático simple no ejecuta funciones de Vercel.
 
-La app simula el flujo visual de Microsoft, pero autentica con Supabase Email/Password; no valida cuentas Microsoft reales. La FAQ es pública; los tickets y reclamaciones requieren una sesión. Los adjuntos son privados, limitados a 5 MB y a imágenes/PDF.
+La app simula el flujo visual de Microsoft, pero autentica con Supabase Email/Password; no valida cuentas Microsoft reales. El tutorial guiado presenta el perfil y las funciones principales, incluida la FAQ, los tickets y el Libro de reclamaciones. La FAQ es pública; los tickets y reclamaciones requieren una sesión. Los adjuntos son privados, limitados a 5 MB y a imágenes/PDF.
 
 ## SLA, reclamaciones y límites del prototipo
 

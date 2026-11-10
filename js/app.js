@@ -1080,7 +1080,7 @@ function getCareerMaxCycles(career) {
     let currentActiveScreen = 1;
     let currentQuizIndex = 0;
     const totalScreens = 17;
-    const TUTORIAL_STORAGE_KEY = 'naviaTutorialCompletedV3';
+    const TUTORIAL_STORAGE_KEY = 'naviaTutorialCompletedV4';
     let tutorialActive = false;
     let tutorialStepIndex = 0;
     let tutorialDemoSnapshot = null;
@@ -1107,6 +1107,12 @@ function getCareerMaxCycles(career) {
       { screen: 14, target: '#commCourseGrid .comm-card:first-child button', title: 'Filtra las opiniones', text: 'Selecciona «Ver opiniones» en un curso para consultar las experiencias relacionadas con esa materia.', context: 'Comunidad', placement: 'corner-top-right' },
       { screen: 14, target: '#commReviewsList .like-btn', title: 'Valora una opinión', text: 'Usa el corazón para indicar que una opinión te resultó útil para decidir sobre un curso.', context: 'Comunidad', placement: 'corner-top-right' },
       { screen: 14, target: '#screen-14 button[onclick="openLeaveReviewModal()"]', title: 'Comparte tu experiencia', text: 'Publica una opinión seleccionando un curso y escribiendo un consejo útil para otros estudiantes.', context: 'Comunidad', placement: 'top' },
+      { screen: 4, target: '#innerAppNav .nav-tab[data-view="15"]', title: 'Encuentra ayuda cuando la necesites', text: 'Abre Ayuda desde la navegación o el botón flotante para consultar la FAQ, crear tickets y acceder al Libro de reclamaciones.', context: 'Ayuda y soporte', placement: 'bottom', fallback: '.nv-help-fab' },
+      { screen: 15, target: '#faqList .faq-item:first-child', title: 'Consulta las preguntas frecuentes', text: 'La FAQ reúne respuestas sobre tus datos, recomendaciones, el historial y el uso de Navia. Puedes volver a consultarla cuando quieras desde Ayuda.', context: 'Centro de ayuda', placement: 'top' },
+      { screen: 15, target: '#screen-15 button[onclick="goToScreen(16)"]', title: 'Contacta al equipo de soporte', text: 'Si la FAQ no resuelve tu problema, aquí puedes abrir el sistema de tickets y seguir la conversación con el equipo.', context: 'Centro de ayuda', placement: 'bottom' },
+      { screen: 16, supportTab: 'tickets', target: '#ticketCategory', title: 'Crea un ticket de asistencia', text: 'Describe el problema y elige su categoría. Navia estima la prioridad y el plazo de respuesta según el tipo de incidencia, sin que tengas que asignarte una prioridad.', context: 'Tickets de soporte', placement: 'corner-top-right' },
+      { screen: 16, supportTab: 'tickets', target: '#ticketAttachment', title: 'Adjunta capturas si ayudan', text: 'Puedes adjuntar una imagen o un PDF de hasta 5 MB. Después de publicar, encontrarás el ticket y sus respuestas en el hilo de conversación.', context: 'Tickets de soporte', placement: 'corner-top-right' },
+      { screen: 16, supportTab: 'complaint', target: '#complaintForm [name="complaint_type"]', title: 'Presenta una reclamación formal', text: 'El Libro de reclamaciones solicita tus datos, el detalle del reclamo o queja y el pedido. Al enviarlo, recibirás un código de seguimiento y podrás guardar una copia en PDF.', context: 'Libro de reclamaciones', placement: 'corner-top-right' },
       { screen: 2, target: '#studentProfileFields', title: 'Ahora, completa tu perfil', text: 'El recorrido terminó. Ingresa tus datos académicos para empezar a usar Navia; los datos de ejemplo no se guardaron.', context: '¡Listo!', placement: 'top' }
     ];
 
@@ -1385,6 +1391,7 @@ function getCareerMaxCycles(career) {
         }
         updateFinalMalla();
       }
+      if (step.supportTab) window.showSupportTab(step.supportTab);
 
       const target = findTutorialTarget(step);
       if (!target) {
@@ -1489,7 +1496,7 @@ function getCareerMaxCycles(career) {
       if (window.naviaCurrentUser && window.naviaIsAdmin?.() && screenNumber !== 17) {
         screenNumber = 17;
       }
-      if ([16, 17].includes(screenNumber) && !window.naviaCurrentUser) {
+      if ([16, 17].includes(screenNumber) && !window.naviaCurrentUser && !(tutorialActive && screenNumber === 16)) {
         showToast('Inicia sesión para acceder al centro de ayuda.');
         return;
       }
