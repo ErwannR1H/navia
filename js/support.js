@@ -574,16 +574,17 @@
 
   $('#complaintForm').addEventListener('submit', async event => {
     event.preventDefault();
+    const form = event.currentTarget;
     try {
       requireUser();
-      const formData = new FormData(event.currentTarget);
+      const formData = new FormData(form);
       const record = Object.fromEntries(formData.entries());
       delete record.accept_copy;
       record.owner_id = user().id;
       const { data, error } = await client().from('complaints').insert(record)
         .select('tracking_code,created_at,consumer_name').single();
       if (error) throw error;
-      event.currentTarget.reset();
+      form.reset();
       showComplaintReceipt({ ...record, ...data });
     } catch (error) {
       showActionError(error);
