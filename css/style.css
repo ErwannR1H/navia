@@ -133,6 +133,10 @@ button:not(:disabled):active,[role=button]:active{transform:scale(.98)}
 .nv-g-det summary{cursor:pointer;padding:10px 14px;font-weight:700;color:#002447;list-style:none;display:flex;justify-content:space-between}
 .nv-g-det summary::after{content:"+";color:#5C4200;font-size:18px;font-weight:700}.nv-g-det[open] summary::after{content:"–"}
 .nv-g-det p{padding:0 14px 12px;color:#262626;line-height:1.55}
+.nv-faq-link-copy{margin:0;color:var(--navia-text)}
+.nv-faq-link{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:10px 16px;border:0;border-radius:4px;background:var(--navia-heading);color:var(--navia-white);font-weight:700;cursor:pointer}
+.nv-faq-link:hover{filter:brightness(1.15)}
+.nv-faq-link:focus-visible{outline:3px solid var(--navia-accent);outline-offset:3px}
 .nv-g-note{margin-top:14px;font-size:13px;color:#333;background:#FFF7E0;border-left:4px solid #D4AF37;padding:8px 12px;}
 @media (prefers-reduced-motion:reduce){.nv-guide-panel,.nv-chev,.nv-guide-inner{transition:none}}
 
