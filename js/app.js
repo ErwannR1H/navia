@@ -1839,7 +1839,6 @@ function getCareerMaxCycles(career) {
       document.getElementById('closureRows').addEventListener('change', event => {
         if (event.target.matches('.cierre-status-select')) adjustStatusColor(event.target);
       });
-      goToScreen(1);
       document.getElementById('userCareer').addEventListener('change', previewSelectedCareer);
       previewSelectedCareer();
       updateDashboardFromProfile();
@@ -1903,7 +1902,7 @@ function getCareerMaxCycles(career) {
     document.title = title + ' · Navia';
     const ann = document.getElementById('nvAnnouncer');
     if (ann) { ann.textContent = ''; setTimeout(() => { ann.textContent = 'Pantalla: ' + title; }, 50); }
-    if (h && h.tagName === 'H1') h.focus({ preventScroll: true });
+    if (n !== 1 && h && h.tagName === 'H1') h.focus({ preventScroll: true });
     $$('.nav-tab').forEach(t => t.classList.contains('bg-blue-50') ? t.setAttribute('aria-current', 'page') : t.removeAttribute('aria-current'));
   };
 

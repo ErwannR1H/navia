@@ -2,7 +2,7 @@
 <html lang="es"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navia - Sistema Inteligente de Orientación Académica USIL</title>
+  <title>Tu ruta. Más clara. · Navia</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,7 +42,7 @@
     <!-- App Inner Canvas -->
     <div class="w-full min-h-[760px] md:min-h-[820px] bg-white flex flex-col relative overflow-hidden text-slate-800">
       <!-- Inside App Header Navbar (Active for in-app views 4 to 14) -->
-      <header id="innerAppNav" role="banner" class="relative w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 sm:px-10 py-3.5 flex items-center justify-between z-30 transition-all">
+      <header id="innerAppNav" role="banner" class="hidden relative w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 sm:px-10 py-3.5 flex items-center justify-between z-30 transition-all">
         <button type="button" aria-label="Navia, ir al inicio" class="flex items-center gap-2.5 cursor-pointer rounded-xl" onclick="goToScreen(4)">
           <div class="nv-brand-mark">
             <svg class="nv-icon nv-brand-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-graduation"></use></svg>
@@ -87,7 +87,7 @@
         <!-- ========================================================================= -->
         <!-- SCREEN 1: PANTALLA DE ACCESO A NAVIA (LOGIN)                              -->
         <!-- ========================================================================= -->
-        <section id="screen-1" class="screen-panel w-full flex-1 flex flex-col justify-between bg-white text-slate-800 p-6 sm:p-10 relative overflow-hidden hidden">
+        <section id="screen-1" class="screen-panel w-full flex-1 flex flex-col justify-between bg-white text-slate-800 p-6 sm:p-10 relative overflow-hidden">
           <div class="absolute inset-0 nv-grid-bg pointer-events-none"></div>
           <div class="absolute -top-24 -right-24 w-[420px] h-[420px] rounded-full bg-indigo-400/30 blur-3xl nv-float pointer-events-none"></div>
           <div class="absolute -bottom-32 -left-20 w-[380px] h-[380px] rounded-full bg-yellow-300/20 blur-3xl nv-floatb pointer-events-none"></div>
@@ -430,7 +430,7 @@
         <!-- ========================================================================= -->
         <!-- SCREEN 4: INICIO DE NAVIA (DASHBOARD)                                     -->
         <!-- ========================================================================= -->
-        <section id="screen-4" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center">
+        <section id="screen-4" class="screen-panel w-full p-4 sm:p-8 flex flex-col items-center justify-center hidden">
           <div class="w-full max-w-5xl space-y-6">
             <!-- Hero de bienvenida -->
             <div class="nv-dashboard-hero nv-fade relative overflow-hidden rounded-[28px] p-7 sm:p-9 text-white">
