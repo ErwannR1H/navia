@@ -1722,9 +1722,22 @@ function getCareerMaxCycles(career) {
       goToScreen(7);
     }
 
+    function openCycleAbandonConfirm() {
+      if (!cyclePrepared) return;
+      const modal = document.getElementById('cycleAbandonConfirm');
+      modal?.classList.remove('hidden');
+      modal?.classList.add('flex');
+    }
+
+    function closeCycleAbandonConfirm() {
+      const modal = document.getElementById('cycleAbandonConfirm');
+      modal?.classList.add('hidden');
+      modal?.classList.remove('flex');
+    }
+
     function abandonCurrentCycle() {
       if (!cyclePrepared) return;
-      if (!window.confirm('¿Abandonar el ciclo en curso? Se borrarán la ruta y el diagnóstico preparados, pero se conservará tu historial académico.')) return;
+      closeCycleAbandonConfirm();
       cyclePrepared = false;
       plannedCourses = [];
       selectedLoadCount = 0;
@@ -1750,6 +1763,10 @@ function getCareerMaxCycles(career) {
       });
       goToScreen(4);
     }
+
+    window.openCycleAbandonConfirm = openCycleAbandonConfirm;
+    window.closeCycleAbandonConfirm = closeCycleAbandonConfirm;
+    window.abandonCurrentCycle = abandonCurrentCycle;
 
     function continueToConcepts() {
       if (!selectedRouteCourses.length) { showError('dynamicSuggestedCourses', 'Elige al menos un curso para continuar.'); return; }
@@ -1876,8 +1893,12 @@ function getCareerMaxCycles(career) {
     function filterCommunityItems(query) {
       const term = query.toLowerCase().trim();
       const selectedStatus = document.getElementById('communityStatusFilter')?.value || 'all';
+      const coursesDisclosure = document.getElementById('communityCoursesDisclosure');
       const cards = document.querySelectorAll('#commCourseGrid .comm-card');
       const reviews = document.querySelectorAll('#commReviewsList .review-item');
+      if (term && coursesDisclosure && Array.from(cards).some(card => card.innerText.toLowerCase().includes(term))) {
+        coursesDisclosure.open = true;
+      }
 
       cards.forEach(c => {
         const text = c.innerText.toLowerCase();
@@ -1894,6 +1915,8 @@ function getCareerMaxCycles(career) {
     function filterByCourse(name) {
       const search = document.getElementById('communitySearchInput');
       search.value = name;
+      const coursesDisclosure = document.getElementById('communityCoursesDisclosure');
+      if (coursesDisclosure) coursesDisclosure.open = true;
       filterCommunityItems(name);
       showToast(`Filtrando opiniones de: ${name}`);
     }
@@ -2031,7 +2054,7 @@ function getCareerMaxCycles(career) {
   };
 
   /* Diálogos: foco, trampa de Tab, Escape */
-  const CLOSERS = { microsoftLoginModal: () => window.closeMicrosoftLogin && closeMicrosoftLogin(), reviewModal: () => window.closeLeaveReviewModal && closeLeaveReviewModal(), routeWarnModal: () => window.closeRouteWarning && closeRouteWarning(), tutorialSkipConfirm: () => window.closeTutorialSkipConfirm && closeTutorialSkipConfirm() };
+  const CLOSERS = { microsoftLoginModal: () => window.closeMicrosoftLogin && closeMicrosoftLogin(), reviewModal: () => window.closeLeaveReviewModal && closeLeaveReviewModal(), routeWarnModal: () => window.closeRouteWarning && closeRouteWarning(), cycleAbandonConfirm: () => window.closeCycleAbandonConfirm && closeCycleAbandonConfirm(), tutorialSkipConfirm: () => window.closeTutorialSkipConfirm && closeTutorialSkipConfirm() };
   const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
   const open = new Map();
   const shown = d => getComputedStyle(d).display !== 'none';

@@ -652,6 +652,21 @@ button[class~="bg-[#003366]"], button[class~="bg-[#002A52]"], .screen-panel butt
   min-width: 0;
 }
 
+#communityCoursesDisclosure > summary::-webkit-details-marker {
+  display: none;
+}
+
+#communityCoursesDisclosure[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+#communityCoursesDisclosure > #commCourseGrid {
+  max-height: 34rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: .25rem;
+}
+
 #commReviewsList .review-course {
   min-width: 0;
   overflow-wrap: anywhere;
@@ -1316,6 +1331,18 @@ body.nv-tutorial-open .screen-panel * {
 
 .faq-item[open] {
   border-color: #9db8d8;
+}
+
+.nv-cycle-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgb(15 23 42 / 58%);
+  backdrop-filter: blur(3px);
+}
+
+.nv-cycle-confirm.hidden {
+  display: none;
 }
 
 .nv-loading-overlay {

@@ -485,7 +485,7 @@
                   <p id="cycleSummaryText" class="mt-1 text-xs leading-relaxed text-slate-700"></p>
                   <ul id="cycleSummaryCourses" class="mt-2 flex flex-wrap gap-2 text-[11px] text-slate-700"></ul>
                 </div>
-                <button type="button" onclick="abandonCurrentCycle()" class="shrink-0 rounded-xl border border-red-300 bg-white px-4 py-2.5 text-xs font-bold text-red-700 hover:bg-red-50">Abandonar este ciclo</button>
+                <button type="button" onclick="openCycleAbandonConfirm()" class="shrink-0 rounded-xl border border-red-300 bg-white px-4 py-2.5 text-xs font-bold text-red-700 hover:bg-red-50">Abandonar este ciclo</button>
               </div>
             </section>
             <!-- Acciones (centradas) -->
@@ -1037,11 +1037,16 @@
               <!-- Feed Area (8 cols) -->
               <div class="lg:col-span-8 space-y-6">
                 <!-- Cursos Consultados -->
-                <div>
-                  <h2 class="text-xs sm:text-sm font-bold text-slate-800 mb-3">Cursos consultados</h2>
-                  <p id="communityCourseCount" class="mb-2 text-[11px] text-slate-500" aria-live="polite"></p>
-                  <div class="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-2.5" id="commCourseGrid"></div>
-                </div>
+                <details id="communityCoursesDisclosure" class="community-courses-disclosure">
+                  <summary class="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 hover:border-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">
+                    <span class="min-w-0">
+                      <span class="block text-xs sm:text-sm font-bold text-slate-800">Cursos consultados</span>
+                      <span id="communityCourseCount" class="mt-1 block text-[11px] text-slate-500" aria-live="polite"></span>
+                    </span>
+                    <svg class="nv-icon h-5 w-5 shrink-0 text-slate-600 transition-transform" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-chevron-down"></use></svg>
+                  </summary>
+                  <div class="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-2.5 pt-3" id="commCourseGrid"></div>
+                </details>
                 <!-- Comentarios con más likes -->
                 <div>
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 mb-3">Publicaciones con más likes</h4>
@@ -1244,6 +1249,17 @@
         </div>
       </form>
     </div>
+  </div>
+  <div id="cycleAbandonConfirm" role="dialog" aria-modal="true" aria-labelledby="cycleAbandonTitle" aria-describedby="cycleAbandonDescription" class="nv-cycle-confirm hidden items-center justify-center p-4">
+    <section class="w-full max-w-md rounded-3xl border border-red-100 bg-white p-6 shadow-2xl">
+      <span class="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-red-50 text-red-700" aria-hidden="true"><svg class="nv-icon h-6 w-6" viewBox="0 0 24 24"><use href="#nv-icon-warning"></use></svg></span>
+      <h2 id="cycleAbandonTitle" class="text-lg font-black text-[#003366]">¿Abandonar el ciclo en curso?</h2>
+      <p id="cycleAbandonDescription" class="mt-2 text-sm leading-relaxed text-slate-600">Se borrarán la ruta y el diagnóstico preparados, pero se conservará tu historial académico. Esta acción no se puede deshacer.</p>
+      <div class="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <button type="button" onclick="closeCycleAbandonConfirm()" class="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Seguir con mi ciclo</button>
+        <button type="button" onclick="abandonCurrentCycle()" class="rounded-xl bg-red-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-800">Sí, abandonar ciclo</button>
+      </div>
+    </section>
   </div>
   <div id="tutorialModal" role="dialog" aria-modal="true" aria-label="Tutorial guiado de Navia" class="nv-tutorial-layer hidden">
     <div id="tutorialDimTop" class="nv-tutorial-dim"></div>
