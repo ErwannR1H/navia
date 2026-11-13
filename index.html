@@ -261,11 +261,13 @@
             <div id="msStep2" class="hidden">
               <button type="button" onclick="msBack()" class="flex items-center gap-2 text-sm text-slate-700 hover:text-slate-900 mb-3"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg><span id="msEmailShown" class="truncate">correo@usil.pe</span></button>
               <h2 class="text-2xl font-semibold text-slate-900">Escribir contraseña</h2>
-              <div class="mt-5 relative">
+              <div class="mt-5">
                 <label for="microsoftPassword" class="block text-sm font-semibold text-slate-800 mb-2">Contraseña</label>
-                <input id="microsoftPassword" aria-label="Contraseña" type="password" autocomplete="current-password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')continueMicrosoftLogin()" class="w-full py-2 pl-1 pr-14 border-0 border-b border-slate-400 focus:border-blue-600 text-sm text-slate-900 outline-none bg-transparent">
+                <div class="relative">
+                  <input id="microsoftPassword" aria-label="Contraseña" aria-describedby="microsoftPassword-error" type="password" autocomplete="current-password" placeholder="Contraseña" onkeydown="if(event.key==='Enter')continueMicrosoftLogin()" class="w-full py-2 pl-1 pr-20 border-0 border-b border-slate-400 focus:border-blue-600 text-sm text-slate-900 outline-none bg-transparent">
+                  <button type="button" onclick="msTogglePass()" id="msPassToggle" aria-label="Mostrar u ocultar contraseña" aria-pressed="false" class="absolute right-0 top-1/2 -translate-y-1/2 px-2 py-2 text-xs text-blue-700">Mostrar</button>
+                </div>
                 <span id="microsoftPassword-error" class="texte-erreur hidden"></span>
-                <button type="button" onclick="msTogglePass()" id="msPassToggle" aria-label="Mostrar u ocultar contraseña" aria-pressed="false" class="absolute right-0 top-2 text-xs text-blue-700">Mostrar</button>
               </div>
               <p class="text-[10px] text-slate-600 mt-5">Acceso de demostración: las credenciales se validan mediante Supabase Auth.</p>
               <div class="flex items-center justify-end mt-6">
@@ -344,6 +346,7 @@
                   <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-up-right"></use></svg></div>
                   <div><p class="text-xs font-bold text-blue-950">Malla que se cargará</p><p id="careerPreviewText" class="text-[11px] text-blue-800 mt-1">Selecciona una carrera para cargar la malla curricular.</p></div>
                 </div>
+                <p id="studentProfileFormError" class="nv-form-error hidden mt-3" role="alert" aria-live="assertive"></p>
                 <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-end">
                   <button id="profileBackButton" onclick="goToScreen(1)" class="mr-auto px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition"><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver a la página de inicio</button>
                   <button onclick="saveStudentProfile()" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2"><span>Cargar mi malla <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span></button>
@@ -475,20 +478,30 @@
                 </div>
               </div>
             </div>
+            <section id="cycleSummaryPanel" class="hidden nv-fade nv-d1 w-full rounded-[24px] border border-blue-200 bg-blue-50/60 p-5 sm:p-6" aria-labelledby="cycleSummaryTitle">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="min-w-0">
+                  <h2 id="cycleSummaryTitle" class="text-sm font-extrabold text-[#003366]">Tu ciclo en curso</h2>
+                  <p id="cycleSummaryText" class="mt-1 text-xs leading-relaxed text-slate-700"></p>
+                  <ul id="cycleSummaryCourses" class="mt-2 flex flex-wrap gap-2 text-[11px] text-slate-700"></ul>
+                </div>
+                <button type="button" onclick="abandonCurrentCycle()" class="shrink-0 rounded-xl border border-red-300 bg-white px-4 py-2.5 text-xs font-bold text-red-700 hover:bg-red-50">Abandonar este ciclo</button>
+              </div>
+            </section>
             <!-- Acciones (centradas) -->
             <div class="nv-fade nv-d2 grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(5)" class="nv-dashboard-action nv-card cursor-pointer rounded-[28px] p-7 text-center border border-blue-200 flex flex-col items-center">
+              <button id="startCycleAction" type="button" onclick="goToScreen(5)" class="nv-dashboard-action nv-card cursor-pointer rounded-[28px] p-7 text-center border border-blue-200 flex flex-col items-center w-full">
                 <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center"><svg class="nv-icon h-8 w-8" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-rocket"/></svg></div>
                 <h3 class="text-lg font-extrabold text-[#003366] mt-4">Prepárate para tu próximo ciclo</h3>
                 <p class="text-xs text-slate-500 mt-1.5 leading-relaxed max-w-xs">Recibe una orientación personalizada según tu avance y tus objetivos de carga.</p>
                 <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#003366] text-white text-xs font-bold shadow-md">Empezar <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span></span>
-              </div>
-              <div role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}" onclick="goToScreen(10)" class="nv-dashboard-action nv-card cursor-pointer rounded-[28px] p-7 text-center bg-white border border-slate-200 flex flex-col items-center">
+              </button>
+              <button id="finishCycleAction" type="button" onclick="goToScreen(10)" class="nv-dashboard-action nv-card cursor-pointer rounded-[28px] p-7 text-center bg-white border border-slate-200 flex flex-col items-center w-full">
                 <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center"><svg class="nv-icon h-8 w-8" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-check-circle"/></svg></div>
                 <h3 class="text-lg font-extrabold text-[#00195A] mt-4">¿Culminaste el ciclo?</h3>
                 <p class="text-xs text-slate-500 mt-1.5 leading-relaxed max-w-xs">Actualiza tus resultados académicos y mantén tu malla curricular al día.</p>
                 <span class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-600 text-white text-xs font-bold shadow-md">Actualizar <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span></span>
-              </div>
+              </button>
             </div>
             <div class="text-center text-base text-slate-600 pt-1">Mismas ganas. Más futuro.</div>
           </div>
@@ -1026,106 +1039,13 @@
                 <!-- Cursos Consultados -->
                 <div>
                   <h2 class="text-xs sm:text-sm font-bold text-slate-800 mb-3">Cursos consultados</h2>
-                  <div class="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-2.5" id="commCourseGrid">
-                    <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
-                      <span class="font-mono text-xs font-bold text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5">&lt;/&gt;</span>
-                      <h3 class="w-full min-w-0 min-h-8 whitespace-normal break-words text-xs font-bold leading-snug text-slate-800 [overflow-wrap:anywhere]">Programación Orientada a Objetos II</h3>
-                      <button onclick="filterByCourse('Programación Orientada a Objetos II')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
-                    </div>
-                    <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
-                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-database"/></svg></span>
-                      <h4 class="w-full min-w-0 min-h-8 whitespace-normal break-words text-xs font-bold leading-snug text-slate-800 [overflow-wrap:anywhere]">Gerenciamiento de Datos I</h4>
-                      <button onclick="filterByCourse('Gerenciamiento de Datos I')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
-                    </div>
-                    <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
-                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-laptop"/></svg></span>
-                      <h5 class="w-full min-w-0 min-h-8 whitespace-normal break-words text-xs font-bold leading-snug text-slate-800 [overflow-wrap:anywhere]">Interacción Humano Computador</h5>
-                      <button onclick="filterByCourse('Interacción Humano Computador')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
-                    </div>
-                    <div class="comm-card p-3 rounded-2xl border border-slate-200 bg-white flex flex-col items-center text-center shadow-2xs hover:shadow-md transition">
-                      <span class="text-xs text-blue-700 bg-blue-50 p-1.5 rounded-lg mb-1.5"><svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-chart"/></svg></span>
-                      <h5 class="w-full min-w-0 min-h-8 whitespace-normal break-words text-xs font-bold leading-snug text-slate-800 [overflow-wrap:anywhere]">Marketing</h5>
-                      <button onclick="filterByCourse('Marketing')" class="w-full mt-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Ver opiniones</button>
-                    </div>
-                  </div>
+                  <p id="communityCourseCount" class="mb-2 text-[11px] text-slate-500" aria-live="polite"></p>
+                  <div class="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-2.5" id="commCourseGrid"></div>
                 </div>
                 <!-- Comentarios con más likes -->
                 <div>
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 mb-3">Comentarios con más likes</h4>
-                  <div class="space-y-3" id="commReviewsList">
-                    <div class="review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3">
-                      <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs shrink-0">CM</div>
-                        <div>
-                          <div class="flex items-baseline gap-2">
-                            <span class="font-bold text-xs text-slate-900">Camila Mendoza</span>
-                            <span class="text-[10px] text-slate-600">Programación Orientada a Objetos II</span>
-                          </div>
-                          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                            La clave está en practicar mucho los ejercicios y hacer los laboratorios. Al principio es retador, pero después todo tiene sentido.
-                          </p>
-                        </div>
-                      </div>
-                      <button onclick="toggleCommentLike(this, 56)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
-                        <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-heart"/></svg></span>
-                        <span class="likes-num">56</span>
-                      </button>
-                    </div>
-                    <div class="review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3">
-                      <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-xs shrink-0">DR</div>
-                        <div>
-                          <div class="flex items-baseline gap-2">
-                            <span class="font-bold text-xs text-slate-900">Diego Ramos</span>
-                            <span class="text-[10px] text-slate-600">Gerenciamiento de Datos I</span>
-                          </div>
-                          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                            Es un curso demandante, pero muy útil. Los proyectos te ayudan a entender cómo se aplican los conceptos en la vida real. Vale la pena el esfuerzo.
-                          </p>
-                        </div>
-                      </div>
-                      <button onclick="toggleCommentLike(this, 48)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
-                        <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-heart"/></svg></span>
-                        <span class="likes-num">48</span>
-                      </button>
-                    </div>
-                    <div class="review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3">
-                      <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-xs shrink-0">VA</div>
-                        <div>
-                          <div class="flex items-baseline gap-2">
-                            <span class="font-bold text-xs text-slate-900">Valeria Aguilar</span>
-                            <span class="text-[10px] text-slate-600">Interacción Humano Computador</span>
-                          </div>
-                          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                            Me gustó mucho porque es súper práctico. Se aprende bastante sobre diseño y la experiencia del usuario. ¡Recomendado!
-                          </p>
-                        </div>
-                      </div>
-                      <button onclick="toggleCommentLike(this, 42)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
-                        <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-heart"/></svg></span>
-                        <span class="likes-num">42</span>
-                      </button>
-                    </div>
-                    <div class="review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3">
-                      <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 font-bold flex items-center justify-center text-xs shrink-0">JP</div>
-                        <div>
-                          <div class="flex items-baseline gap-2">
-                            <span class="font-bold text-xs text-slate-900">Javier Pinto</span>
-                            <span class="text-[10px] text-slate-600">Marketing</span>
-                          </div>
-                          <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                            Un curso muy dinámico. Los trabajos en grupo son una gran oportunidad para ser creativo y aplicar lo que aprendes en casos reales.
-                          </p>
-                        </div>
-                      </div>
-                      <button onclick="toggleCommentLike(this, 37)" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-full transition">
-                        <span><svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-heart"/></svg></span>
-                        <span class="likes-num">37</span>
-                      </button>
-                    </div>
-                  </div>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-800 mb-3">Publicaciones con más likes</h4>
+                  <div class="space-y-3" id="commReviewsList" aria-live="polite"></div>
                   <!-- Botón ¡Deja tu opinión! -->
                   <div class="mt-6 text-center">
                     <button onclick="openLeaveReviewModal()" class="px-6 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/25 transition inline-flex items-center gap-2">
@@ -1247,18 +1167,18 @@
               <div class="max-w-3xl mx-auto">
                 <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950 mb-5"><strong>Libro de reclamaciones</strong><p class="mt-1">Formulario de prototipo basado en los campos usuales del consumidor en Perú. Su adecuación legal y el plazo de respuesta deben ser validados antes del uso real.</p></div>
                 <form id="complaintForm" class="support-card grid sm:grid-cols-2 gap-4">
-                  <label class="support-label">Nombre completo<input name="consumer_name" required maxlength="160" autocomplete="name"></label>
-                  <label class="support-label">Domicilio<input name="consumer_address" required maxlength="300" autocomplete="street-address"></label>
-                  <label class="support-label">DNI / documento de identidad<input name="consumer_document" required maxlength="40"></label>
-                  <label class="support-label">Correo electrónico<input name="consumer_email" type="email" required maxlength="254" autocomplete="email"></label>
-                  <label class="support-label">Teléfono (opcional)<input name="consumer_phone" maxlength="40" autocomplete="tel"></label>
+                  <label class="support-label">Nombre completo<input name="consumer_name" required maxlength="160" autocomplete="name" placeholder="Nombre y apellidos"></label>
+                  <label class="support-label">Domicilio<input name="consumer_address" required maxlength="300" autocomplete="street-address" placeholder="Dirección completa"></label>
+                  <label class="support-label">DNI / documento de identidad<input name="consumer_document" required maxlength="40" placeholder="Número de documento"></label>
+                  <label class="support-label">Correo electrónico<input name="consumer_email" type="email" required maxlength="254" autocomplete="email" placeholder="nombre@correo.com"></label>
+                  <label class="support-label">Teléfono (opcional)<input name="consumer_phone" maxlength="40" autocomplete="tel" placeholder="+51 999 999 999"></label>
                   <label class="support-label">Tipo
                     <select name="complaint_type" required><option value="reclamo">Reclamo (producto/servicio)</option><option value="queja">Queja (atención al usuario)</option></select>
                   </label>
-                  <label class="support-label sm:col-span-2">Servicio contratado<input name="service_description" required maxlength="300"></label>
-                  <label class="support-label sm:col-span-2">Detalle de la reclamación o queja<textarea name="detail" rows="4" required maxlength="10000"></textarea></label>
-                  <label class="support-label sm:col-span-2">Pedido del consumidor<textarea name="request" rows="3" required maxlength="5000"></textarea></label>
-                  <label class="sm:col-span-2 flex gap-2 text-xs text-slate-600"><input name="accept_copy" type="checkbox" required> Confirmo la información y deseo recibir una constancia de esta presentación.</label>
+                  <label class="support-label sm:col-span-2">Servicio contratado<input name="service_description" required maxlength="300" placeholder="Ej.: Plataforma Navia"></label>
+                  <label class="support-label sm:col-span-2">Detalle de la reclamación o queja<textarea name="detail" rows="4" required maxlength="10000" placeholder="Describe lo ocurrido, indicando fechas y detalles relevantes."></textarea></label>
+                  <label class="support-label sm:col-span-2">Pedido del consumidor<textarea name="request" rows="3" required maxlength="5000" placeholder="Indica qué solución solicitas."></textarea></label>
+                  <label class="sm:col-span-2 flex items-start gap-2 text-xs leading-5 text-slate-600"><input class="mt-1 shrink-0" name="accept_copy" type="checkbox" required> <span>Confirmo la información y deseo recibir una constancia de esta presentación.</span></label>
                   <div class="sm:col-span-2 text-right"><button type="submit" class="rounded-xl bg-[#003366] px-5 py-3 text-sm font-bold text-white">Enviar reclamación</button></div>
                 </form>
               </div>
@@ -1308,13 +1228,8 @@
       <form onsubmit="handleReviewSubmit(event)" novalidate class="space-y-3.5">
         <div>
           <label for="reviewCourse" class="block text-xs font-bold text-slate-700 mb-1">Curso</label>
-          <select id="reviewCourse" name="reviewCourse" aria-label="Curso de la reseña" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-600 outline-none">
-            <option value="Programación Orientada a Objetos II">Programación Orientada a Objetos II</option>
-            <option value="Gerenciamiento de Datos I">Gerenciamiento de Datos I</option>
-            <option value="Interacción Humano Computador">Interacción Humano Computador</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Matemática Discreta">Matemática Discreta</option>
-            <option value="Arquitectura Empresarial">Arquitectura Empresarial</option>
+          <select id="reviewCourse" name="reviewCourse" aria-label="Curso de la reseña" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-blue-600 outline-none">
+            <option value="" selected>Selecciona un curso</option>
           </select>
           <span id="reviewCourse-error" class="texte-erreur hidden"></span>
         </div>
@@ -1368,6 +1283,13 @@
   <div id="appToast" role="status" aria-live="polite" aria-atomic="true" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-3 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
     <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
     <span id="toastText">Estado cambiado a: Aprobado</span>
+  </div>
+  <div id="naviaLoadingOverlay" class="nv-loading-overlay hidden" role="status" aria-live="polite" aria-label="Procesando">
+    <div class="nv-loading-card">
+      <span class="nv-brand-mark nv-loading-mark" aria-hidden="true"><svg class="nv-icon nv-brand-icon" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5L2 9Z"></path><path d="M6 11v5c3.5 3 8.5 3 12 0v-5M22 9v6"></path></svg></span>
+      <span class="nv-loading-spinner" aria-hidden="true"></span>
+      <p id="naviaLoadingMessage">Procesando...</p>
+    </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/backend.js"></script>

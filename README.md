@@ -5,7 +5,7 @@ Aplicación web estática desplegable en Vercel, con Supabase Auth y PostgreSQL 
 ## Preparar Supabase
 
 1. Crea un proyecto Supabase y abre **SQL Editor**.
-2. Ejecuta el contenido de [`supabase/schema.sql`](./supabase/schema.sql). El script crea las tablas, las políticas RLS, los procedimientos de tickets/comunidad y el bucket privado de adjuntos. Si ya configuraste Supabase, vuelve a ejecutar el script después de actualizar el repositorio: añade de forma idempotente el estado y las respuestas de las reclamaciones, y permite eliminar comentarios propios.
+2. Ejecuta el contenido de [`supabase/schema.sql`](./supabase/schema.sql). El script crea las tablas, las políticas RLS, los procedimientos de tickets/comunidad y el bucket privado de adjuntos; también carga de forma idempotente los cursos de las mallas. Si ya configuraste Supabase, vuelve a ejecutar el script después de actualizar el repositorio para añadir la tabla de cursos y la política que permite eliminar publicaciones propias.
 3. En **Authentication → Users**, crea manualmente una cuenta por usuario y confirma el correo para el prototipo.
 4. Crea su perfil inicial desde SQL Editor (reemplaza el correo):
 
@@ -20,7 +20,7 @@ Aplicación web estática desplegable en Vercel, con Supabase Auth y PostgreSQL 
    Para el administrador, usa el mismo SQL y cambia `'student'` por `'admin'`. El rol se asigna en la base de datos; no existe un control para elevar privilegios desde la aplicación.
 5. Supabase Auth exige contraseñas de al menos seis caracteres. Por eso `USIL` (4 caracteres) no se puede usar como contraseña en este flujo; para cuentas de demostración se puede usar, por ejemplo, `USIL01`. Una contraseña compartida y débil no es apropiada para información real.
 
-Los estudiantes completan su perfil académico al iniciar sesión por primera vez. Las tablas `profiles` y `student_data` están protegidas para que cada usuario acceda a sus propios datos. El personal administrador puede consultar tickets activos y cerrados, reabrirlos al responder, y gestionar el estado y las respuestas de las reclamaciones mediante políticas RLS basadas en el rol `admin`.
+Los estudiantes completan su perfil académico al iniciar sesión por primera vez. Las tablas `profiles` y `student_data` están protegidas para que cada usuario acceda a sus propios datos; el historial y el ciclo preparado se guardan en `student_data`. El personal administrador puede consultar tickets activos y cerrados, reabrirlos al responder, y gestionar el estado y las respuestas de las reclamaciones mediante políticas RLS basadas en el rol `admin`.
 
 ## Desplegar en Vercel
 

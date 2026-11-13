@@ -62,6 +62,74 @@
     showToast(error.message || 'No se pudo completar la operación.');
   }
 
+  function withLoading(operation, message) {
+    return window.naviaWithLoading
+      ? window.naviaWithLoading(operation, message)
+      : operation();
+  }
+
+  function showFormError(form, error) {
+    let message = error.message || 'No se pudo completar el formulario. Revisa los datos e inténtalo de nuevo.';
+    if (/invalid login credentials/i.test(message)) {
+      message = 'El correo o la contraseña no son correctos. Verifica tus datos e inténtalo de nuevo.';
+    }
+    let output = form.querySelector('.nv-form-error');
+    if (!output) {
+      output = document.createElement('p');
+      output.className = 'nv-form-error';
+      output.setAttribute('role', 'alert');
+      output.setAttribute('aria-live', 'assertive');
+      form.append(output);
+    }
+    form.classList.add('flex-wrap');
+    output.textContent = message;
+    output.classList.remove('hidden');
+  }
+
+  function clearFormError(form) {
+    const output = form.querySelector('.nv-form-error');
+    if (output) {
+      output.textContent = '';
+      output.classList.add('hidden');
+    }
+  }
+
+  let validationErrorSequence = 0;
+  function showInvalidFieldError(input) {
+    const host = input.parentElement;
+    if (!host) return;
+    let output = host.querySelector('.native-field-error');
+    if (!output) {
+      output = document.createElement('span');
+      output.className = 'native-field-error texte-erreur';
+      output.id = `navia-field-error-${++validationErrorSequence}`;
+      host.append(output);
+    }
+    output.textContent = input.validity.valueMissing
+      ? 'Completa este campo.'
+      : input.validity.typeMismatch
+        ? 'Escribe un valor con el formato correcto.'
+        : input.validity.tooShort
+          ? `Escribe al menos ${input.minLength} caracteres.`
+          : input.validationMessage;
+    input.classList.add('input-erreur');
+    input.setAttribute('aria-invalid', 'true');
+    const describedBy = new Set((input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean));
+    describedBy.add(output.id);
+    input.setAttribute('aria-describedby', [...describedBy].join(' '));
+  }
+
+  function clearInvalidFieldError(input) {
+    const output = input.parentElement?.querySelector('.native-field-error');
+    if (!output) return;
+    input.classList.remove('input-erreur');
+    input.removeAttribute('aria-invalid');
+    const describedBy = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(id => id && id !== output.id);
+    if (describedBy.length) input.setAttribute('aria-describedby', describedBy.join(' '));
+    else input.removeAttribute('aria-describedby');
+    output.remove();
+  }
+
   async function signIn(email, password) {
     const supabase = await window.naviaBackendReady;
     if (!supabase) throw new Error(window.naviaBackendError?.message || 'No se pudo conectar con Supabase. Revisa la configuración del proyecto.');
@@ -69,7 +137,6 @@
     if (error) throw error;
     guestModeSelected = false;
     signedOutDestination = 1;
-    closeMicrosoftLogin();
 
     const { data: profile, error: profileError } = await supabase
       .from('profiles').select('id,email,role,display_name,student_code,career,cycle,goal')
@@ -133,7 +200,7 @@
     }
   }
 
-  async function signOut(destination = 1) {
+  async function performSignOut(destination = 1) {
     if (destination !== 2 && user() && !isAdmin()) await persistAcademicState();
     guestModeSelected = true;
     signedOutDestination = destination;
@@ -151,6 +218,10 @@
     updateRoleNavigation();
     goToScreen(destination);
     if (destination === 1) showToast('Sesión cerrada.');
+  }
+
+  function signOut(destination = 1) {
+    return withLoading(() => performSignOut(destination), 'Cerrando sesión...');
   }
 
   function updateRoleNavigation() {
@@ -200,6 +271,7 @@
     const state = {
       checkedCourses: $$('.hist-check:checked').map(input => input.dataset.course).filter(Boolean),
       selectedLoadCount,
+      cyclePrepared,
       selectedRouteCourses: [...selectedRouteCourses],
       plannedCourses: [...plannedCourses],
       routeCustomized,
@@ -257,6 +329,7 @@
       const approved = new Set(state.checkedCourses || []);
       $$('.hist-check').forEach(input => { input.checked = approved.has(input.dataset.course); });
       selectedLoadCount = Number(state.selectedLoadCount) || 0;
+      cyclePrepared = Boolean(state.cyclePrepared && state.plannedCourses?.length);
       selectedRouteCourses = Array.isArray(state.selectedRouteCourses) ? state.selectedRouteCourses : [];
       plannedCourses = Array.isArray(state.plannedCourses) ? state.plannedCourses : [];
       routeCustomized = Boolean(state.routeCustomized);
@@ -469,37 +542,44 @@
 
   async function sendReply(event, ticket, input) {
     event.preventDefault();
+    const form = event.currentTarget;
+    clearFormError(form);
     const body = input.value.trim();
     if (!body) return;
     try {
-      if (isAdmin() && ticket.status === 'closed') {
-        const { error: reopenError } = await client().rpc('set_ticket_status', {
-          p_ticket_id: ticket.id, p_status: 'in_progress'
+      await withLoading(async () => {
+        if (isAdmin() && ticket.status === 'closed') {
+          const { error: reopenError } = await client().rpc('set_ticket_status', {
+            p_ticket_id: ticket.id, p_status: 'in_progress'
+          });
+          if (reopenError) throw reopenError;
+        }
+        const { error } = await client().from('ticket_messages').insert({
+          ticket_id: ticket.id, author_id: user().id, body
         });
-        if (reopenError) throw reopenError;
-      }
-      const { error } = await client().from('ticket_messages').insert({
-        ticket_id: ticket.id, author_id: user().id, body
-      });
-      if (error) throw error;
-      input.value = '';
-      await loadTickets();
-      const { data: refreshed, error: refreshError } = await client().from('tickets').select('*').eq('id', ticket.id).single();
-      if (refreshError) throw refreshError;
-      if (isAdmin()) await openAdminTicket(refreshed);
-      else await openTicket(refreshed);
+        if (error) throw error;
+        input.value = '';
+        await loadTickets();
+        const { data: refreshed, error: refreshError } = await client().from('tickets').select('*').eq('id', ticket.id).single();
+        if (refreshError) throw refreshError;
+        if (isAdmin()) await openAdminTicket(refreshed);
+        else await openTicket(refreshed);
+      }, 'Enviando respuesta...');
     } catch (error) {
-      showActionError(error);
+      console.error(error);
+      showFormError(form, error);
     }
   }
 
   async function closeCurrentTicket() {
     try {
-      const { error } = await client().rpc('set_ticket_status', { p_ticket_id: currentTicketId, p_status: 'closed' });
-      if (error) throw error;
-      await loadTickets();
-      $('#ticketThread').classList.add('hidden');
-      $('#ticketThreadEmpty').classList.remove('hidden');
+      await withLoading(async () => {
+        const { error } = await client().rpc('set_ticket_status', { p_ticket_id: currentTicketId, p_status: 'closed' });
+        if (error) throw error;
+        await loadTickets();
+        $('#ticketThread').classList.add('hidden');
+        $('#ticketThreadEmpty').classList.remove('hidden');
+      }, 'Cerrando ticket...');
       showToast('Ticket cerrado.');
     } catch (error) {
       showActionError(error);
@@ -509,12 +589,14 @@
   async function setAdminTicketStatus(status) {
     if (!adminTicketId) return;
     try {
-      const { error } = await client().rpc('set_ticket_status', { p_ticket_id: adminTicketId, p_status: status });
-      if (error) throw error;
-      await loadTickets();
-      const { data, error: ticketError } = await client().from('tickets').select('*').eq('id', adminTicketId).single();
-      if (ticketError) throw ticketError;
-      await openAdminTicket(data);
+      await withLoading(async () => {
+        const { error } = await client().rpc('set_ticket_status', { p_ticket_id: adminTicketId, p_status: status });
+        if (error) throw error;
+        await loadTickets();
+        const { data, error: ticketError } = await client().from('tickets').select('*').eq('id', adminTicketId).single();
+        if (ticketError) throw ticketError;
+        await openAdminTicket(data);
+      }, 'Actualizando ticket...');
       showToast(`Ticket ${statusLabel(status).toLowerCase()}.`);
     } catch (error) {
       showActionError(error);
@@ -526,47 +608,52 @@
   $('#ticketForm').addEventListener('submit', async event => {
     event.preventDefault();
     let createdTicket = null;
+    const form = event.currentTarget;
+    clearFormError(form);
     try {
-      requireUser();
-      const category = $('#ticketCategory').value;
-      const subject = $('#ticketSubject').value.trim();
-      const description = $('#ticketDescription').value.trim();
-      const attachment = $('#ticketAttachment').files[0];
-      if (attachment && attachment.size > 5 * 1024 * 1024) throw new Error('El adjunto supera el límite de 5 MB.');
-      const { data: createdTicketData, error } = await client().rpc('create_ticket_with_message', {
-        p_subject: subject,
-        p_category: category,
-        p_body: description
-      });
-      if (error) throw error;
-      const ticket = Array.isArray(createdTicketData) ? createdTicketData[0] : createdTicketData;
-      if (!ticket?.id) throw new Error('Supabase no devolvió el ticket creado.');
-      createdTicket = ticket;
-      if (attachment) {
-        const path = `${ticket.id}/${crypto.randomUUID()}-${attachment.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-        const { error: uploadError } = await client().storage.from('ticket-attachments').upload(path, attachment, { upsert: false });
-        if (uploadError) throw uploadError;
-        const { error: attachError } = await client().rpc('attach_ticket_file', { p_ticket_id: ticket.id, p_path: path });
-        if (attachError) throw attachError;
-      }
-      event.target.reset();
-      updateTicketAttachmentLabel();
-      updateTicketSla();
-      await loadTickets();
-      await openTicket(ticket);
-      showToast('Ticket publicado. Tu conversación queda guardada.');
+      await withLoading(async () => {
+        requireUser();
+        const category = $('#ticketCategory').value;
+        const subject = $('#ticketSubject').value.trim();
+        const description = $('#ticketDescription').value.trim();
+        const attachment = $('#ticketAttachment').files[0];
+        if (attachment && attachment.size > 5 * 1024 * 1024) throw new Error('El adjunto supera el límite de 5 MB.');
+        const { data: createdTicketData, error } = await client().rpc('create_ticket_with_message', {
+          p_subject: subject,
+          p_category: category,
+          p_body: description
+        });
+        if (error) throw error;
+        const ticket = Array.isArray(createdTicketData) ? createdTicketData[0] : createdTicketData;
+        if (!ticket?.id) throw new Error('Supabase no devolvió el ticket creado.');
+        createdTicket = ticket;
+        if (attachment) {
+          const path = `${ticket.id}/${crypto.randomUUID()}-${attachment.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+          const { error: uploadError } = await client().storage.from('ticket-attachments').upload(path, attachment, { upsert: false });
+          if (uploadError) throw uploadError;
+          const { error: attachError } = await client().rpc('attach_ticket_file', { p_ticket_id: ticket.id, p_path: path });
+          if (attachError) throw attachError;
+        }
+        form.reset();
+        updateTicketAttachmentLabel();
+        updateTicketSla();
+        await loadTickets();
+        await openTicket(ticket);
+        showToast('Ticket publicado. Tu conversación queda guardada.');
+      }, 'Publicando ticket...');
     } catch (error) {
+      console.error(error);
       if (createdTicket) {
         try {
           await loadTickets();
           await openTicket(createdTicket);
-          showToast(`Ticket guardado, pero el adjunto no pudo añadirse: ${error.message}`);
+          showFormError(form, new Error(`Ticket guardado, pero el adjunto no pudo añadirse: ${error.message}`));
         } catch (refreshError) {
           showActionError(refreshError);
         }
         return;
       }
-      showActionError(error);
+      showFormError(form, error);
     }
   });
 
@@ -587,19 +674,23 @@
   $('#complaintForm').addEventListener('submit', async event => {
     event.preventDefault();
     const form = event.currentTarget;
+    clearFormError(form);
     try {
-      requireUser();
-      const formData = new FormData(form);
-      const record = Object.fromEntries(formData.entries());
-      delete record.accept_copy;
-      record.owner_id = user().id;
-      const { data, error } = await client().from('complaints').insert(record)
-        .select('tracking_code,created_at,consumer_name').single();
-      if (error) throw error;
-      form.reset();
-      showComplaintReceipt({ ...record, ...data });
+      await withLoading(async () => {
+        requireUser();
+        const formData = new FormData(form);
+        const record = Object.fromEntries(formData.entries());
+        delete record.accept_copy;
+        record.owner_id = user().id;
+        const { data, error } = await client().from('complaints').insert(record)
+          .select('tracking_code,created_at,consumer_name').single();
+        if (error) throw error;
+        form.reset();
+        showComplaintReceipt({ ...record, ...data });
+      }, 'Registrando reclamación...');
     } catch (error) {
-      showActionError(error);
+      console.error(error);
+      showFormError(form, error);
     }
   });
 
@@ -633,11 +724,45 @@
     });
   }
 
+  let communityCoursesLoaded = false;
+
+  async function loadCommunityCourses() {
+    if (communityCoursesLoaded) return;
+    const { data, error } = await client().from('curriculum_courses').select('course_name');
+    if (error) throw error;
+    const courses = [...new Set((data || []).map(row => row.course_name))].sort((a, b) => a.localeCompare(b, 'es'));
+    const grid = $('#commCourseGrid');
+    const select = $('#reviewCourse');
+    grid.replaceChildren();
+    select.replaceChildren(new Option('Selecciona un curso', ''));
+    courses.forEach(course => {
+      select.add(new Option(course, course));
+      const card = document.createElement('article');
+      card.className = 'comm-card min-w-0 rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-2xs';
+      const icon = document.createElement('span');
+      icon.className = 'mb-2 inline-flex rounded-lg bg-blue-50 p-1.5 text-blue-700';
+      icon.innerHTML = '<svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-books"></use></svg>';
+      const title = document.createElement('h3');
+      title.className = 'min-h-8 w-full min-w-0 break-words text-xs font-bold leading-snug text-slate-800 [overflow-wrap:anywhere]';
+      title.textContent = course;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'mt-2 w-full rounded-lg border border-blue-600 py-1 text-[10px] font-bold text-blue-700 hover:bg-blue-50';
+      button.textContent = 'Ver opiniones';
+      button.addEventListener('click', () => window.filterByCourse(course));
+      card.append(icon, title, button);
+      grid.append(card);
+    });
+    $('#communityCourseCount').textContent = `${courses.length} cursos de las mallas disponibles`;
+    communityCoursesLoaded = true;
+  }
+
   async function loadCommunityPosts() {
     if (!user()) return;
+    await loadCommunityCourses();
     const { data, error } = await client().from('community_posts')
       .select('id,author_id,course,body,status,likes,created_at')
-      .neq('status', 'hidden').order('created_at', { ascending: false });
+      .neq('status', 'hidden').order('likes', { ascending: false }).order('created_at', { ascending: false });
     if (error) throw error;
     const postIds = (data || []).map(post => post.id);
     const { data: comments, error: commentsError } = postIds.length
@@ -663,23 +788,29 @@
       commentsByPost.get(comment.post_id).push(comment);
     });
     const list = $('#commReviewsList');
+    list.replaceChildren();
+    if (!data?.length) {
+      const empty = document.createElement('p');
+      empty.className = 'rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-500';
+      empty.textContent = 'Todavía no hay publicaciones. ¡Comparte la primera experiencia!';
+      list.append(empty);
+    }
     data.forEach(post => {
-      let item = list.querySelector(`[data-post-id="${post.id}"]`);
       const author = authorNames.get(post.author_id);
       const authorName = author?.display_name || (post.author_id === user().id ? studentProfile.name : 'Estudiante Navia');
       const reputation = author?.reputation || 0;
-      item && (item.dataset.communityStatus = post.status);
-      if (!item) {
-        item = document.createElement('article');
-        item.className = 'review-item p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs flex items-start justify-between gap-3';
-        item.dataset.postId = post.id;
-        item.dataset.authorId = post.author_id;
-        item.dataset.communityStatus = post.status;
-        item.innerHTML = `<div class="flex items-start gap-3 min-w-0 flex-1"><div class="review-avatar w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-xs shrink-0">NA</div><div class="post-content-area min-w-0 flex-1"><div class="flex flex-wrap items-baseline gap-2"><span class="review-author font-bold text-xs text-slate-900"></span><span class="review-course text-[10px] text-slate-600"></span><span class="post-badge"></span></div><p class="review-content text-xs text-slate-600 mt-1 leading-relaxed"></p><p class="post-status mt-1 text-[10px] text-slate-500"></p><button type="button" class="report-post mt-2 text-[10px] font-semibold text-red-700 underline">Reportar publicación</button><div class="post-comments mt-3 space-y-2 border-t border-slate-100 pt-3"></div><form class="post-comment-form mt-3 flex gap-2"><label class="sr-only">Escribe un comentario</label><input maxlength="2000" required class="min-w-0 flex-1 rounded-lg border border-slate-200 px-3 py-2 text-xs" placeholder="Escribe un comentario…"><button type="submit" class="rounded-lg bg-blue-700 px-3 py-2 text-xs font-bold text-white">Responder</button></form></div></div><button type="button" class="like-btn flex items-center gap-1.5 text-xs text-rose-500 font-semibold bg-rose-50 px-2.5 py-1 rounded-full" aria-label="Me gusta"><span>♡</span><span class="likes-num"></span></button>`;
-        item.querySelector('.like-btn').addEventListener('click', () => window.toggleCommentLike(item.querySelector('.like-btn'), post.likes));
-        item.querySelector('.report-post').addEventListener('click', () => reportPost(post.id));
-        item.querySelector('.post-comment-form').addEventListener('submit', event => addPostComment(event, post.id));
-      }
+      const isOwnPost = post.author_id === user().id;
+      const item = document.createElement('article');
+      item.className = 'review-item min-w-0 rounded-2xl border border-slate-100 bg-white p-3.5 shadow-2xs flex items-start justify-between gap-3';
+      item.dataset.postId = post.id;
+      item.dataset.authorId = post.author_id;
+      item.dataset.communityStatus = post.status;
+      item.dataset.reputation = String(reputation);
+      item.innerHTML = `<div class="flex min-w-0 flex-1 items-start gap-3"><div class="review-avatar flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700"></div><div class="post-content-area min-w-0 flex-1"><div class="flex flex-wrap items-baseline gap-2"><span class="review-author text-xs font-bold text-slate-900"></span>${isOwnPost ? '<span class="text-[9px] text-slate-500">(Mi mensaje)</span>' : ''}<span class="review-course break-words text-[10px] text-slate-600"></span><span class="post-badge"></span></div><p class="review-content mt-1 whitespace-pre-wrap break-words text-xs leading-relaxed text-slate-600"></p><p class="post-status mt-1 text-[10px] text-slate-500"></p><div class="mt-2 flex flex-wrap gap-3">${isOwnPost ? '<button type="button" class="delete-post text-[10px] font-semibold text-slate-600 underline">Eliminar mi publicación</button>' : '<button type="button" class="report-post text-[10px] font-semibold text-red-700 underline">Reportar publicación</button>'}</div><div class="post-comments mt-3 space-y-2 border-t border-slate-100 pt-3"></div><form class="post-comment-form mt-3 flex gap-2"><label class="sr-only">Escribe un comentario</label><input maxlength="2000" required class="min-w-0 flex-1 rounded-lg border border-slate-200 px-3 py-2 text-xs" placeholder="Escribe un comentario…"><button type="submit" class="rounded-lg bg-blue-700 px-3 py-2 text-xs font-bold text-white">Responder</button></form></div></div><button type="button" class="like-btn flex shrink-0 items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-500" aria-label="Me gusta"><span>♡</span><span class="likes-num"></span></button>`;
+      item.querySelector('.like-btn').addEventListener('click', () => window.toggleCommentLike(item.querySelector('.like-btn'), post.likes));
+      item.querySelector('.report-post')?.addEventListener('click', () => reportPost(post.id));
+      item.querySelector('.delete-post')?.addEventListener('click', () => deleteOwnPost(post.id));
+      item.querySelector('.post-comment-form').addEventListener('submit', event => addPostComment(event, post.id));
       item.querySelector('.review-author').textContent = authorName;
       item.querySelector('.review-course').textContent = post.course;
       item.querySelector('.review-content').textContent = post.body;
@@ -690,7 +821,7 @@
       item.querySelector('.like-btn').dataset.liked = String(likedPostIds.has(post.id));
       item.querySelector('.likes-num').textContent = post.likes;
       renderPostComments(item.querySelector('.post-comments'), commentsByPost.get(post.id) || [], authorNames);
-      if (!item.isConnected) list.prepend(item);
+      list.append(item);
     });
     filterCommunityItems($('#communitySearchInput')?.value || '');
   }
@@ -702,22 +833,40 @@
       const isOwnComment = comment.author_id === user()?.id;
       const commentCard = document.createElement('div');
       commentCard.className = 'rounded-lg bg-slate-50 p-2.5';
-      commentCard.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-2"><div class="flex flex-wrap items-center gap-1"><strong class="text-[10px] text-slate-700">${escapeHtml(author?.display_name || (isOwnComment ? studentProfile.name : 'Estudiante Navia'))}</strong>${isOwnComment ? '<span class="text-[9px] text-slate-500">(Mi mensaje)</span>' : ''}</div><time class="text-[9px] text-slate-500">${escapeHtml(formatDate(comment.created_at))}</time></div><p class="mt-1 whitespace-pre-wrap text-xs text-slate-700"></p><div class="mt-1 flex flex-wrap gap-3"><button type="button" class="report-comment text-[10px] font-semibold text-red-700 underline">Reportar comentario</button>${isOwnComment ? '<button type="button" class="delete-comment text-[10px] font-semibold text-slate-600 underline">Eliminar mi comentario</button>' : ''}</div>`;
+      commentCard.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-2"><div class="flex flex-wrap items-center gap-1"><strong class="text-[10px] text-slate-700">${escapeHtml(author?.display_name || (isOwnComment ? studentProfile.name : 'Estudiante Navia'))}</strong>${isOwnComment ? '<span class="text-[9px] text-slate-500">(Mi mensaje)</span>' : ''}</div><time class="text-[9px] text-slate-500">${escapeHtml(formatDate(comment.created_at))}</time></div><p class="mt-1 whitespace-pre-wrap text-xs text-slate-700"></p><div class="mt-1 flex flex-wrap gap-3">${isOwnComment ? '<button type="button" class="delete-comment text-[10px] font-semibold text-slate-600 underline">Eliminar mi comentario</button>' : '<button type="button" class="report-comment text-[10px] font-semibold text-red-700 underline">Reportar comentario</button>'}</div>`;
       commentCard.querySelector('p').textContent = comment.body;
-      commentCard.querySelector('.report-comment').addEventListener('click', () => reportComment(comment.id));
+      commentCard.querySelector('.report-comment')?.addEventListener('click', () => reportComment(comment.id));
       commentCard.querySelector('.delete-comment')?.addEventListener('click', () => deleteOwnComment(comment.id));
       host.append(commentCard);
     });
+  }
+
+  async function deleteOwnPost(postId) {
+    try {
+      requireUser();
+      if (!window.confirm('¿Eliminar tu publicación? También se eliminarán sus comentarios.')) return;
+      await withLoading(async () => {
+        const { error } = await client().from('community_posts')
+          .delete().eq('id', postId).eq('author_id', user().id);
+        if (error) throw error;
+        await loadCommunityPosts();
+      }, 'Eliminando publicación...');
+      showToast('Publicación eliminada.');
+    } catch (error) {
+      showActionError(error);
+    }
   }
 
   async function deleteOwnComment(commentId) {
     try {
       requireUser();
       if (!window.confirm('¿Eliminar tu comentario?')) return;
-      const { error } = await client().from('community_comments')
-        .delete().eq('id', commentId).eq('author_id', user().id);
-      if (error) throw error;
-      await loadCommunityPosts();
+      await withLoading(async () => {
+        const { error } = await client().from('community_comments')
+          .delete().eq('id', commentId).eq('author_id', user().id);
+        if (error) throw error;
+        await loadCommunityPosts();
+      }, 'Eliminando comentario...');
       showToast('Comentario eliminado.');
     } catch (error) {
       showActionError(error);
@@ -726,19 +875,24 @@
 
   async function addPostComment(event, postId) {
     event.preventDefault();
+    const form = event.currentTarget;
+    clearFormError(form);
     try {
-      requireUser();
-      const input = event.currentTarget.querySelector('input');
+      const input = form.querySelector('input');
       const body = input.value.trim();
       if (!body) return;
-      const { error } = await client().from('community_comments').insert({
-        post_id: postId, author_id: user().id, body
-      });
-      if (error) throw error;
-      input.value = '';
-      await loadCommunityPosts();
+      await withLoading(async () => {
+        requireUser();
+        const { error } = await client().from('community_comments').insert({
+          post_id: postId, author_id: user().id, body
+        });
+        if (error) throw error;
+        input.value = '';
+        await loadCommunityPosts();
+      }, 'Publicando respuesta...');
     } catch (error) {
-      showActionError(error);
+      console.error(error);
+      showFormError(form, error);
     }
   }
 
@@ -841,8 +995,10 @@
 
   async function setComplaintStatus(complaint, status) {
     try {
-      const { error } = await client().from('complaints').update({ status }).eq('id', complaint.id);
-      if (error) throw error;
+      await withLoading(async () => {
+        const { error } = await client().from('complaints').update({ status }).eq('id', complaint.id);
+        if (error) throw error;
+      }, 'Actualizando reclamación...');
       showToast(`Reclamación ${statusLabel(status).toLowerCase()}.`);
     } catch (error) {
       showActionError(error);
@@ -852,37 +1008,45 @@
 
   async function sendComplaintReply(event, complaint, input) {
     event.preventDefault();
+    const form = event.currentTarget;
+    clearFormError(form);
     const body = input.value.trim();
     if (!body) return;
     try {
-      if (complaint.status === 'closed') {
-        const { error: statusError } = await client().from('complaints')
-          .update({ status: 'in_progress' }).eq('id', complaint.id);
-        if (statusError) throw statusError;
-      }
-      const { error } = await client().from('complaint_messages').insert({
-        complaint_id: complaint.id, author_id: user().id, body
-      });
-      if (error) throw error;
-      await loadAdminComplaints();
+      await withLoading(async () => {
+        if (complaint.status === 'closed') {
+          const { error: statusError } = await client().from('complaints')
+            .update({ status: 'in_progress' }).eq('id', complaint.id);
+          if (statusError) throw statusError;
+        }
+        const { error } = await client().from('complaint_messages').insert({
+          complaint_id: complaint.id, author_id: user().id, body
+        });
+        if (error) throw error;
+        input.value = '';
+        await loadAdminComplaints();
+      }, 'Enviando respuesta...');
       showToast('Respuesta enviada a la reclamación.');
     } catch (error) {
-      showActionError(error);
+      console.error(error);
+      showFormError(form, error);
     }
   }
 
   async function moderateReport(report, hidePost) {
     try {
-      if (hidePost) {
-        const table = report.comment_id ? 'community_comments' : 'community_posts';
-        const id = report.comment_id || report.post_id;
-        const { error: postError } = await client().from(table).update({ status: 'hidden' }).eq('id', id);
-        if (postError) throw postError;
-      }
-      const { error } = await client().from('community_reports')
-        .update({ status: hidePost ? 'reviewed' : 'dismissed' }).eq('id', report.id);
-      if (error) throw error;
-      await loadModerationDashboard();
+      await withLoading(async () => {
+        if (hidePost) {
+          const table = report.comment_id ? 'community_comments' : 'community_posts';
+          const id = report.comment_id || report.post_id;
+          const { error: postError } = await client().from(table).update({ status: 'hidden' }).eq('id', id);
+          if (postError) throw postError;
+        }
+        const { error } = await client().from('community_reports')
+          .update({ status: hidePost ? 'reviewed' : 'dismissed' }).eq('id', report.id);
+        if (error) throw error;
+        await loadModerationDashboard();
+      }, 'Actualizando moderación...');
       showToast(hidePost ? 'Contenido ocultado.' : 'Reporte descartado.');
     } catch (error) {
       showActionError(error);
@@ -891,23 +1055,28 @@
 
   window.handleReviewSubmit = async function (event) {
     event.preventDefault();
+    const form = event.currentTarget;
+    clearFormError(form);
     try {
-      requireUser();
-      const course = $('#reviewCourse').value;
-      const body = $('#reviewContent').value.trim();
-      if (!course || !body) throw new Error('Selecciona un curso y escribe tu opinión.');
-      const { data: post, error } = await client().from('community_posts').insert({
-        author_id: user().id, course, body,
-        status: $('#reviewStatus')?.value || 'discussion'
-      }).select('id').single();
-      if (error) throw error;
-      closeLeaveReviewModal();
-      $('#reviewContent').value = '';
-      await loadCommunityPosts();
-      showToast('¡Tu opinión se publicó en la comunidad!');
-      if (post) document.querySelector(`[data-post-id="${post.id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      await withLoading(async () => {
+        requireUser();
+        const course = $('#reviewCourse').value;
+        const body = $('#reviewContent').value.trim();
+        if (!course || !body) throw new Error('Selecciona un curso y escribe tu opinión.');
+        const { data: post, error } = await client().from('community_posts').insert({
+          author_id: user().id, course, body,
+          status: $('#reviewStatus')?.value || 'discussion'
+        }).select('id').single();
+        if (error) throw error;
+        closeLeaveReviewModal();
+        $('#reviewContent').value = '';
+        await loadCommunityPosts();
+        showToast('¡Tu opinión se publicó en la comunidad!');
+        if (post) document.querySelector(`[data-post-id="${post.id}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 'Publicando opinión...');
     } catch (error) {
-      showActionError(error);
+      console.error(error);
+      showFormError(form, error);
     }
   };
 
@@ -920,19 +1089,12 @@
     }
     try {
       requireUser();
-      const postId = button.closest('[data-post-id]').dataset.postId;
-      const { data: count, error } = await client().rpc('toggle_community_like', { p_post_id: postId });
-      if (error) throw error;
-      button.dataset.liked = String(button.dataset.liked !== 'true');
-      button.querySelector('.likes-num').textContent = count;
-      const item = button.closest('.review-item');
-      const { data: author, error: authorError } = await client().from('community_public_profiles')
-        .select('reputation').eq('user_id', item.dataset.authorId).single();
-      if (authorError) throw authorError;
-      item.dataset.reputation = String(author.reputation);
-      item.querySelector('.post-badge').innerHTML = author.reputation >= 10
-        ? '<span class="rounded-full bg-amber-50 px-2 py-1 text-[9px] font-bold text-amber-700">Estudiante experto</span>'
-        : '';
+      await withLoading(async () => {
+        const postId = button.closest('[data-post-id]').dataset.postId;
+        const { error } = await client().rpc('toggle_community_like', { p_post_id: postId });
+        if (error) throw error;
+        await loadCommunityPosts();
+      }, 'Actualizando likes...');
     } catch (error) {
       showActionError(error);
     }
@@ -956,22 +1118,22 @@
     form.querySelector('.pt-2')?.before(field);
   }
 
-  function attachReportControls() {
-    $$('#commReviewsList .review-item').forEach(item => {
-      if (item.dataset.postId || item.querySelector('.report-post')) return;
-      const content = item.querySelector('p');
-      if (!content) return;
-      const authorRow = content.parentElement;
-      const notice = document.createElement('span');
-      notice.className = 'ml-2 rounded-full bg-slate-100 px-2 py-1 text-[9px] font-semibold text-slate-600';
-      notice.textContent = 'Contenido de ejemplo';
-      authorRow.append(notice);
-    });
-  }
-
   async function initializeSupport() {
     addCommunityStatusField();
-    attachReportControls();
+    document.addEventListener('invalid', event => {
+      event.preventDefault();
+      showInvalidFieldError(event.target);
+    }, true);
+    document.addEventListener('input', event => {
+      clearInvalidFieldError(event.target);
+      const form = event.target.closest('form');
+      if (form) clearFormError(form);
+    });
+    document.addEventListener('change', event => {
+      clearInvalidFieldError(event.target);
+      const form = event.target.closest('form');
+      if (form) clearFormError(form);
+    });
     $('#userMenuToggle').addEventListener('click', toggleUserMenu);
     document.addEventListener('click', event => {
       if (!event.target.closest('#userMenu, #userMenuToggle')) closeUserMenu();
@@ -984,7 +1146,10 @@
       window.naviaBackendReady.then(() => {
         window.naviaSupabase.auth.onAuthStateChange((event, session) => {
           if (event === 'INITIAL_SESSION' && session) {
-            queueMicrotask(() => restoreExistingSession(session).catch(showActionError));
+            queueMicrotask(() => withLoading(
+              () => restoreExistingSession(session),
+              'Restaurando tu sesión...'
+            ).catch(showActionError));
           } else if (event === 'SIGNED_OUT') {
             window.naviaCurrentUser = null;
             currentUserProfile = null;
@@ -999,13 +1164,11 @@
         console.error(error);
       });
     }
-    const reviewList = $('#commReviewsList');
-    new MutationObserver(attachReportControls).observe(reviewList, { childList: true });
     document.getElementById('mainContent').addEventListener('change', event => {
-      if (event.target.closest('#screen-5, #screen-6, #screen-7, #screen-8, #screen-9, #screen-10, #screen-11')) scheduleAcademicSave();
+      if (event.target.closest('#screen-3, #screen-5, #screen-6, #screen-7, #screen-8, #screen-9, #screen-10, #screen-11')) scheduleAcademicSave();
     });
     document.getElementById('mainContent').addEventListener('click', event => {
-      if (event.target.closest('#screen-5, #screen-6, #screen-7, #screen-8, #screen-9, #screen-10, #screen-11')) scheduleAcademicSave();
+      if (event.target.closest('#screen-3, #screen-5, #screen-6, #screen-7, #screen-8, #screen-9, #screen-10, #screen-11')) scheduleAcademicSave();
     });
     const originalGoToScreen = window.goToScreen;
     window.goToScreen = function (screenNumber) {
@@ -1025,28 +1188,30 @@
         await signOut(2);
         return;
       }
-      guestModeSelected = true;
-      signedOutDestination = 2;
-      if (window.naviaBackendReady) {
-        try {
-          const supabase = await window.naviaBackendReady;
-          const { data, error: sessionError } = await supabase.auth.getSession();
-          if (sessionError) throw sessionError;
-          if (data.session) {
-            const { error } = await supabase.auth.signOut();
-            if (error) throw error;
+      await withLoading(async () => {
+        guestModeSelected = true;
+        signedOutDestination = 2;
+        if (window.naviaBackendReady) {
+          try {
+            const supabase = await window.naviaBackendReady;
+            const { data, error: sessionError } = await supabase.auth.getSession();
+            if (sessionError) throw sessionError;
+            if (data.session) {
+              const { error } = await supabase.auth.signOut();
+              if (error) throw error;
+            }
+          } catch (error) {
+            if (!window.naviaBackendError) throw error;
           }
-        } catch (error) {
-          if (!window.naviaBackendError) throw error;
         }
-      }
-      window.naviaCurrentUser = null;
-      currentUserProfile = null;
-      window.naviaResetStudentProfile?.();
-      document.getElementById('microsoftAccountBadge').classList.add('hidden');
-      document.getElementById('studentEmailLabel').textContent = 'alumno@usil.pe';
-      updateRoleNavigation();
-      goToScreen(2);
+        window.naviaCurrentUser = null;
+        currentUserProfile = null;
+        window.naviaResetStudentProfile?.();
+        document.getElementById('microsoftAccountBadge').classList.add('hidden');
+        document.getElementById('studentEmailLabel').textContent = 'alumno@usil.pe';
+        updateRoleNavigation();
+        goToScreen(2);
+      }, 'Preparando el modo invitado...');
     } catch (error) {
       showActionError(error);
     }

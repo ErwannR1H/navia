@@ -1314,6 +1314,82 @@ body.nv-tutorial-open .screen-panel * {
   padding-top: .75rem;
 }
 
+.faq-item[open] {
+  border-color: #9db8d8;
+}
+
+.nv-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(15 23 42 / 42%);
+  backdrop-filter: blur(2px);
+}
+
+.nv-loading-overlay.hidden {
+  display: none;
+}
+
+.nv-loading-card {
+  display: flex;
+  min-width: 13rem;
+  flex-direction: column;
+  align-items: center;
+  gap: .75rem;
+  border: 1px solid #dbe3ee;
+  border-radius: 1rem;
+  background: #fff;
+  padding: 1.25rem 1.5rem;
+  color: #003366;
+  box-shadow: 0 20px 50px rgb(15 23 42 / 22%);
+}
+
+.nv-loading-mark {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.nv-loading-spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 3px solid #dbeafe;
+  border-top-color: #003366;
+  border-radius: 50%;
+  animation: nv-loading-spin .8s linear infinite;
+}
+
+.nv-loading-card p {
+  margin: 0;
+  font-size: .8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+@keyframes nv-loading-spin {
+  to { transform: rotate(360deg); }
+}
+
+.nv-form-error {
+  grid-column: 1 / -1;
+  flex-basis: 100%;
+  margin: 0;
+  color: #b91c1c;
+  font-size: .8rem;
+  line-height: 1.5;
+}
+
+.nv-form-error.hidden {
+  display: none;
+}
+
+.nv-dashboard-action:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
 .support-label {
   display: block;
   color: #334155;

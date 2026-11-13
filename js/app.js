@@ -2,6 +2,20 @@ function naviaIcon(name, className = 'nv-icon') {
       return `<svg class="${className}" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><use href="#nv-icon-${name}"/></svg>`;
     }
 
+    let naviaLoadingCount = 0;
+    window.naviaWithLoading = async function (operation, message = 'Procesando...') {
+      const overlay = document.getElementById('naviaLoadingOverlay');
+      naviaLoadingCount += 1;
+      document.getElementById('naviaLoadingMessage').textContent = message;
+      overlay.classList.remove('hidden');
+      try {
+        return await operation();
+      } finally {
+        naviaLoadingCount -= 1;
+        if (naviaLoadingCount === 0) overlay.classList.add('hidden');
+      }
+    };
+
 function closeNavMenus() {
       document.querySelectorAll('.nv-mobile-menu').forEach(menu => {
         menu.classList.add('hidden');
@@ -173,14 +187,17 @@ function getCareerMaxCycles(career) {
       if (!isValidUsilEmail(email)) { msShowStep(1); showError('microsoftEmail', 'Usa el formato nombre.apellido@usil.pe.'); return; }
       if (!password) { showError('microsoftPassword', 'Escribe tu contraseña.'); return; }
       try {
-        await window.naviaSignIn(email, password);
+        await window.naviaWithLoading(() => window.naviaSignIn(email, password), 'Verificando tu cuenta...');
         document.getElementById('microsoftAccountBadge').classList.remove('hidden');
         document.getElementById('studentName').placeholder = 'Ej. ' + suggestNameFromEmail(email);
         closeMicrosoftLogin();
         showToast('Sesión iniciada correctamente.');
       } catch (error) {
         console.error(error);
-        showToast(error.message || 'No se pudo iniciar sesión. Revisa tus datos e inténtalo de nuevo.');
+        const message = /invalid login credentials/i.test(error.message || '')
+          ? 'El correo o la contraseña no son correctos. Verifica tus datos e inténtalo de nuevo.'
+          : error.message || 'No se pudo iniciar sesión. Revisa tus datos e inténtalo de nuevo.';
+        showError('microsoftPassword', message);
       }
     }
 
@@ -238,10 +255,14 @@ function getCareerMaxCycles(career) {
 
       studentProfile = { ...studentProfile, name, code, career, cycle, goal };
       try {
-        await window.naviaPersistProfile(studentProfile);
+        document.getElementById('studentProfileFormError').classList.add('hidden');
+        await window.naviaWithLoading(() => window.naviaPersistProfile(studentProfile), 'Guardando tu perfil...');
       } catch (error) {
         console.error(error);
-        showToast(error.message || 'No se pudo guardar tu perfil.');
+        const message = error.message || 'No se pudo guardar tu perfil.';
+        const formError = document.getElementById('studentProfileFormError');
+        formError.textContent = message;
+        formError.classList.remove('hidden');
         return;
       }
       profileCompleted = true;
@@ -306,15 +327,52 @@ function getCareerMaxCycles(career) {
         const initials = studentProfile.name ? studentProfile.name.split(/\s+/).filter(Boolean).slice(0,2).map(n => n[0].toUpperCase()).join('') : 'NA';
         headerInitials.textContent = initials;
       }
+      const summaryPanel = document.getElementById('cycleSummaryPanel');
+      const summaryText = document.getElementById('cycleSummaryText');
+      const summaryCourses = document.getElementById('cycleSummaryCourses');
+      const startAction = document.getElementById('startCycleAction');
+      const finishAction = document.getElementById('finishCycleAction');
+      if (summaryPanel) summaryPanel.classList.toggle('hidden', !cyclePrepared);
+      if (summaryText) summaryText.textContent = `${plannedCourses.length} curso${plannedCourses.length === 1 ? '' : 's'} preparado${plannedCourses.length === 1 ? '' : 's'} para el ciclo ${studentProfile.cycle || 'actual'}. Puedes finalizarlo cuando registres tus resultados.`;
+      if (summaryCourses) summaryCourses.replaceChildren(...plannedCourses.map(course => {
+        const item = document.createElement('li');
+        item.className = 'rounded-full border border-blue-200 bg-white px-3 py-1';
+        item.textContent = course;
+        return item;
+      }));
+      if (finishAction) {
+        finishAction.disabled = !cyclePrepared;
+        finishAction.setAttribute('aria-disabled', String(!cyclePrepared));
+        finishAction.title = cyclePrepared ? '' : 'Primero completa la preparación de un ciclo.';
+      }
+      if (startAction) {
+        startAction.disabled = cyclePrepared;
+        startAction.setAttribute('aria-disabled', String(cyclePrepared));
+        startAction.title = cyclePrepared ? 'Finaliza o abandona el ciclo en curso antes de preparar otro.' : '';
+      }
     }
 
     window.naviaResetStudentProfile = function () {
       studentProfile = { name: '', code: '', email: '', career: '', cycle: '', goal: 'Ninguno' };
       profileCompleted = false;
+      cyclePrepared = false;
+      selectedLoadCount = 0;
+      suggestedCourses = [];
+      selectedRouteCourses = [];
+      plannedCourses = [];
+      dynamicDiagnosticScore = null;
+      quizAnswers = [];
+      closureAnswers = [];
+      closureScore = 0;
+      closureQuestions = [];
+      closureApplied = false;
+      closureRowsKey = '';
+      lastClosure = null;
       ['studentName', 'studentCode', 'userCareer', 'userCurrentCycle'].forEach(id => {
         const field = document.getElementById(id);
         if (field) field.value = '';
       });
+      document.querySelectorAll('.hist-check').forEach(input => { input.checked = false; });
       updateDashboardFromProfile();
       updateNavigationAccess();
       updateProfileScreenState();
@@ -324,6 +382,7 @@ function getCareerMaxCycles(career) {
     // NAVIA: RUTA DINÁMICA SEGÚN AVANCE, CARGA, CHECKS Y DIAGNÓSTICO
     // ========================================================================
     let selectedLoadCount = 0;
+    let cyclePrepared = false;
     let suggestedCourses = [];
     let selectedRouteCourses = [];
     let dynamicDiagnosticScore = null;
@@ -968,8 +1027,13 @@ function getCareerMaxCycles(career) {
         const closed = getClosureCycle();
         const boxes = Array.from(document.querySelectorAll('.hist-check'));
         rows.forEach(r => { const cb = boxes.find(b => b.dataset.course === r.course); if (cb) cb.checked = r.status === 'Aprobado'; });
-        lastClosure = { cycle: closed, rows, newCycle: Math.min(closed + 1, getCareerMaxCycles(studentProfile.career)) };
+        const cycleCourses = (usilCurriculums[studentProfile.career] || [])[closed - 1] || [];
+        const approvedCourses = new Set(boxes.filter(box => box.checked).map(box => box.dataset.course));
+        const cycleCompleted = cycleCourses.length > 0 && cycleCourses.every(course => approvedCourses.has(course));
+        const nextCycle = cycleCompleted ? Math.min(closed + 1, getCareerMaxCycles(studentProfile.career)) : closed;
+        lastClosure = { cycle: closed, rows, newCycle: nextCycle };
         studentProfile.cycle = String(lastClosure.newCycle);
+        cyclePrepared = false;
         // Se reinician las decisiones del ciclo anterior para que la nueva ruta parta del avance real
         selectedLoadCount = 0; selectedRouteCourses = []; suggestedCourses = []; routeCustomized = false; dynamicDiagnosticScore = null;
         if (studentProfile.career) renderDynamicCurriculum();
@@ -977,6 +1041,7 @@ function getCareerMaxCycles(career) {
         updateHistoryCounts();
         closureApplied = true;
         plannedCourses = [];
+        updateDashboardFromProfile();
         window.naviaPersistProfile?.(studentProfile).catch(error => {
           console.error(error);
           showToast(error.message || 'No se pudo guardar el nuevo ciclo.');
@@ -1122,6 +1187,7 @@ function getCareerMaxCycles(career) {
       return {
         studentProfile: { ...studentProfile },
         profileCompleted,
+        cyclePrepared,
         selectedLoadCount,
         suggestedCourses: [...suggestedCourses],
         selectedRouteCourses: [...selectedRouteCourses],
@@ -1158,6 +1224,7 @@ function getCareerMaxCycles(career) {
         goal: 'Ninguno'
       };
       profileCompleted = true;
+      cyclePrepared = true;
       renderDynamicCurriculum();
       document.querySelectorAll('.hist-check').forEach(checkbox => {
         const cycle = Number(checkbox.dataset.cycle);
@@ -1188,6 +1255,7 @@ function getCareerMaxCycles(career) {
       const snapshot = tutorialDemoSnapshot;
       studentProfile = { ...snapshot.studentProfile };
       profileCompleted = snapshot.profileCompleted;
+      cyclePrepared = snapshot.cyclePrepared;
       selectedLoadCount = snapshot.selectedLoadCount;
       suggestedCourses = [...snapshot.suggestedCourses];
       selectedRouteCourses = [...snapshot.selectedRouteCourses];
@@ -1506,6 +1574,10 @@ function getCareerMaxCycles(career) {
         showToast('Esta sección está reservada al equipo administrador.');
         return;
       }
+      if (screenNumber === 10 && !cyclePrepared) {
+        showToast('Primero prepara y completa la ruta de un ciclo.');
+        return;
+      }
       if (!profileCompleted && !tutorialActive && [4, 14].includes(screenNumber)) return;
       updateNavigationAccess();
       
@@ -1650,6 +1722,35 @@ function getCareerMaxCycles(career) {
       goToScreen(7);
     }
 
+    function abandonCurrentCycle() {
+      if (!cyclePrepared) return;
+      if (!window.confirm('¿Abandonar el ciclo en curso? Se borrarán la ruta y el diagnóstico preparados, pero se conservará tu historial académico.')) return;
+      cyclePrepared = false;
+      plannedCourses = [];
+      selectedLoadCount = 0;
+      selectedRouteCourses = [];
+      suggestedCourses = [];
+      routeCustomized = false;
+      dynamicDiagnosticScore = null;
+      quizAnswers = [];
+      diagWrongCourses = [];
+      diagCorrect = 0;
+      diagTotal = 0;
+      closureAnswers = [];
+      closureScore = 0;
+      closureQuestions = [];
+      renderLoadOptions();
+      renderSuggestedCourses();
+      renderCourseConcepts();
+      renderClosureRows(true);
+      updateDashboardFromProfile();
+      window.naviaPersistAcademicState?.().catch(error => {
+        console.error(error);
+        showToast(error.message || 'No se pudo guardar el cambio.');
+      });
+      goToScreen(4);
+    }
+
     function continueToConcepts() {
       if (!selectedRouteCourses.length) { showError('dynamicSuggestedCourses', 'Elige al menos un curso para continuar.'); return; }
       const skipped = getSkippedPriority();
@@ -1719,7 +1820,17 @@ function getCareerMaxCycles(career) {
       quizAnswers[currentQuizIndex] = sel;
       const total = buildDynamicDiagnosticQuestions().length;
       if (currentQuizIndex < total - 1) { currentQuizIndex++; renderQuizQuestion(currentQuizIndex); }
-      else { calculateDynamicDiagnosticScore(); currentQuizIndex = 0; goToScreen(9); }
+      else {
+        calculateDynamicDiagnosticScore();
+        currentQuizIndex = 0;
+        cyclePrepared = plannedCourses.length > 0;
+        updateDashboardFromProfile();
+        goToScreen(9);
+        window.naviaPersistAcademicState?.().catch(error => {
+          console.error(error);
+          showToast(error.message || 'No se pudo guardar el ciclo preparado.');
+        });
+      }
     }
 
     function quizGoBack() {
@@ -1840,12 +1951,25 @@ function getCareerMaxCycles(career) {
         if (event.target.matches('.cierre-status-select')) adjustStatusColor(event.target);
       });
       document.getElementById('userCareer').addEventListener('change', previewSelectedCareer);
+      ['studentName', 'studentCode', 'userCareer', 'userCurrentCycle'].forEach(id => {
+        const field = document.getElementById(id);
+        field.addEventListener('input', () => document.getElementById('studentProfileFormError').classList.add('hidden'));
+        field.addEventListener('change', () => document.getElementById('studentProfileFormError').classList.add('hidden'));
+      });
       previewSelectedCareer();
       updateDashboardFromProfile();
       updateHistoryCounts();
       renderLoadOptions();
       renderSuggestedCourses();
       renderCourseConcepts();
+      document.querySelectorAll('#faqList .faq-item').forEach(item => {
+        item.addEventListener('toggle', () => {
+          if (!item.open) return;
+          document.querySelectorAll('#faqList .faq-item[open]').forEach(openItem => {
+            if (openItem !== item) openItem.open = false;
+          });
+        });
+      });
     };
   
 
