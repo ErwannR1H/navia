@@ -550,6 +550,7 @@
         if (attachError) throw attachError;
       }
       event.target.reset();
+      updateTicketAttachmentLabel();
       updateTicketSla();
       await loadTickets();
       await openTicket(ticket);
@@ -568,6 +569,17 @@
       showActionError(error);
     }
   });
+
+  function updateTicketAttachmentLabel() {
+    const input = $('#ticketAttachment');
+    const status = $('#ticketAttachmentStatus');
+    if (!input || !status) return;
+    status.textContent = input.files.length
+      ? `Archivo seleccionado: ${input.files[0].name}`
+      : 'Ningún archivo seleccionado.';
+  }
+
+  $('#ticketAttachment').addEventListener('change', updateTicketAttachmentLabel);
 
   $('#ticketReplyForm').addEventListener('submit', event => event.preventDefault());
   $('#adminTicketReplyForm').addEventListener('submit', event => event.preventDefault());
@@ -690,7 +702,7 @@
       const isOwnComment = comment.author_id === user()?.id;
       const commentCard = document.createElement('div');
       commentCard.className = 'rounded-lg bg-slate-50 p-2.5';
-      commentCard.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-2"><div class="flex flex-wrap items-center gap-1"><strong class="text-[10px] text-slate-700">${escapeHtml(author?.display_name || (isOwnComment ? studentProfile.name : 'Estudiante Navia'))}</strong>${isOwnComment ? '<span class="text-[9px] text-slate-500">(mon message)</span>' : ''}</div><time class="text-[9px] text-slate-500">${escapeHtml(formatDate(comment.created_at))}</time></div><p class="mt-1 whitespace-pre-wrap text-xs text-slate-700"></p><div class="mt-1 flex flex-wrap gap-3"><button type="button" class="report-comment text-[10px] font-semibold text-red-700 underline">Reportar comentario</button>${isOwnComment ? '<button type="button" class="delete-comment text-[10px] font-semibold text-slate-600 underline">Eliminar mi comentario</button>' : ''}</div>`;
+      commentCard.innerHTML = `<div class="flex flex-wrap items-center justify-between gap-2"><div class="flex flex-wrap items-center gap-1"><strong class="text-[10px] text-slate-700">${escapeHtml(author?.display_name || (isOwnComment ? studentProfile.name : 'Estudiante Navia'))}</strong>${isOwnComment ? '<span class="text-[9px] text-slate-500">(Mi mensaje)</span>' : ''}</div><time class="text-[9px] text-slate-500">${escapeHtml(formatDate(comment.created_at))}</time></div><p class="mt-1 whitespace-pre-wrap text-xs text-slate-700"></p><div class="mt-1 flex flex-wrap gap-3"><button type="button" class="report-comment text-[10px] font-semibold text-red-700 underline">Reportar comentario</button>${isOwnComment ? '<button type="button" class="delete-comment text-[10px] font-semibold text-slate-600 underline">Eliminar mi comentario</button>' : ''}</div>`;
       commentCard.querySelector('p').textContent = comment.body;
       commentCard.querySelector('.report-comment').addEventListener('click', () => reportComment(comment.id));
       commentCard.querySelector('.delete-comment')?.addEventListener('click', () => deleteOwnComment(comment.id));

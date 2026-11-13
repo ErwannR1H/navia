@@ -233,7 +233,6 @@
           </div>
         </div>
       </div>
-          <div class="nv-screen-footer w-full flex items-center justify-between text-xs text-blue-100 pt-3 border-t border-white/10 z-10"><span>© 2026 Navia Académico USIL</span><span>Sistema académico</span></div>
       </section>
         <!-- Microsoft sign-in modal -->
         <div id="microsoftLoginModal" role="dialog" aria-modal="true" aria-label="Iniciar sesión con Microsoft" class="hidden fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-sm items-center justify-center p-4">
@@ -1217,7 +1216,14 @@
                   </label>
                   <p id="ticketSlaMessage" class="rounded-xl bg-blue-50 p-3 text-xs text-blue-900" aria-live="polite">Elige una categoría para ver el plazo estimado según el SLA.</p>
                   <label class="support-label">Descripción<textarea id="ticketDescription" rows="4" maxlength="10000" required placeholder="Describe qué ocurrió y qué esperabas"></textarea></label>
-                  <label class="support-label">Adjunto (PNG, JPG, WEBP o PDF; máx. 5 MB)<input id="ticketAttachment" type="file" accept="image/png,image/jpeg,image/webp,application/pdf"></label>
+                  <div class="support-label">
+                    <span>Archivo adjunto (PNG, JPG, WEBP o PDF; máx. 5 MB)</span>
+                    <label class="ticket-file-control">
+                      <input id="ticketAttachment" class="ticket-file-input" type="file" accept="image/png,image/jpeg,image/webp,application/pdf" aria-label="Seleccionar archivo adjunto">
+                      <span class="ticket-file-button">Seleccionar archivo</span>
+                    </label>
+                    <p id="ticketAttachmentStatus" class="ticket-file-status" aria-live="polite">Ningún archivo seleccionado.</p>
+                  </div>
                   <button class="w-full rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white" type="submit">Publicar ticket</button>
                 </form>
                 <div class="support-card"><h2 class="text-lg font-bold text-[#003366]">Mis conversaciones</h2><div id="ticketList" class="mt-3 space-y-2"><p class="text-sm text-slate-500">Inicia sesión para ver tus tickets.</p></div></div>

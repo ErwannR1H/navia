@@ -256,13 +256,9 @@ body {font-family: 'Montserrat', sans-serif !important;}
 }
 
   #screen-1 { min-height: 100vh; height: auto; }
-  #screen-1 .nv-screen-footer { margin-top: auto; flex: 0 0 auto; padding-bottom: .25rem; }
   #screen-1 .nv-info-icon { min-height: 2rem; display: flex; align-items: center; color: #ffd15c; }
   #screen-1 .nv-info-icon svg { width: 1.75rem; height: 1.75rem; }
   #screen-1 .nv-card { align-content: start; }
-  @media (max-width: 720px) {
-    #screen-1 .nv-screen-footer { margin-top: 1.5rem; }
-  }
 
 :root {
   --navia-white: #FFFFFF;
@@ -362,11 +358,6 @@ h3, h4, h5, h6 {
 
 #screen-1 .nv-info-icon {
   color: var(--navia-accent);
-}
-
-#screen-1 .nv-screen-footer {
-  border-color: #E0DFDE;
-  color: var(--navia-text) !important;
 }
 
 #screen-4 .nv-dashboard-hero {
@@ -1350,6 +1341,45 @@ body.nv-tutorial-open .screen-panel * {
 .support-label textarea:focus {
   border-color: #0036dc;
   outline: 2px solid #b9ccff;
+}
+
+.support-label .ticket-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.ticket-file-control {
+  display: inline-block;
+  margin-top: .35rem;
+  cursor: pointer;
+}
+
+.ticket-file-button {
+  display: inline-block;
+  border: 1px solid #cbd5e1;
+  border-radius: .65rem;
+  background: #fff;
+  padding: .55rem .8rem;
+  color: #003366;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+.ticket-file-input:focus-visible + .ticket-file-button {
+  outline: 2px solid #0036dc;
+  outline-offset: 2px;
+}
+
+.ticket-file-status {
+  margin-top: .35rem;
+  color: #64748b;
+  font-size: .75rem;
+  font-weight: 400;
 }
 
 .support-tab {
