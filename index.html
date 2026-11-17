@@ -1175,8 +1175,8 @@
                   <label class="support-label">Nombre completo<input name="consumer_name" required maxlength="160" autocomplete="name" placeholder="Nombre y apellidos"></label>
                   <label class="support-label">Domicilio<input name="consumer_address" required maxlength="300" autocomplete="street-address" placeholder="Dirección completa"></label>
                   <label class="support-label">DNI / documento de identidad<input name="consumer_document" required maxlength="40" placeholder="Número de documento"></label>
-                  <label class="support-label">Correo electrónico<input name="consumer_email" type="email" required maxlength="254" autocomplete="email" placeholder="nombre@correo.com"></label>
-                  <label class="support-label">Teléfono (opcional)<input name="consumer_phone" maxlength="40" autocomplete="tel" placeholder="+51 999 999 999"></label>
+                  <label class="support-label">Correo electrónico<input name="consumer_email" type="email" required maxlength="254" autocomplete="email" title="Ingresa un correo válido, por ejemplo nombre@dominio.com" placeholder="nombre@dominio.com"></label>
+                  <label class="support-label">Teléfono (opcional)<input name="consumer_phone" type="tel" inputmode="tel" maxlength="25" autocomplete="tel" title="Ingresa entre 7 y 15 dígitos; puedes usar +, espacios, guiones o paréntesis." placeholder="+51 999 999 999"></label>
                   <label class="support-label">Tipo
                     <select name="complaint_type" required><option value="reclamo">Reclamo (producto/servicio)</option><option value="queja">Queja (atención al usuario)</option></select>
                   </label>

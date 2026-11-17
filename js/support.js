@@ -107,11 +107,15 @@
     }
     output.textContent = input.validity.valueMissing
       ? 'Completa este campo.'
-      : input.validity.typeMismatch
-        ? 'Escribe un valor con el formato correcto.'
-        : input.validity.tooShort
-          ? `Escribe al menos ${input.minLength} caracteres.`
-          : input.validationMessage;
+      : input.name === 'consumer_email' && (input.validity.typeMismatch || input.validity.customError)
+        ? 'Ingresa un correo válido, por ejemplo nombre@dominio.com.'
+        : input.name === 'consumer_phone' && input.validity.customError
+          ? input.validationMessage
+          : input.validity.typeMismatch
+            ? 'Escribe un valor con el formato correcto.'
+            : input.validity.tooShort
+              ? `Escribe al menos ${input.minLength} caracteres.`
+              : input.validationMessage;
     input.classList.add('input-erreur');
     input.setAttribute('aria-invalid', 'true');
     const describedBy = new Set((input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean));
@@ -128,6 +132,30 @@
     if (describedBy.length) input.setAttribute('aria-describedby', describedBy.join(' '));
     else input.removeAttribute('aria-describedby');
     output.remove();
+  }
+
+  function updateComplaintContactValidity() {
+    const form = $('#complaintForm');
+    if (!form) return;
+    const email = form.elements.namedItem('consumer_email');
+    const phone = form.elements.namedItem('consumer_phone');
+    email.setCustomValidity('');
+    if (email.value && (
+      email.validity.typeMismatch
+      || !/^[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+(?:[A-Za-z]{2,63}|xn--[A-Za-z0-9-]{2,59})$/.test(email.value)
+    )) {
+      email.setCustomValidity('Ingresa un correo válido, por ejemplo nombre@dominio.com.');
+    }
+
+    phone.setCustomValidity('');
+    const value = phone.value.trim();
+    if (!value) return;
+    const digits = value.replace(/\D/g, '').length;
+    if (!/^\+?[0-9(). -]+$/.test(value) || !/^\+?(?:[^()]|\([^()]*\))*$/.test(value)) {
+      phone.setCustomValidity('Revisa el formato del teléfono. Usa números y, si lo necesitas, +, espacios, guiones o paréntesis.');
+    } else if (digits < 7 || digits > 15) {
+      phone.setCustomValidity('El teléfono debe tener entre 7 y 15 dígitos.');
+    }
   }
 
   async function signIn(email, password) {
@@ -1120,11 +1148,15 @@
 
   async function initializeSupport() {
     addCommunityStatusField();
+    updateComplaintContactValidity();
     document.addEventListener('invalid', event => {
       event.preventDefault();
       showInvalidFieldError(event.target);
     }, true);
     document.addEventListener('input', event => {
+      if (event.target.closest('#complaintForm') && ['consumer_email', 'consumer_phone'].includes(event.target.name)) {
+        updateComplaintContactValidity();
+      }
       clearInvalidFieldError(event.target);
       const form = event.target.closest('form');
       if (form) clearFormError(form);
