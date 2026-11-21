@@ -652,19 +652,16 @@ button[class~="bg-[#003366]"], button[class~="bg-[#002A52]"], .screen-panel butt
   min-width: 0;
 }
 
-#communityCoursesDisclosure > summary::-webkit-details-marker {
-  display: none;
-}
-
-#communityCoursesDisclosure[open] > summary svg {
-  transform: rotate(180deg);
-}
-
-#communityCoursesDisclosure > #commCourseGrid {
+#commCourseGrid {
   max-height: 34rem;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding-right: .25rem;
+}
+
+#communityCourseExplorer .community-career-button,
+#communityCourseExplorer .community-cycle-button {
+  overflow-wrap: anywhere;
 }
 
 #commReviewsList .review-course {
@@ -1057,14 +1054,13 @@ textarea {
     padding-left: 16px;
   }
 
-  .nv-inner-menu-toggle,
-  .nv-home-menu-toggle {
+  .nv-inner-menu-toggle {
     display: inline-flex;
   }
 
   #homeTopBar {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 44px;
+    grid-template-columns: minmax(0, 1fr);
     column-gap: 12px;
     row-gap: 12px;
   }
@@ -1089,10 +1085,6 @@ textarea {
     overflow-wrap: anywhere;
   }
 
-  #homeTopBar .nv-home-menu-toggle {
-    grid-column: 2;
-    grid-row: 1;
-  }
 }
 
 .nv-tutorial-layer {

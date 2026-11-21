@@ -95,14 +95,6 @@
           <div id="homeTopBar" class="w-full flex items-center justify-between z-10">
             <span class="nv-brand-lockup"><span class="nv-brand-mark"><svg class="nv-icon nv-brand-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#nv-icon-graduation"></use></svg></span><span class="nv-brand-name">Navia</span></span>
             <span class="nv-home-tagline text-xs font-semibold tracking-[0.16em] uppercase text-blue-200">Estudia · Decide · Avanza</span>
-            <button type="button" class="nv-menu-toggle nv-home-menu-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="homeMobileMenu" onclick="toggleNavMenu('homeMobileMenu', this)">
-              <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            <nav id="homeMobileMenu" class="nv-mobile-menu nv-home-mobile-menu hidden" aria-label="Menú principal">
-              <button onclick="closeNavMenus(); openMicrosoftLogin()">Iniciar sesión</button>
-              <button onclick="closeNavMenus(); openMicrosoftLogin()">Iniciar sesión</button>
-              <button onclick="openHomeGuide()">Conoce Navia</button>
-            </nav>
           </div>
           <!-- Hero Login Split -->
           <div class="w-full max-w-6xl mx-auto my-auto py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center z-10">
@@ -1004,8 +996,8 @@
               <button onclick="goToScreen(4)" class="px-5 py-2.5 rounded-xl border border-blue-600 text-blue-700 font-medium text-xs hover:bg-blue-50 transition">
                 <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-left"></use></svg> Volver al inicio
               </button>
-              <button onclick="goToScreen(14)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
-                <span>Ver comunidad Navia <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
+              <button onclick="goToScreen(4)" class="px-7 py-2.5 rounded-xl bg-[#003366] hover:bg-blue-700 text-white font-medium text-xs shadow-md shadow-blue-600/20 transition flex items-center gap-2">
+                <span>Volver a Inicio <svg class="nv-icon h-4 w-4" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-arrow-right"></use></svg></span>
               </button>
             </div>
           </div>
@@ -1025,7 +1017,7 @@
             <!-- Search Bar -->
             <div class="max-w-2xl mx-auto mb-7">
               <div class="relative">
-                <input type="text" id="communitySearchInput" aria-label="Buscar curso en la comunidad" oninput="filterCommunityItems(this.value)" placeholder="Busca un curso... (ej: Programación, Datos, Marketing)" class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
+                <input type="text" id="communitySearchInput" aria-label="Buscar carrera, ciclo o curso en la comunidad" oninput="filterCommunityItems(this.value)" placeholder="Busca una carrera, un ciclo o un curso..." class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition">
                 <svg class="nv-icon absolute left-4 top-2.5 h-5 w-5 text-slate-600" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-search"/></svg>
               </div>
               <label for="communityStatusFilter" class="sr-only">Filtrar publicaciones por estado</label>
@@ -1037,16 +1029,16 @@
               <!-- Feed Area (8 cols) -->
               <div class="lg:col-span-8 space-y-6">
                 <!-- Cursos Consultados -->
-                <details id="communityCoursesDisclosure" class="community-courses-disclosure">
-                  <summary class="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 hover:border-blue-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">
-                    <span class="min-w-0">
-                      <span class="block text-xs sm:text-sm font-bold text-slate-800">Cursos consultados</span>
-                      <span id="communityCourseCount" class="mt-1 block text-[11px] text-slate-500" aria-live="polite"></span>
-                    </span>
-                    <svg class="nv-icon h-5 w-5 shrink-0 text-slate-600 transition-transform" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-chevron-down"></use></svg>
-                  </summary>
-                  <div class="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-2.5 pt-3" id="commCourseGrid"></div>
-                </details>
+                <section id="communityCourseExplorer" aria-labelledby="communityCourseHeading" class="space-y-3">
+                  <header class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="min-w-0">
+                      <h2 id="communityCourseHeading" class="text-xs sm:text-sm font-bold text-slate-800">Explora las mallas</h2>
+                      <p id="communityCourseCount" class="mt-1 text-[11px] text-slate-500" aria-live="polite"></p>
+                    </div>
+                    <button id="communityCourseBack" type="button" class="hidden min-h-10 rounded-lg border border-blue-600 px-3 py-2 text-xs font-semibold text-blue-700 hover:bg-blue-50"></button>
+                  </header>
+                  <div class="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-3 gap-2.5" id="commCourseGrid"></div>
+                </section>
                 <!-- Comentarios con más likes -->
                 <div>
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 mb-3">Publicaciones con más likes</h4>

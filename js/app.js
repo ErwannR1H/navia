@@ -1171,14 +1171,14 @@ function getCareerMaxCycles(career) {
       { screen: 13, target: '#updatedMallaCourses > div:first-child', title: 'Consulta tu malla actualizada', text: 'Navia incorpora los resultados del cierre y conserva como prioridad los cursos que aún tienes pendientes.', context: 'Malla académica', placement: 'corner-top-right' },
       { screen: 4, target: '#innerAppNav .nav-tab[data-view="14"]', title: 'Explora la comunidad', text: 'En Comunidad puedes consultar experiencias de otros estudiantes y compartir las tuyas.', context: 'Comunidad', placement: 'bottom', fallback: '#innerAppNav .nv-menu-toggle' },
       { screen: 14, target: '#communitySearchInput', title: 'Busca opiniones por curso', text: 'Busca un curso para leer experiencias relacionadas. También puedes compartir una opinión útil y respetuosa.', context: 'Comunidad', placement: 'bottom' },
-      { screen: 14, target: '#commCourseGrid .comm-card:first-child button', title: 'Filtra las opiniones', text: 'Selecciona «Ver opiniones» en un curso para consultar las experiencias relacionadas con esa materia.', context: 'Comunidad', placement: 'corner-top-right' },
-      { screen: 14, target: '#commReviewsList .like-btn', title: 'Valora una opinión', text: 'Usa el corazón para indicar que una opinión te resultó útil para decidir sobre un curso.', context: 'Comunidad', placement: 'corner-top-right' },
+      { screen: 14, target: '#commCourseGrid .community-career-button:first-child', title: 'Explora por carrera', text: 'Elige una carrera para consultar sus ciclos y los cursos de cada uno.', context: 'Comunidad', placement: 'corner-top-right' },
+      { screen: 14, target: '#commReviewsList .review-item .like-btn', title: 'Valora una opinión', text: 'Usa el corazón para indicar que una opinión te resultó útil para decidir sobre un curso.', context: 'Comunidad', placement: 'corner-top-right' },
       { screen: 14, target: '#screen-14 button[onclick="openLeaveReviewModal()"]', title: 'Comparte tu experiencia', text: 'Publica una opinión seleccionando un curso y escribiendo un consejo útil para otros estudiantes.', context: 'Comunidad', placement: 'top' },
       { screen: 4, target: '#innerAppNav .nav-tab[data-view="15"]', title: 'Encuentra ayuda cuando la necesites', text: 'Abre Ayuda desde la navegación o el botón flotante para consultar la FAQ, crear tickets y acceder al Libro de reclamaciones.', context: 'Ayuda y soporte', placement: 'bottom', fallback: '.nv-help-fab' },
       { screen: 15, target: '#faqList .faq-item:first-child', title: 'Consulta las preguntas frecuentes', text: 'La FAQ reúne respuestas sobre tus datos, recomendaciones, el historial y el uso de Navia. Puedes volver a consultarla cuando quieras desde Ayuda.', context: 'Centro de ayuda', placement: 'top' },
       { screen: 15, target: '#screen-15 button[onclick="goToScreen(16)"]', title: 'Contacta al equipo de soporte', text: 'Si la FAQ no resuelve tu problema, aquí puedes abrir el sistema de tickets y seguir la conversación con el equipo.', context: 'Centro de ayuda', placement: 'bottom' },
       { screen: 16, supportTab: 'tickets', target: '#ticketCategory', title: 'Crea un ticket de asistencia', text: 'Describe el problema y elige su categoría. Navia estima la prioridad y el plazo de respuesta según el tipo de incidencia, sin que tengas que asignarte una prioridad.', context: 'Tickets de soporte', placement: 'corner-top-right' },
-      { screen: 16, supportTab: 'tickets', target: '#ticketAttachment', title: 'Adjunta capturas si ayudan', text: 'Puedes adjuntar una imagen o un PDF de hasta 5 MB. Después de publicar, encontrarás el ticket y sus respuestas en el hilo de conversación.', context: 'Tickets de soporte', placement: 'corner-top-right' },
+      { screen: 16, supportTab: 'tickets', target: '#ticketAttachment + .ticket-file-button', title: 'Adjunta capturas si ayudan', text: 'Puedes adjuntar una imagen o un PDF de hasta 5 MB. Después de publicar, encontrarás el ticket y sus respuestas en el hilo de conversación.', context: 'Tickets de soporte', placement: 'corner-top-right' },
       { screen: 16, supportTab: 'complaint', target: '#complaintForm [name="complaint_type"]', title: 'Presenta una reclamación formal', text: 'El Libro de reclamaciones solicita tus datos, el detalle del reclamo o queja y el pedido. Al enviarlo, recibirás un código de seguimiento y podrás guardar una copia en PDF.', context: 'Libro de reclamaciones', placement: 'corner-top-right' },
       { screen: 2, target: '#studentProfileFields', title: 'Ahora, completa tu perfil', text: 'El recorrido terminó. Ingresa tus datos académicos para empezar a usar Navia; los datos de ejemplo no se guardaron.', context: '¡Listo!', placement: 'top' }
     ];
@@ -1417,6 +1417,7 @@ function getCareerMaxCycles(career) {
     function renderTutorialStep() {
       const step = tutorialSteps[tutorialStepIndex];
       if (step.screen >= 3 && !tutorialDemoSnapshot) startTutorialDemo();
+      if (step.screen === 14) window.naviaPrepareTutorialCommunity?.();
       if (step.screen === 10 && tutorialDemoLoaded && tutorialMallaSeeded) {
         studentProfile.cycle = '5';
         updateDashboardFromProfile();
@@ -1515,6 +1516,7 @@ function getCareerMaxCycles(career) {
 
     function completeTutorial() {
       localStorage.setItem(TUTORIAL_STORAGE_KEY, 'true');
+      window.naviaRestoreTutorialCommunity?.();
       restoreTutorialDemoState();
       tutorialActive = false;
       document.body.classList.remove('nv-tutorial-open');
@@ -1890,33 +1892,27 @@ function getCareerMaxCycles(career) {
       }
     }
 
+    function normalizeCommunitySearchText(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim();
+    }
+
     function filterCommunityItems(query) {
-      const term = query.toLowerCase().trim();
+      const term = normalizeCommunitySearchText(query);
       const selectedStatus = document.getElementById('communityStatusFilter')?.value || 'all';
-      const coursesDisclosure = document.getElementById('communityCoursesDisclosure');
-      const cards = document.querySelectorAll('#commCourseGrid .comm-card');
+      const matchingCourses = window.filterCommunityCourses?.(query) || [];
+      const courseNames = new Set(matchingCourses.map(course => normalizeCommunitySearchText(course.course_name)));
       const reviews = document.querySelectorAll('#commReviewsList .review-item');
-      if (term && coursesDisclosure && Array.from(cards).some(card => card.innerText.toLowerCase().includes(term))) {
-        coursesDisclosure.open = true;
-      }
-
-      cards.forEach(c => {
-        const text = c.innerText.toLowerCase();
-        c.style.display = text.includes(term) ? '' : 'none';
-      });
-
       reviews.forEach(r => {
-        const text = r.innerText.toLowerCase();
         const statusMatches = selectedStatus === 'all' || (r.dataset.communityStatus || 'discussion') === selectedStatus;
-        r.style.display = text.includes(term) && statusMatches ? '' : 'none';
+        const course = normalizeCommunitySearchText(r.querySelector('.review-course')?.textContent);
+        const courseMatches = !term || courseNames.has(course);
+        r.style.display = courseMatches && statusMatches ? '' : 'none';
       });
     }
 
     function filterByCourse(name) {
       const search = document.getElementById('communitySearchInput');
       search.value = name;
-      const coursesDisclosure = document.getElementById('communityCoursesDisclosure');
-      if (coursesDisclosure) coursesDisclosure.open = true;
       filterCommunityItems(name);
       showToast(`Filtrando opiniones de: ${name}`);
     }

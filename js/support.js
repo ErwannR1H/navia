@@ -753,37 +753,203 @@
   }
 
   let communityCoursesLoaded = false;
+  let communityCurriculumRows = [];
+  let communitySelectedCareer = '';
+  let communitySelectedCycle = null;
+  let lastCommunitySearch = '';
+  let tutorialCommunitySnapshot = null;
+  let tutorialCommunityCourse = null;
+  let tutorialCommunityReview = null;
+
+  function normalizeCommunityText(value) {
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es').trim();
+  }
+
+  function renderCommunityCourseCard(row) {
+    const card = document.createElement('article');
+    card.className = 'comm-card community-course-card min-w-0 rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-2xs';
+    const title = document.createElement('h3');
+    title.className = 'min-h-8 w-full min-w-0 break-words text-xs font-bold leading-snug text-slate-800 [overflow-wrap:anywhere]';
+    title.textContent = row.course_name;
+    const context = document.createElement('p');
+    context.className = 'mt-1 break-words text-[10px] leading-snug text-slate-500';
+    context.textContent = `${row.career} · Ciclo ${row.cycle}`;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'mt-2 min-h-10 w-full rounded-lg border border-blue-600 px-2 py-1 text-[10px] font-bold text-blue-700 hover:bg-blue-50';
+    button.textContent = 'Ver opiniones';
+    button.addEventListener('click', () => window.filterByCourse(row.course_name));
+    card.append(title, context, button);
+    return card;
+  }
+
+  function renderCommunityCourses(query = '') {
+    const grid = $('#commCourseGrid');
+    const count = $('#communityCourseCount');
+    const back = $('#communityCourseBack');
+    const term = normalizeCommunityText(query);
+    if (term !== lastCommunitySearch) {
+      communitySelectedCareer = '';
+      communitySelectedCycle = null;
+      lastCommunitySearch = term;
+    }
+
+    let rows = communityCurriculumRows;
+    if (term) {
+      rows = rows.filter(row => [
+        row.career,
+        `ciclo ${row.cycle}`,
+        `${row.cycle}.° ciclo`,
+        row.course_name
+      ].some(value => normalizeCommunityText(value).includes(term)));
+    } else {
+      if (communitySelectedCareer) rows = rows.filter(row => row.career === communitySelectedCareer);
+      if (communitySelectedCycle !== null) rows = rows.filter(row => row.cycle === communitySelectedCycle);
+    }
+
+    grid.replaceChildren();
+    back.classList.toggle('hidden', !communitySelectedCareer || Boolean(term));
+    if (communitySelectedCycle !== null && !term) {
+      back.textContent = 'Volver a los ciclos';
+      count.textContent = `${communitySelectedCareer} · Ciclo ${communitySelectedCycle}`;
+    } else if (communitySelectedCareer && !term) {
+      back.textContent = 'Volver a las carreras';
+      count.textContent = `${communitySelectedCareer} · Selecciona un ciclo`;
+    } else if (term) {
+      count.textContent = `${rows.length} curso${rows.length === 1 ? '' : 's'} que coincide${rows.length === 1 ? '' : 'n'} con la búsqueda`;
+    } else {
+      count.textContent = `${new Set(rows.map(row => row.career)).size} carreras disponibles`;
+    }
+
+    if (term || communitySelectedCycle !== null) {
+      rows.forEach(row => grid.append(renderCommunityCourseCard(row)));
+    } else if (communitySelectedCareer) {
+      const cycles = [...new Set(rows.map(row => row.cycle))].sort((a, b) => a - b);
+      cycles.forEach(cycle => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'community-cycle-button min-h-12 rounded-xl border border-slate-200 bg-white p-3 text-left text-xs font-semibold text-slate-800 hover:border-blue-400 hover:bg-blue-50';
+        button.textContent = `Ciclo ${cycle} · ${rows.filter(row => row.cycle === cycle).length} cursos`;
+        button.addEventListener('click', () => {
+          communitySelectedCycle = cycle;
+          renderCommunityCourses($('#communitySearchInput').value);
+          window.filterCommunityItems($('#communitySearchInput').value);
+        });
+        grid.append(button);
+      });
+    } else {
+      const careers = [...new Set(rows.map(row => row.career))].sort((a, b) => a.localeCompare(b, 'es'));
+      careers.forEach(career => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'community-career-button min-h-12 rounded-xl border border-slate-200 bg-white p-3 text-left text-xs font-semibold text-slate-800 hover:border-blue-400 hover:bg-blue-50';
+        button.textContent = career;
+        button.addEventListener('click', () => {
+          communitySelectedCareer = career;
+          communitySelectedCycle = null;
+          renderCommunityCourses($('#communitySearchInput').value);
+          window.filterCommunityItems($('#communitySearchInput').value);
+        });
+        grid.append(button);
+      });
+    }
+
+    if (!rows.length) {
+      const empty = document.createElement('p');
+      empty.className = 'col-span-full rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-500';
+      empty.textContent = term ? 'No hay cursos que coincidan con la búsqueda.' : 'No hay mallas disponibles.';
+      grid.append(empty);
+    }
+    return rows;
+  }
+  window.filterCommunityCourses = renderCommunityCourses;
 
   async function loadCommunityCourses() {
     if (communityCoursesLoaded) return;
-    const { data, error } = await client().from('curriculum_courses').select('course_name');
+    const { data, error } = await client().from('curriculum_courses').select('career,cycle,course_name');
     if (error) throw error;
-    const courses = [...new Set((data || []).map(row => row.course_name))].sort((a, b) => a.localeCompare(b, 'es'));
-    const grid = $('#commCourseGrid');
+    communityCurriculumRows = (data || []).map(row => ({
+      career: row.career,
+      cycle: Number(row.cycle),
+      course_name: row.course_name
+    })).sort((a, b) => a.career.localeCompare(b.career, 'es') || a.cycle - b.cycle || a.course_name.localeCompare(b.course_name, 'es'));
     const select = $('#reviewCourse');
-    grid.replaceChildren();
     select.replaceChildren(new Option('Selecciona un curso', ''));
-    courses.forEach(course => {
-      select.add(new Option(course, course));
-      const card = document.createElement('article');
-      card.className = 'comm-card min-w-0 rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-2xs';
-      const icon = document.createElement('span');
-      icon.className = 'mb-2 inline-flex rounded-lg bg-blue-50 p-1.5 text-blue-700';
-      icon.innerHTML = '<svg class="nv-icon h-5 w-5" aria-hidden="true" viewBox="0 0 24 24"><use href="#nv-icon-books"></use></svg>';
-      const title = document.createElement('h3');
-      title.className = 'min-h-8 w-full min-w-0 break-words text-xs font-bold leading-snug text-slate-800 [overflow-wrap:anywhere]';
-      title.textContent = course;
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'mt-2 w-full rounded-lg border border-blue-600 py-1 text-[10px] font-bold text-blue-700 hover:bg-blue-50';
-      button.textContent = 'Ver opiniones';
-      button.addEventListener('click', () => window.filterByCourse(course));
-      card.append(icon, title, button);
-      grid.append(card);
-    });
-    $('#communityCourseCount').textContent = `${courses.length} cursos de las mallas disponibles`;
+    [...new Set(communityCurriculumRows.map(row => row.course_name))]
+      .sort((a, b) => a.localeCompare(b, 'es'))
+      .forEach(course => select.add(new Option(course, course)));
     communityCoursesLoaded = true;
+    renderCommunityCourses($('#communitySearchInput')?.value || '');
   }
+
+  $('#communityCourseBack').addEventListener('click', () => {
+    if (communitySelectedCycle !== null) communitySelectedCycle = null;
+    else communitySelectedCareer = '';
+    const search = $('#communitySearchInput');
+    search.value = '';
+    lastCommunitySearch = '';
+    renderCommunityCourses('');
+    window.filterCommunityItems('');
+  });
+
+  window.naviaPrepareTutorialCommunity = function () {
+    if (!tutorialCommunitySnapshot) {
+      tutorialCommunitySnapshot = {
+        query: $('#communitySearchInput').value,
+        status: $('#communityStatusFilter').value,
+        career: communitySelectedCareer,
+        cycle: communitySelectedCycle
+      };
+    }
+    if (!communityCurriculumRows.length && !tutorialCommunityCourse) {
+      tutorialCommunityCourse = {
+        career: 'Ingeniería de Sistemas de Información',
+        cycle: 1,
+        course_name: 'Fundamentos de Programación'
+      };
+      communityCurriculumRows.push(tutorialCommunityCourse);
+    }
+    $('#communitySearchInput').value = '';
+    $('#communityStatusFilter').value = 'all';
+    communitySelectedCareer = '';
+    communitySelectedCycle = null;
+    lastCommunitySearch = '';
+    renderCommunityCourses('');
+
+    const list = $('#commReviewsList');
+    if (!list.querySelector('.review-item')) {
+      const item = document.createElement('article');
+      item.className = 'review-item min-w-0 rounded-2xl border border-slate-200 bg-white p-3.5 shadow-2xs flex items-start justify-between gap-3';
+      item.dataset.communityStatus = 'discussion';
+      item.dataset.tutorialDemo = 'true';
+      item.innerHTML = '<div class="min-w-0"><span class="review-author text-xs font-bold text-slate-900">María López</span><span class="review-course ml-2 text-[10px] text-slate-600"></span><p class="review-content mt-1 text-xs leading-relaxed text-slate-600"></p></div><button type="button" class="like-btn flex shrink-0 items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-500" aria-label="Me gusta esta opinión"><span aria-hidden="true">♡</span><span class="likes-num">0</span></button>';
+      item.querySelector('.review-course').textContent = tutorialCommunityCourse?.course_name || communityCurriculumRows[0]?.course_name || 'Fundamentos de Programación';
+      item.querySelector('.review-content').textContent = 'Organiza tus prácticas desde el inicio y repasa los conceptos después de cada clase.';
+      item.querySelector('.like-btn').addEventListener('click', event => window.toggleCommentLike(event.currentTarget, 0));
+      list.append(item);
+      tutorialCommunityReview = item;
+    }
+    window.filterCommunityItems('');
+  };
+
+  window.naviaRestoreTutorialCommunity = function () {
+    if (tutorialCommunityCourse) {
+      communityCurriculumRows = communityCurriculumRows.filter(row => row !== tutorialCommunityCourse);
+      tutorialCommunityCourse = null;
+    }
+    tutorialCommunityReview?.remove();
+    tutorialCommunityReview = null;
+    if (!tutorialCommunitySnapshot) return;
+    const snapshot = tutorialCommunitySnapshot;
+    tutorialCommunitySnapshot = null;
+    communitySelectedCareer = snapshot.career;
+    communitySelectedCycle = snapshot.cycle;
+    $('#communitySearchInput').value = snapshot.query;
+    $('#communityStatusFilter').value = snapshot.status;
+    lastCommunitySearch = normalizeCommunityText(snapshot.query);
+    renderCommunityCourses(snapshot.query);
+    window.filterCommunityItems(snapshot.query);
+  };
 
   async function loadCommunityPosts() {
     if (!user()) return;
