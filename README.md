@@ -2,6 +2,56 @@
 
 Aplicación web estática desplegable en Vercel, con Supabase Auth y PostgreSQL para los datos persistentes de perfiles, avance académico, tickets, reclamaciones y comunidad.
 
+Enlace vercel : https://navia-fawn.vercel.app
+
+## Ejecutar en local
+
+La aplicación no necesita un proceso de compilación. Para probar todas sus funciones, incluido el inicio de sesión, hay que ejecutar también la función de Vercel `/api/config`; por eso un servidor estático simple no es suficiente.
+
+### Requisitos
+
+- Node.js LTS y npm.
+- Un proyecto Supabase configurado según la sección **Preparar Supabase**. No hace falta instalar PostgreSQL localmente: la aplicación usa la base de datos alojada en Supabase.
+- Vercel CLI. Se puede instalar globalmente con `npm install --global vercel`.
+
+### Pasos
+
+1. Abre una terminal en la carpeta del proyecto e instala las dependencias:
+
+   ```bash
+   npm install
+   ```
+
+2. Configura las variables que necesita `/api/config`. Hay dos opciones:
+
+   - **Usar el proyecto Vercel existente:** inicia sesión y enlaza este directorio con el proyecto. Después, descarga las variables de desarrollo:
+
+     ```bash
+     vercel login
+     vercel link
+     vercel env pull .env.local
+     ```
+
+   - **Sin variables disponibles en Vercel:** crea `.env.local` en la raíz del proyecto y copia los valores de **Supabase → Project Settings → API**:
+
+     ```dotenv
+     SUPABASE_URL=https://<project-ref>.supabase.co
+     SUPABASE_ANON_KEY=<clave-publica-anon>
+     ```
+
+   Usa únicamente la clave pública `anon` para este prototipo; nunca pongas `service_role` en `.env.local`. El archivo está excluido de Git por `.gitignore`: no lo publiques ni lo envíes junto con el código.
+
+3. Si todavía no preparaste la base de datos, ejecuta `supabase/schema.sql` en **Supabase → SQL Editor** y crea las cuentas de prueba siguiendo la sección **Preparar Supabase**.
+4. Inicia el servidor local de Vercel:
+
+   ```bash
+   vercel dev
+   ```
+
+5. Abre la dirección que muestra la terminal (normalmente `http://localhost:3000`). Para detener el servidor, pulsa `Ctrl+C`.
+
+La aplicación carga la configuración desde `/api/config`, que lee `SUPABASE_URL` y `SUPABASE_ANON_KEY` del entorno y las entrega al navegador. El navegador se conecta directamente a Supabase para autenticación, datos y archivos; no se necesita una base de datos local. Comprueba el inicio de sesión, la edición del perfil, el historial y la persistencia después de recargar la página.
+
 ## Preparar Supabase
 
 1. Crea un proyecto Supabase y abre **SQL Editor**.
@@ -22,6 +72,13 @@ Aplicación web estática desplegable en Vercel, con Supabase Auth y PostgreSQL 
 
 Los estudiantes completan su perfil académico al iniciar sesión por primera vez. Las tablas `profiles` y `student_data` están protegidas para que cada usuario acceda a sus propios datos; el historial y el ciclo preparado se guardan en `student_data`. El personal administrador puede consultar tickets activos y cerrados, reabrirlos al responder, y gestionar el estado y las respuestas de las reclamaciones mediante políticas RLS basadas en el rol `admin`.
 
+
+### Problemas frecuentes
+
+- **`/api/config` devuelve 503:** faltan `SUPABASE_URL` o `SUPABASE_ANON_KEY`, o Vercel CLI no está leyendo `.env.local`. Revisa los nombres y vuelve a iniciar `vercel dev`.
+- **`/api/config` devuelve 404:** probablemente se inició un servidor estático en lugar de `vercel dev`. Ese servidor no ejecuta la función `api/config.js`.
+- **No se puede iniciar sesión o guardar datos:** revisa que la URL y la clave correspondan al mismo proyecto Supabase, que las tablas y políticas de `supabase/schema.sql` estén instaladas y que la cuenta tenga un perfil.
+
 ## Desplegar en Vercel
 
 1. Importa el repositorio en Vercel como un proyecto estático; no hace falta ejecutar un build.
@@ -34,9 +91,3 @@ Los estudiantes completan su perfil académico al iniciar sesión por primera ve
 Para probar la función `/api/config` localmente se necesita Vercel CLI (`vercel dev`) y las mismas variables de entorno; un servidor estático simple no ejecuta funciones de Vercel.
 
 La app simula el flujo visual de Microsoft, pero autentica con Supabase Email/Password; no valida cuentas Microsoft reales. El tutorial guiado presenta el perfil y las funciones principales, incluida la FAQ, los tickets y el Libro de reclamaciones. La FAQ es pública; los tickets y reclamaciones requieren una sesión. Los adjuntos son privados, limitados a 5 MB y a imágenes/PDF.
-
-## SLA, reclamaciones y límites del prototipo
-
-Las prioridades se asignan por categoría: caída/seguridad = crítica (atención inmediata); recomendaciones/historial = alta (máximo 24 h); otros problemas de funcionalidad = media (2–5 días hábiles); problema visual menor = baja (5–10 días hábiles). Son estimaciones del documento SLA, no una garantía de servicio ni una medición automática.
-
-La constancia de reclamación se puede imprimir o guardar como PDF desde el navegador. El formulario es una base para el prototipo y debe revisarse con asesoría local antes de presentarlo como un *Libro de reclamaciones* legalmente conforme. El nivel gratuito de Supabase/Vercel no garantiza por sí solo copias de seguridad diarias ni disponibilidad mensual de 99,5%; revisa las condiciones de cada proveedor antes de prometer esos SLA.
