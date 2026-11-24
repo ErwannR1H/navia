@@ -252,10 +252,25 @@
     return withLoading(() => performSignOut(destination), 'Cerrando sesión...');
   }
 
+  function exitGuestMode() {
+    if (!guestModeSelected || signedOutDestination !== 2 || user()) return;
+    guestModeSelected = false;
+    signedOutDestination = 1;
+    window.naviaResetStudentProfile?.();
+    $('#microsoftAccountBadge').classList.add('hidden');
+    $('#studentEmailLabel').textContent = 'alumno@usil.pe';
+    closeUserMenu();
+    updateRoleNavigation();
+    goToScreen(1);
+    showToast('Has salido del modo invitado.');
+  }
+
   function updateRoleNavigation() {
     const isSignedIn = Boolean(user());
+    const isGuest = guestModeSelected && signedOutDestination === 2 && !isSignedIn;
     const adminOnly = isAdmin();
-    $('#userMenuToggle')?.classList.toggle('hidden', !isSignedIn);
+    $('#userMenuToggle')?.classList.toggle('hidden', !isSignedIn && !isGuest);
+    $('#guestExitButton')?.classList.toggle('hidden', !isGuest);
     ['adminNavButton', 'adminMobileNavButton'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.classList.toggle('hidden', !adminOnly);
@@ -1380,6 +1395,7 @@
   }
 
   window.signOutNaviaUser = () => signOut().catch(showActionError);
+  window.exitGuestMode = exitGuestMode;
   window.continueAsGuest = async function () {
     try {
       if (user()) {

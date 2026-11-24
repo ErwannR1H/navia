@@ -4,6 +4,8 @@ Aplicación web estática desplegable en Vercel, con Supabase Auth y PostgreSQL 
 
 Enlace vercel : https://navia-fawn.vercel.app
 
+GitHub : https://github.com/ErwannR1H/navia.git
+
 ## Ejecutar en local
 
 La aplicación no necesita un proceso de compilación. Para probar todas sus funciones, incluido el inicio de sesión, hay que ejecutar también la función de Vercel `/api/config`; por eso un servidor estático simple no es suficiente.
